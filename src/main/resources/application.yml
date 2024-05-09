@@ -10,9 +10,11 @@ spring:
       mvc:
         routes:
           - id: goods-service
-            uri: http://localhost:8081/
+            uri: lb://GOODS-SERVICE
             predicates:
               - Path=/goods/**
+            filters:
+              - StripPrefix=1
 #          - id: example-service
 #            uri: http://localhost:9002/
 #            predicates:
