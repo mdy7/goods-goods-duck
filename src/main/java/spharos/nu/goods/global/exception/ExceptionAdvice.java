@@ -9,8 +9,8 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.global.apiresponse.ApiResponse;
 import spharos.nu.goods.global.exception.errorcode.ErrorCode;
+import spharos.nu.goods.global.exception.erroresponse.ErrorResponse;
 
 @RestControllerAdvice
 @Slf4j
@@ -25,7 +25,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 		log.info("No Handling Exception is = {}", e.getMessage());
 
 		ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
-		ResponseEntity<ApiResponse<Object>> responseBody = createResponseBody(errorCode);
+		ErrorResponse<Object> responseBody = createResponseBody(errorCode);
 		return super.handleExceptionInternal(
 			e, responseBody, HttpHeaders.EMPTY, HttpStatus.INTERNAL_SERVER_ERROR, request);
 	}
@@ -39,7 +39,7 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 		log.info("error is {}", e.getErrorCode());
 
 		ErrorCode errorCode = e.getErrorCode();
-		ResponseEntity<ApiResponse<Object>> responseBody = createResponseBody(errorCode);
+		ErrorResponse<Object> responseBody = createResponseBody(errorCode);
 
 		return super.handleExceptionInternal(
 			e,
@@ -49,9 +49,10 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
 			request);
 	}
 
-	private <T> ResponseEntity<ApiResponse<T>> createResponseBody(ErrorCode errorCode) {
-		return ApiResponse.error(
+	private <T> ErrorResponse<T> createResponseBody(ErrorCode errorCode) {
+		return new ErrorResponse<>(
 			errorCode.getStatus(),
+			null,
 			errorCode.getMessage());
 	}
 }

@@ -25,11 +25,6 @@ public class ApiResponse<T> {
 
 	public static <T> ResponseEntity<ApiResponse<T>> fail(Integer status, String message) {
 		ApiResponse<T> response = new ApiResponse<>(status, null, message);
-		return ResponseEntity.status(status).body(response);
-	}
-
-	public static <T> ResponseEntity<ApiResponse<T>> error(Integer status, String message) {
-		ApiResponse<T> response = new ApiResponse<>(status, null, message);
-		return ResponseEntity.status(status).body(response);
+		return ResponseEntity.status(HttpStatus.valueOf(status)).body(response);
 	}
 }
