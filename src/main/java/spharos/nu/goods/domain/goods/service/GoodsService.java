@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
+import spharos.nu.goods.global.exception.CustomException;
+import spharos.nu.goods.global.exception.errorcode.ErrorCode;
 
 @RequiredArgsConstructor
 @Service

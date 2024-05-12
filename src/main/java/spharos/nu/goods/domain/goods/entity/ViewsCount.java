@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Views {
+public class ViewsCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "views_id")
