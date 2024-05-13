@@ -1,3 +1,11 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /v1/users
+    encoding:
+      charset: utf-8
+      force: true
+
 spring:
   application:
     name: member-service
@@ -16,6 +24,13 @@ spring:
   web:
     resources:
       add-mappings: false
+
+jwt:
+  key: ${JWT_SECRET_KEY}
+  token:
+    #    액세스 토큰 1시간, 리프레쉬 토큰 7일
+    access-expire-time: 3600000
+    refresh-expire-time: 604800000
 
 eureka:
   client:
