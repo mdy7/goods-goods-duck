@@ -14,6 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import spharos.nu.member.global.entity.AuditBaseEntity;
 
 @Entity
 @AllArgsConstructor
@@ -22,7 +23,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @Table(name = "member")
-public class Member {
+public class Member extends AuditBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
