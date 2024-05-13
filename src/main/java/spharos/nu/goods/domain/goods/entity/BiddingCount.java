@@ -19,10 +19,10 @@ import spharos.nu.goods.global.entity.AuditBaseEntity;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class ViewsCount extends AuditBaseEntity {
+public class BiddingCount extends AuditBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "views_count_id")
+    @Column(name = "bidding_count_id")
     private Long id;
     @NotBlank
     private String code;

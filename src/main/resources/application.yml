@@ -7,7 +7,7 @@ spring:
     import: "optional:configserver:http://localhost:8888"
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
 #      naming:
 #        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategy
     show-sql: true
