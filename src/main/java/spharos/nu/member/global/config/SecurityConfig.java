@@ -39,7 +39,6 @@ public class SecurityConfig {
 		return http
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement((authorize) -> authorize.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.formLogin(Customizer.withDefaults())
 			.httpBasic(Customizer.withDefaults())
 			.authorizeHttpRequests((authorize) -> authorize
 				.anyRequest().permitAll())
