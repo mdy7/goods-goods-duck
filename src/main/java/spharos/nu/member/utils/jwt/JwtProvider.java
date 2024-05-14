@@ -1,16 +1,20 @@
 package spharos.nu.member.utils.jwt;
 
+import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +51,9 @@ public class JwtProvider {
 	 */
 	public JwtToken createToken(String uuid) {
 
+		byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+		Key key = Keys.hmacShaKeyFor(keyBytes);
+
 		Claims claims = Jwts.claims().setSubject(uuid);
 		String role = "USER";
 		claims.put("role", role);
@@ -58,13 +65,13 @@ public class JwtProvider {
 				.setClaims(claims)
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + accessExpireTime))
-				.signWith(SignatureAlgorithm.HS256, secretKey)
+				.signWith(key)
 				.compact(),
 			Jwts.builder()
 				.setClaims(claims)
 				.setIssuedAt(now)
 				.setExpiration(new Date(now.getTime() + accessExpireTime))
-				.signWith(SignatureAlgorithm.HS256, secretKey)
+				.signWith(key)
 				.compact());
 
 		// Redis DB에 {uuid: refreshToken} 정보 저장
