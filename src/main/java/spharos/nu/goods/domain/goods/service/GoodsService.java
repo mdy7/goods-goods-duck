@@ -1,22 +1,111 @@
 package spharos.nu.goods.domain.goods.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
+import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
+import spharos.nu.goods.domain.goods.dto.GoodsReadDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
+import spharos.nu.goods.domain.goods.entity.Image;
+import spharos.nu.goods.domain.goods.entity.Tag;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
-import spharos.nu.goods.global.exception.CustomException;
-import spharos.nu.goods.global.exception.errorcode.ErrorCode;
+import spharos.nu.goods.domain.goods.repository.ImageRepository;
+import spharos.nu.goods.domain.goods.repository.TagRepository;
 
 @RequiredArgsConstructor
 @Service
 public class GoodsService {
 
 	private final GoodsRepository goodsRepository;
+	private final TagRepository tagRepository;
+	private final ImageRepository imageRepository;
 
 	public List<Goods> getAllGoods() {
 		return goodsRepository.findAll();
 	}
+
+	public Long goodsCreate(GoodsCreateDto goodsCreateDto) {
+
+		String code = createCode(goodsCreateDto);
+		LocalDateTime openedAt = createOpenedAt(goodsCreateDto);
+
+		Goods goods = Goods.builder()
+			.name(goodsCreateDto.getGoodsName())
+			.description(goodsCreateDto.getDescription())
+			.categoryId(goodsCreateDto.getCategoryId())
+			.minPrice(goodsCreateDto.getMinPrice())
+			.openedAt(openedAt)
+			.durationTime(goodsCreateDto.getDurationTime())
+			.wishTradeType(goodsCreateDto.getWishTradeType())
+			.uuid("111111")
+			.code(code)
+			.closedAt(openedAt.plusHours(goodsCreateDto.getDurationTime()))
+			.build();
+
+		//굿즈 저장
+		Goods savedGoods = goodsRepository.save(goods);
+
+		//태그 저장
+		goodsCreateDto.getTags().forEach((tag) ->
+			tagRepository.save(Tag.builder()
+				.name(tag)
+				.code(code)
+				.build())
+		);
+
+		//이미지 저장
+		IntStream.range(0, goodsCreateDto.getImageUrls().size())
+			.forEach(index -> {
+				String imageUrl = goodsCreateDto.getImageUrls().get(index);
+				imageRepository.save(Image.builder()
+					.url(imageUrl)
+					.code(code)
+					.index(index)
+					.build());
+			});
+
+		return savedGoods.getId();
+	}
+
+	private String createCode(GoodsCreateDto goodsCreateDto) {
+		/* 상품코드 생성로직
+		임시로 '카테고리 pk + (굿즈테이블 마지막 pk + 1)'로 가정함
+		*/
+		Optional<Goods> optionalGoods = goodsRepository.findFirstByOrderByIdDesc();
+		Long lastGoodsId = optionalGoods.map(Goods::getId).orElse(1L);
+
+		return goodsCreateDto.getCategoryId() + String.valueOf(lastGoodsId);
+	}
+
+	private LocalDateTime createOpenedAt(GoodsCreateDto goodsCreateDto) {
+
+		return LocalDateTime.parse(goodsCreateDto.getOpenedAt());
+	}
+
+	public GoodsReadDto goodsRead(String code) {
+		Goods goods = goodsRepository.findOneByCode(code).orElseThrow();
+
+		List<String> tags = tagRepository.findAllByCode(code).stream().map(Tag::getName).toList();
+		List<String> imageUrls = imageRepository.findAllByCode(code).stream().map(Image::getUrl).toList();
+
+		return GoodsReadDto.builder()
+			.tradingStatus(goods.getTradingStatus())
+			.goodsName(goods.getName())
+			.description(goods.getDescription())
+			.minPrice(goods.getMinPrice())
+			.openedAt(goods.getOpenedAt())
+			.closedAt(goods.getClosedAt())
+			.durationTime(goods.getDurationTime())
+			.wishTradeType(goods.getWishTradeType())
+			.tags(tags)
+			.imageUrls(imageUrls)
+			.winningPrice(goods.getWinningPrice())
+			.build();
+	}
+
 }

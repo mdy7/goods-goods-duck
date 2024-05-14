@@ -1,15 +1,16 @@
 package spharos.nu.goods.domain.goods.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import spharos.nu.goods.domain.goods.entity.Goods;
+import spharos.nu.goods.domain.goods.entity.Tag;
 
 @Repository
-public interface GoodsRepository extends JpaRepository<Goods, Long> {
-	Optional<Goods> findFirstByOrderByIdDesc();
+public interface TagRepository extends JpaRepository<Tag, Long> {
 
-	Optional<Goods> findOneByCode(String code);
+	List<Tag> findAllByCode(String code);
 }
