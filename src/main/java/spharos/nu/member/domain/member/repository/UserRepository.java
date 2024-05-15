@@ -8,4 +8,6 @@ import spharos.nu.member.domain.member.entity.Member;
 
 public interface UserRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByUserId(String userId);
+
+	Optional<Member> findByUuid(String uuid);
 }
