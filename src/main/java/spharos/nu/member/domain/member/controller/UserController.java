@@ -1,14 +1,22 @@
 package spharos.nu.member.domain.member.controller;
 
+import java.util.Objects;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
+import spharos.nu.member.domain.member.dto.SocialLoginDto;
 import spharos.nu.member.domain.member.service.UserService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 import spharos.nu.member.utils.jwt.JwtToken;
@@ -25,5 +33,34 @@ public class UserController {
 		JwtToken tokens = userService.login(loginDto);
 
 		return ApiResponse.success(tokens, "로그인에 성공했습니다.");
+	}
+
+	@PostMapping("/social-login")
+	@Operation(summary = "소셜 로그인", description = "소셜로 가입된 유저라면 토큰 발급, 아니라면 회원가입 페이지로 리다이렉트")
+	public ResponseEntity<ApiResponse<JwtToken>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
+		JwtToken tokens = userService.socialLogin(socialLoginDto);
+
+		return ApiResponse.success(tokens, "로그인에 성공했습니다.");
+	}
+
+	@PostMapping()
+	@Operation(summary = "회원가입")
+	public ResponseEntity<ApiResponse<Void>> join(@RequestBody JoinDto joinDto) {
+		userService.join(joinDto);
+		return ApiResponse.created("회원가입에 성공했습니다.");
+	}
+
+	@GetMapping("/duplication-check/{type}")
+	@Operation(summary = "아이디 중복체크", description = "아이디/닉네임이 중복되었다면 409 error, 아니면 200 ok")
+	public ResponseEntity<ApiResponse<String>> duplicationCheck(@PathVariable String type, @RequestParam String inputParams) {
+		if (Objects.equals(type, "Id")) {
+			userService.isDuplicatedId(inputParams);
+			return ApiResponse.success(inputParams, "사용 가능한 아이디입니다.");
+		} else if (Objects.equals(type, "Nick")) {
+			userService.isDuplicatedNick(inputParams);
+			return ApiResponse.success(inputParams, "사용 가능한 닉네임입니다.");
+		} else {
+			return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.");
+		}
 	}
 }

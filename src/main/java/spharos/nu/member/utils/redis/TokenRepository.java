@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class RedisService {
+public class TokenRepository {
 	@Value("${jwt.token.refresh-expire-time}")
 	private Long refreshPeriod;
 	private final RedisTemplate<String, String> redisTemplate;

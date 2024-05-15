@@ -39,6 +39,11 @@ jwt:
     access-expire-time: 3600000
     refresh-expire-time: 604800000
 
+coolSms:
+  key: ${COOL_API_KEY}
+  secret: ${COOL_SECRET_KEY}
+  number: ${COOL_PHONE_NUM}
+
 eureka:
   client:
     register-with-eureka: true
