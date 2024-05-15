@@ -12,4 +12,6 @@ public interface GoodsRepository extends JpaRepository<Goods, Long> {
 	Optional<Goods> findFirstByOrderByIdDesc();
 
 	Optional<Goods> findOneByCode(String code);
+
+	void deleteByCode(String code);
 }

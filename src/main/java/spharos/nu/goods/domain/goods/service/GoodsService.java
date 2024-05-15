@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
@@ -29,7 +30,7 @@ public class GoodsService {
 		return goodsRepository.findAll();
 	}
 
-	public Long goodsCreate(GoodsCreateDto goodsCreateDto) {
+	public String goodsCreate(GoodsCreateDto goodsCreateDto) {
 
 		String code = createCode(goodsCreateDto);
 		LocalDateTime openedAt = goodsCreateDto.getOpenedAt();
@@ -69,7 +70,7 @@ public class GoodsService {
 					.build());
 			});
 
-		return savedGoods.getId();
+		return savedGoods.getCode();
 	}
 
 	private String createCode(GoodsCreateDto goodsCreateDto) {
@@ -103,4 +104,36 @@ public class GoodsService {
 			.build();
 	}
 
+	@Transactional
+	public Void goodsDelete(String code) {
+		goodsRepository.deleteByCode(code);
+		tagRepository.deleteAllByCode(code);
+		imageRepository.deleteAllByCode(code);
+		return null;
+	}
+
+	@Transactional
+	public Void goodsDisable(String code) {
+		Goods goods = goodsRepository.findOneByCode(code).orElseThrow();
+
+		Goods updatedGoods = Goods.builder()
+			.id(goods.getId())
+			.name(goods.getName())
+			.description(goods.getDescription())
+			.categoryId(goods.getCategoryId())
+			.minPrice(goods.getMinPrice())
+			.openedAt(goods.getOpenedAt())
+			.durationTime(goods.getDurationTime())
+			.wishTradeType(goods.getWishTradeType())
+			.uuid("111111")
+			.code(goods.getCode())
+			.closedAt(goods.getClosedAt())
+			.winningPrice(goods.getWinningPrice())
+			.tradingStatus((byte)2) //거래무산으로 변경
+			.isDelete(true) //삭제여부 true로 변경
+			.build();
+
+		goodsRepository.save(updatedGoods);
+		return null;
+	}
 }
