@@ -32,7 +32,7 @@ public class GoodsService {
 	public Long goodsCreate(GoodsCreateDto goodsCreateDto) {
 
 		String code = createCode(goodsCreateDto);
-		LocalDateTime openedAt = createOpenedAt(goodsCreateDto);
+		LocalDateTime openedAt = goodsCreateDto.getOpenedAt();
 
 		Goods goods = Goods.builder()
 			.name(goodsCreateDto.getGoodsName())
@@ -80,11 +80,6 @@ public class GoodsService {
 		Long lastGoodsId = optionalGoods.map(Goods::getId).orElse(1L);
 
 		return goodsCreateDto.getCategoryId() + String.valueOf(lastGoodsId);
-	}
-
-	private LocalDateTime createOpenedAt(GoodsCreateDto goodsCreateDto) {
-
-		return LocalDateTime.parse(goodsCreateDto.getOpenedAt());
 	}
 
 	public GoodsReadDto goodsRead(String code) {

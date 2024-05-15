@@ -21,7 +21,7 @@ public class GoodsCreateDto {
 	@Schema(description = "시작가격")
 	private Long minPrice;
 	@Schema(description = "입찰시작일시")
-	private CharSequence openedAt;
+	private LocalDateTime openedAt;
 	@Schema(description = "진행시간")
 	private byte durationTime;
 	@Schema(description = "선호거래방법")
