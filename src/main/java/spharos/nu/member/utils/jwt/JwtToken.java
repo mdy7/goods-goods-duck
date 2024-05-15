@@ -2,12 +2,12 @@ package spharos.nu.member.utils.jwt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Value;
 
 @Builder
-@Data
+@Value
 @AllArgsConstructor
 public class JwtToken {
-	private String accessToken;
-	private String refreshToken;
+	String accessToken;
+	String refreshToken;
 }

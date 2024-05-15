@@ -60,22 +60,25 @@ public class JwtProvider {
 
 		Date now = new Date();
 
-		JwtToken jwtToken = new JwtToken(
-			Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + accessExpireTime))
-				.signWith(key)
-				.compact(),
-			Jwts.builder()
-				.setClaims(claims)
-				.setIssuedAt(now)
-				.setExpiration(new Date(now.getTime() + accessExpireTime))
-				.signWith(key)
-				.compact());
+		String accessToken = Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(now)
+			.setExpiration(new Date(now.getTime() + accessExpireTime))
+			.signWith(key)
+			.compact();
+
+
+		String refreshToken = Jwts.builder()
+			.setClaims(claims)
+			.setIssuedAt(now)
+			.setExpiration(new Date(now.getTime() + refreshExpireTime))
+			.signWith(key)
+			.compact();
+
+		JwtToken jwtToken = new JwtToken(accessToken, refreshToken);
 
 		// Redis DB에 {uuid: refreshToken} 정보 저장
-		redisService.saveRefreshToken(uuid, jwtToken.getRefreshToken());
+		redisService.saveRefreshToken(uuid, refreshToken);
 
 		return jwtToken;
 	}
@@ -85,11 +88,11 @@ public class JwtProvider {
 	 * @param token jwtToken
 	 * @return true(유효) / false(X)
 	 */
-	public boolean verifyToken(String token) {
+	public boolean validateToken(String token) {
 		try {
 			// 토큰 파싱
 			Jwts.parserBuilder()
-				.setSigningKey(secretKey)
+				.setSigningKey(Decoders.BASE64.decode(secretKey))
 				.build()
 				.parseClaimsJws(token);
 			return true;
@@ -102,7 +105,7 @@ public class JwtProvider {
 
 	public JwtToken reIssueToken(String refreshToken) {
 		try {
-			verifyToken(refreshToken);
+			validateToken(refreshToken);
 		} catch (CustomException e) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
 		}
@@ -124,9 +127,9 @@ public class JwtProvider {
 	 * @param refreshToken 리프레시토큰
 	 * @return uuid
 	 */
-	private String getUuid(String refreshToken) {
+	public String getUuid(String refreshToken) {
 		try {
-			return Jwts.parserBuilder().setSigningKey(secretKey).build()
+			return Jwts.parserBuilder().setSigningKey(Decoders.BASE64.decode(secretKey)).build()
 				.parseClaimsJws(refreshToken)
 				.getBody()
 				.getSubject();
@@ -134,6 +137,20 @@ public class JwtProvider {
 			throw new CustomException(ErrorCode.TOKEN_EXPIRED);
 		} catch (Exception e) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
+		}
+	}
+
+	/**
+	 * jwt claim 에 담긴 key-value 반환
+	 * @param key token claim 에 설정되어 있는 key 값 이름
+	 * @return 해당 key 있으면 value 반환 / 없으면 빈 문자열 반환
+	 */
+	public String getValue(String token, String key) {
+		Claims claims = Jwts.parserBuilder().setSigningKey(Decoders.BASE64.decode(secretKey)).build().parseClaimsJws(token).getBody();
+		if (claims.containsKey(key)) {
+			return claims.get(key).toString();
+		} else {
+			return "";
 		}
 	}
 }
