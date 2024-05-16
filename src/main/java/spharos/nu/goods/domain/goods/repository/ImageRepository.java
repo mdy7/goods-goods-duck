@@ -6,9 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import spharos.nu.goods.domain.goods.entity.Image;
-import spharos.nu.goods.domain.goods.entity.Tag;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
 	List<Image> findAllByCode(String code);
+	void deleteAllByCode(String code);
 }
