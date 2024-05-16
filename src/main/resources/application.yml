@@ -1,7 +1,7 @@
 server:
   port: 8080
   servlet:
-    context-path: /v1/users
+    context-path: /v1
     encoding:
       charset: utf-8
       force: true
@@ -13,10 +13,6 @@ spring:
     active: default
   config:
     import: "optional:configserver:http://localhost:8888"
-  datasource:
-    url: jdbc:postgresql://localhost:5432/mydb
-    username: postgres
-    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update

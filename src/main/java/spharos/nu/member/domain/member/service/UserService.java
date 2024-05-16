@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
-import spharos.nu.member.domain.member.dto.VerificationDto;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.SocialMember;
 import spharos.nu.member.domain.member.repository.SocialRepository;
@@ -20,15 +20,14 @@ import spharos.nu.member.global.exception.CustomException;
 import spharos.nu.member.global.exception.errorcode.ErrorCode;
 import spharos.nu.member.utils.jwt.JwtProvider;
 import spharos.nu.member.utils.jwt.JwtToken;
-import spharos.nu.member.utils.redis.VerificationRepository;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserService {
 	private final UserRepository userRepository;
 	private final SocialRepository socialRepository;
-	private final VerificationRepository verificationRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
@@ -57,6 +56,8 @@ public class UserService {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
 
+		log.info(uuid, encodedPassword, joinDto.getPassword());
+
 		Member member = joinDto.toEntity(uuid, encodedPassword);
 		userRepository.save(member);
 	}
@@ -69,7 +70,7 @@ public class UserService {
 	}
 
 	public void isDuplicatedNick(String nickname) {
-		Optional<Member> isMember = userRepository.findByNick(nickname);
+		Optional<Member> isMember = userRepository.findByNickname(nickname);
 		if (isMember.isPresent()) {
 			throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
 		}

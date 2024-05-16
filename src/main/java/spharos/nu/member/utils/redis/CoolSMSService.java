@@ -1,6 +1,7 @@
 package spharos.nu.member.utils.redis;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -10,7 +11,8 @@ import net.nurigo.sdk.message.service.DefaultMessageService;
 
 import jakarta.annotation.PostConstruct;
 
-public class VerificationService {
+@Component
+public class CoolSMSService {
 	@Value("${coolSms.key}")
 	private String apiKey;
 	@Value("${coolSms.secret}")
