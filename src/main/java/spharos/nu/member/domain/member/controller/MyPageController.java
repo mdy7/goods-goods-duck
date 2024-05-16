@@ -26,7 +26,7 @@ public class MyPageController {
 	// 프로필 조회
 	@GetMapping
 	@Operation(summary = "회원 프로필 조회", description = "회원 프로필이미지, 닉네임, 선호카테고리 데이터")
-	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(@RequestHeader("Autuhorization") String token) {
+	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(@RequestHeader("Authorization") String token) {
 
 		String uuid = jwtProvider.getUuid(token);
 
