@@ -28,8 +28,9 @@ public class ApiResponse<T> {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
-	public static <T> ResponseEntity<ApiResponse<T>> see_others(String message) {
+	public static <T> ResponseEntity<ApiResponse<T>> see_other(String message) {
 		ApiResponse<T> response = new ApiResponse<>(HttpStatus.SEE_OTHER.value(), null, message);
+		return ResponseEntity.status(HttpStatus.SEE_OTHER).body(response);
 	}
 
 	public static <T> ResponseEntity<ApiResponse<T>> fail(Integer status, String message) {

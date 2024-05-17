@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
@@ -74,10 +76,17 @@ public class UserController {
 			String userId = userService.findId(inputParams);
 			return ApiResponse.success(Optional.of(userId), "아이디 조회에 성공했습니다.");
 		} else if (Objects.equals(tab, "Pw")) {
-			userService.findPw(inputParams);
-			return ApiResponse.see_others("비밀번호 재설정 페이지로 이동하세요.");
+			userService.findPwd(inputParams);
+			return ApiResponse.see_other("비밀번호 재설정 페이지로 이동하세요.");
 		} else {
 			return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.");
 		}
+	}
+
+	@PutMapping("/pwd")
+	@Operation(summary = "비밀번호 재설정", description = "이전 비밀번호와 같다면 409 error")
+	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ChangePwdDto changePwdDto) {
+		userService.changePwd(changePwdDto);
+		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
 	}
 }

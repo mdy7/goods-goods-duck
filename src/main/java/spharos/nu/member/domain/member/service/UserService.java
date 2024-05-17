@@ -1,5 +1,6 @@
 package spharos.nu.member.domain.member.service;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
@@ -56,8 +58,6 @@ public class UserService {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
 
-		log.info(uuid, encodedPassword, joinDto.getPassword());
-
 		Member member = joinDto.toEntity(uuid, encodedPassword);
 		userRepository.save(member);
 	}
@@ -83,8 +83,22 @@ public class UserService {
 		return member.getUserId();
 	}
 
-	public void findPw(String userId) {
+	public void findPwd(String userId) {
 		Member member = userRepository.findByUserId(userId)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+	}
+
+	public void changePwd(ChangePwdDto changePwdDto) {
+		Member member = userRepository.findByPhoneNumber(changePwdDto.getPhoneNumber())
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		if (passwordEncoder.matches(changePwdDto.getNewPassword(), member.getPassword())) {
+			throw new CustomException(ErrorCode.ALREADY_EXIST_PASSWORD);
+		}
+
+		String encodedNewPassword = passwordEncoder.encode(changePwdDto.getNewPassword());
+
+		Member newMember = changePwdDto.updatePassword(encodedNewPassword);
+		userRepository.save(newMember);
 	}
 }
