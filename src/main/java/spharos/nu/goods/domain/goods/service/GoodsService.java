@@ -5,12 +5,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.GoodsReadDto;
+import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
@@ -26,8 +30,15 @@ public class GoodsService {
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
 
-	public List<Goods> getAllGoods() {
-		return goodsRepository.findAll();
+	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
+		Page<GoodsSummaryDto> goodsPage = goodsRepository.findAllGoods(categoryPk,isTradingOnly,pageable);
+		return GoodsAllListDto.builder()
+			.maxPage(goodsPage.getTotalPages())
+			.nowPage(goodsPage.getNumber())
+			.totalCount(goodsPage.getTotalElements())
+			.isLast(goodsPage.isLast())
+			.goodsList(goodsPage.getContent())
+			.build();
 	}
 
 	public String goodsCreate(GoodsCreateDto goodsCreateDto) {
@@ -136,4 +147,5 @@ public class GoodsService {
 		goodsRepository.save(updatedGoods);
 		return null;
 	}
+
 }

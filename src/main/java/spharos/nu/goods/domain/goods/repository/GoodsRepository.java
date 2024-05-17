@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import spharos.nu.goods.domain.goods.entity.Goods;
 
 @Repository
-public interface GoodsRepository extends JpaRepository<Goods, Long> {
+public interface GoodsRepository extends JpaRepository<Goods, Long>, GoodsRepositoryCustom {
 	Optional<Goods> findFirstByOrderByIdDesc();
 
 	Optional<Goods> findOneByCode(String code);
