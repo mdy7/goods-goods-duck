@@ -1,6 +1,7 @@
 package spharos.nu.member.domain.member.controller;
 
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,6 +62,20 @@ public class UserController {
 		} else if (Objects.equals(type, "Nick")) {
 			userService.isDuplicatedNick(inputParams);
 			return ApiResponse.success(inputParams, "사용 가능한 닉네임입니다.");
+		} else {
+			return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.");
+		}
+	}
+
+	@GetMapping("/find/{tab}")
+	@Operation(summary = "아이디/비밀번호 찾기", description = "닉네임 활용해서 아이디 찾기, 없는 정보면 404 error")
+	public ResponseEntity<ApiResponse<Optional<String>>> findUser(@PathVariable String tab, @RequestParam String inputParams) {
+		if (Objects.equals(tab, "Id")) {
+			String userId = userService.findId(inputParams);
+			return ApiResponse.success(Optional.of(userId), "아이디 조회에 성공했습니다.");
+		} else if (Objects.equals(tab, "Pw")) {
+			userService.findPw(inputParams);
+			return ApiResponse.see_others("비밀번호 재설정 페이지로 이동하세요.");
 		} else {
 			return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.");
 		}

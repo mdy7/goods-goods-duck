@@ -75,4 +75,16 @@ public class UserService {
 			throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
 		}
 	}
+
+	public String findId(String nickname) {
+		Member member = userRepository.findByNickname(nickname)
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		return member.getUserId();
+	}
+
+	public void findPw(String userId) {
+		Member member = userRepository.findByUserId(userId)
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+	}
 }
