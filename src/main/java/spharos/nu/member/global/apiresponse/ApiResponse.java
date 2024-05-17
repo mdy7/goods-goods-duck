@@ -1,6 +1,5 @@
 package spharos.nu.member.global.apiresponse;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
