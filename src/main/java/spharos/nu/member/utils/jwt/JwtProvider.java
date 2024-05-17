@@ -4,15 +4,12 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-import javax.crypto.SecretKey;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -20,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.global.exception.CustomException;
 import spharos.nu.member.global.exception.errorcode.ErrorCode;
-import spharos.nu.member.utils.redis.RedisService;
+import spharos.nu.member.utils.redis.TokenRepository;
 
 @RequiredArgsConstructor
 @Service
@@ -33,7 +30,7 @@ public class JwtProvider {
 	@Value("${jwt.token.refresh-expire-time}")
 	private Long refreshExpireTime;
 
-	private final RedisService redisService;
+	private final TokenRepository tokenRepository;
 
 	/**
 	 * 시크릿 키(서명키) 생성
@@ -78,7 +75,7 @@ public class JwtProvider {
 		JwtToken jwtToken = new JwtToken(accessToken, refreshToken);
 
 		// Redis DB에 {uuid: refreshToken} 정보 저장
-		redisService.saveRefreshToken(uuid, refreshToken);
+		tokenRepository.saveRefreshToken(uuid, refreshToken);
 
 		return jwtToken;
 	}
@@ -111,14 +108,14 @@ public class JwtProvider {
 		}
 
 		String uuid = getUuid(refreshToken);
-		String redisRefreshToken = redisService.getRefreshToken(uuid);
+		String redisRefreshToken = tokenRepository.getRefreshToken(uuid);
 
 		if (redisRefreshToken == null || !redisRefreshToken.equals(refreshToken)) {
 			throw new CustomException(ErrorCode.NO_AUTHORITY);
 		}
 
 		// 기존의 데이터를 삭제하고 새로 생성
-		redisService.deleteRefreshToken(uuid);
+		tokenRepository.deleteRefreshToken(uuid);
 		return createToken(uuid);
 	}
 
