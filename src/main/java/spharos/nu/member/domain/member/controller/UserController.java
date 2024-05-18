@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,8 +22,10 @@ import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
+import spharos.nu.member.domain.member.dto.WithdrawDto;
 import spharos.nu.member.domain.member.service.UserService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
+import spharos.nu.member.utils.jwt.JwtProvider;
 import spharos.nu.member.utils.jwt.JwtToken;
 
 @RestController
@@ -31,6 +34,7 @@ import spharos.nu.member.utils.jwt.JwtToken;
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 기본적으로 필요한 메소드")
 public class UserController {
 	private final UserService userService;
+	private final JwtProvider jwtProvider;
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인")
@@ -88,5 +92,14 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ChangePwdDto changePwdDto) {
 		userService.changePwd(changePwdDto);
 		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
+	}
+
+	@PutMapping()
+	@Operation(summary = "회원 탈퇴", description = "해당 회원의 isWithdraw 를 true 로 변경")
+	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token) {
+		String uuid = jwtProvider.getUuid(token);
+		WithdrawDto withdrawDto = new WithdrawDto();
+		userService.withdraw(uuid, withdrawDto);
+		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 }

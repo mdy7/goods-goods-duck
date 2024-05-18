@@ -14,6 +14,7 @@ import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
+import spharos.nu.member.domain.member.dto.WithdrawDto;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.SocialMember;
 import spharos.nu.member.domain.member.repository.SocialRepository;
@@ -100,5 +101,13 @@ public class UserService {
 
 		Member newMember = changePwdDto.updatePassword(encodedNewPassword);
 		userRepository.save(newMember);
+	}
+
+	public void withdraw(String uuid, WithdrawDto withdrawDto) {
+		Member member = userRepository.findByUuid(uuid)
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		Member withdrawMember = withdrawDto.withdrawMember(uuid);
+		userRepository.save(withdrawMember);
 	}
 }
