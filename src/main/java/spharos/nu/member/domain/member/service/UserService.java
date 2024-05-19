@@ -1,6 +1,6 @@
 package spharos.nu.member.domain.member.service;
 
-import java.util.Objects;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,7 +14,6 @@ import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
-import spharos.nu.member.domain.member.dto.WithdrawDto;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.SocialMember;
 import spharos.nu.member.domain.member.repository.SocialRepository;
@@ -98,16 +97,14 @@ public class UserService {
 		}
 
 		String encodedNewPassword = passwordEncoder.encode(changePwdDto.getNewPassword());
-
-		Member newMember = changePwdDto.updatePassword(encodedNewPassword);
-		userRepository.save(newMember);
+		changePwdDto.updatePassword(member, encodedNewPassword);
+		userRepository.save(member);
 	}
 
-	public void withdraw(String uuid, WithdrawDto withdrawDto) {
+	public void withdraw(String uuid) {
 		Member member = userRepository.findByUuid(uuid)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-
-		Member withdrawMember = withdrawDto.withdrawMember(uuid);
-		userRepository.save(withdrawMember);
+		member.changeWithdraw(true, LocalDateTime.now());
+		userRepository.save(member);
 	}
 }

@@ -22,7 +22,6 @@ import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
-import spharos.nu.member.domain.member.dto.WithdrawDto;
 import spharos.nu.member.domain.member.service.UserService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 import spharos.nu.member.utils.jwt.JwtProvider;
@@ -98,8 +97,7 @@ public class UserController {
 	@Operation(summary = "회원 탈퇴", description = "해당 회원의 isWithdraw 를 true 로 변경")
 	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token) {
 		String uuid = jwtProvider.getUuid(token);
-		WithdrawDto withdrawDto = new WithdrawDto();
-		userService.withdraw(uuid, withdrawDto);
+		userService.withdraw(uuid);
 		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 }

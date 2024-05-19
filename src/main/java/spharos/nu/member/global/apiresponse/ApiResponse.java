@@ -14,7 +14,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class ApiResponse<T> {
 	private Integer status;
-	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T result;
 	private String message;
 

@@ -12,9 +12,7 @@ public class ChangePwdDto {
 	@Schema(description = "새로운 비밀번호")
 	private String newPassword;
 
-	public Member updatePassword(String encodedNewPassword) {
-		return Member.builder()
-			.password(encodedNewPassword)
-			.build();
+	public void updatePassword(Member member, String encodedNewPassword) {
+		member.changePassword(encodedNewPassword);
 	}
 }

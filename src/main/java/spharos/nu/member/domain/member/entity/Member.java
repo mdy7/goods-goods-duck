@@ -62,4 +62,13 @@ public class Member extends AuditBaseEntity {
 
 	@Column(name = "withdraw_at")
 	private LocalDateTime withdrawAt;
+
+	public void changePassword(String password) {
+		this.password = password;
+	}
+
+	public void changeWithdraw(boolean isWithdraw, LocalDateTime withdrawAt) {
+		this.isWithdraw = isWithdraw;
+		this.withdrawAt = withdrawAt;
+	}
 }
