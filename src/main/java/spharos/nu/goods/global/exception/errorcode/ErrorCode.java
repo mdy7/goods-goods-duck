@@ -14,6 +14,7 @@ public enum ErrorCode {
 	MISSING_QUERY_PARAM(400,"QueryParameter이 누락되었습니다"),
 	MISSING_BODY_REQUEST(400,"RequestBody가 누락되었습니다"),
 	INVALID_REQUEST_BODY(400, "RequestBody가 유효하지 않습니다"),
+	INVALID_REQUEST_PARAM(400, "RequestParameter가 유효하지 않습니다"),
 	INVALID_REQUEST_METHOD(400, "요청 메서드가 유효하지 않습니다"),
 	TYPE_MISMATCH(400,"요청 데이터 중 유효하지 않은 타입이 있습니다."),
 	WRONG_NUMBER(400, "인증번호가 일치하지 않습니다."),
