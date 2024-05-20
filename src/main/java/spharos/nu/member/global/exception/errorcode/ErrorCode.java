@@ -30,6 +30,7 @@ public enum ErrorCode {
 
 	//409 : 중복된 리소스
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),
+	ALREADY_EXIST_PASSWORD(409, "이미 사용 중인 비밀번호입니다."),
 
 	//500 : INTERNAL SERVER ERROR
 	INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다.");
