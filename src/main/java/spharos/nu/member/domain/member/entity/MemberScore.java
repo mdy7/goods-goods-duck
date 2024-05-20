@@ -32,7 +32,4 @@ public class MemberScore {
 
 	@Column(name = "score", nullable = false)
 	private Integer score;
-
-	@Column(name = "complain_count", nullable = false)
-	private Integer complainCount;
 }
