@@ -1,10 +1,10 @@
-package spharos.nu.servicedicovery;
+package spharos.nu.servicediscovery;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ServicedicoveryApplicationTests {
+class ServicediscoveryApplicationTests {
 
 	@Test
 	void contextLoads() {

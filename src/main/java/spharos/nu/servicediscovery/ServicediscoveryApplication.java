@@ -1,4 +1,4 @@
-package spharos.nu.servicedicovery;
+package spharos.nu.servicediscovery;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,10 +6,8 @@ import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 @EnableEurekaServer
 @SpringBootApplication
-public class ServicedicoveryApplication {
-
+public class ServicediscoveryApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(ServicedicoveryApplication.class, args);
+		SpringApplication.run(ServicediscoveryApplication.class, args);
 	}
-
 }
