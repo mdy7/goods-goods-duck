@@ -37,8 +37,8 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Method=GET
-            - Path=/member/v1/users
+            - Method=GET, PUT
+            - Path=/member/v1/users, /member/v1/users/**, /member/v1/users/pwd
           filters:
             - StripPrefix=1
             - JwtAuthenticationFilter
@@ -48,11 +48,17 @@ spring:
           uri: lb://MEMBER-SERVICE
           predicates:
             - Method=POST
-            - Path=/member/v1/users/login, /member/v1/users/**
+            - Path=/member/v1/users, /member/v1/users/login
           filters:
             - StripPrefix=1
 
-
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Method=GET
+            - Path=/member/v1/users/duplication-check/**
+          filters:
+            - StripPrefix=1
 
 
 #          - id: example-service
