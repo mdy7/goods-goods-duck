@@ -61,10 +61,10 @@ public class UserController {
 	@GetMapping("/duplication-check/{type}")
 	@Operation(summary = "아이디 중복체크", description = "아이디/닉네임이 중복되었다면 409 error, 아니면 200 ok")
 	public ResponseEntity<ApiResponse<String>> duplicationCheck(@PathVariable String type, @RequestParam String inputParams) {
-		if (Objects.equals(type, "Id")) {
+		if (Objects.equals(type, "id")) {
 			userService.isDuplicatedId(inputParams);
 			return ApiResponse.success(inputParams, "사용 가능한 아이디입니다.");
-		} else if (Objects.equals(type, "Nick")) {
+		} else if (Objects.equals(type, "nick")) {
 			userService.isDuplicatedNick(inputParams);
 			return ApiResponse.success(inputParams, "사용 가능한 닉네임입니다.");
 		} else {
@@ -75,10 +75,10 @@ public class UserController {
 	@GetMapping("/find/{tab}")
 	@Operation(summary = "아이디/비밀번호 찾기", description = "닉네임 활용해서 아이디 찾기, 없는 정보면 404 error")
 	public ResponseEntity<ApiResponse<Optional<String>>> findUser(@PathVariable String tab, @RequestParam String inputParams) {
-		if (Objects.equals(tab, "Id")) {
+		if (Objects.equals(tab, "id")) {
 			String userId = userService.findId(inputParams);
 			return ApiResponse.success(Optional.of(userId), "아이디 조회에 성공했습니다.");
-		} else if (Objects.equals(tab, "Pw")) {
+		} else if (Objects.equals(tab, "pw")) {
 			userService.findPwd(inputParams);
 			return ApiResponse.see_other("비밀번호 재설정 페이지로 이동하세요.");
 		} else {
