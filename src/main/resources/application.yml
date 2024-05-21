@@ -71,13 +71,13 @@ springdoc:
     use-root-path: true
     urls[0]:
       name: 회원 서비스
-      url: http://localhost:9000/v1/users-n/swagger/api-docs
+      url: http://localhost:8000/v1/users-n/swagger/api-docs
     urls[2]:
       name: 굿즈 서비스
-      url: http://localhost:9001/v1/goods-n/swagger/api-docs
+      url: http://localhost:8000/v1/goods-n/swagger/api-docs
     urls[1]:
       name: 경매 서비스
-      url: http://localhost:9002/v1/bids-n/swagger/api-docs
+      url: http://localhost:8000/v1/bids-n/swagger/api-docs
 
 
 
