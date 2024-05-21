@@ -18,7 +18,6 @@ class MemberScoreTest {
 		MemberScore memberScore = MemberScore.builder()
 			.uuid("scoreTest")
 			.score(50)
-			.complainCount(0)
 			.build();
 
 		/*
@@ -26,6 +25,5 @@ class MemberScoreTest {
 		 */
 		Assertions.assertThat(memberScore.getUuid()).isEqualTo("scoreTest");
 		Assertions.assertThat(memberScore.getScore()).isEqualTo(50);
-		Assertions.assertThat(memberScore.getComplainCount()).isEqualTo(0);
 	}
 }

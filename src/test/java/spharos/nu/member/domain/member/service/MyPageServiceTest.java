@@ -1,6 +1,5 @@
 package spharos.nu.member.domain.member.service;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
 import org.assertj.core.api.Assertions;
@@ -11,8 +10,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import spharos.nu.member.domain.member.dto.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.ProfileResponseDto;
 import spharos.nu.member.domain.member.entity.Member;
+import spharos.nu.member.domain.member.entity.MemberScore;
+import spharos.nu.member.domain.member.repository.ScoreRepository;
 import spharos.nu.member.domain.member.repository.UserRepository;
 
 @ExtendWith(MockitoExtension.class)
@@ -20,6 +22,8 @@ class MyPageServiceTest {
 
 	@Mock
 	private UserRepository userRepository;
+	@Mock
+	private ScoreRepository scoreRepository;
 
 	@InjectMocks
 	private MyPageService myPageService;
@@ -52,5 +56,34 @@ class MyPageServiceTest {
 		Assertions.assertThat(profileResponseDto.getProfileImg()).isEqualTo("img_url");
 		Assertions.assertThat(profileResponseDto.getNickname()).isEqualTo("쓰껄쓰껄");
 		Assertions.assertThat(profileResponseDto.getFavCategory()).isEqualTo("애니");
+	}
+
+	@Test
+	@DisplayName("매너덕 조회 서비스 테스트")
+	void mannerDuckGet() {
+
+		// given
+		MemberScore memberScore1 = MemberScore.builder()
+			.uuid("testing1")
+			.score(50)
+			.build();
+		given(scoreRepository.findByUuid("testing1")).willReturn(java.util.Optional.ofNullable(memberScore1));
+
+		MemberScore memberScore2 = MemberScore.builder()
+			.uuid("testing2")
+			.score(90)
+			.build();
+		given(scoreRepository.findByUuid("testing2")).willReturn(java.util.Optional.ofNullable(memberScore2));
+
+		// when
+		MannerDuckDto mannerDuckDto1 = myPageService.mannerDuckGet("testing1");
+		MannerDuckDto mannerDuckDto2 = myPageService.mannerDuckGet("testing2");
+
+		//then
+		Assertions.assertThat(mannerDuckDto1.getLevel()).isEqualTo(3);
+		Assertions.assertThat(mannerDuckDto1.getLeftPoint()).isEqualTo(10);
+
+		Assertions.assertThat(mannerDuckDto2.getLevel()).isEqualTo(5);
+		Assertions.assertThat(mannerDuckDto2.getLeftPoint()).isEqualTo(0);
 	}
 }
