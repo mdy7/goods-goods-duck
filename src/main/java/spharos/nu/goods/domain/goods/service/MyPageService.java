@@ -18,10 +18,10 @@ public class MyPageService {
 
 	private final GoodsRepository goodsRepository;
 
-	public GoodsSellResponseDto SellGoodsGet(Integer index, byte statusNum) {
+	public GoodsSellResponseDto SellGoodsGet(String uuid, Integer index, byte statusNum) {
 
 		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsInfoDto> goodsInfoPage = goodsRepository.findAllGoods(statusNum, pageable);
+		Page<GoodsInfoDto> goodsInfoPage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
 
 		return GoodsSellResponseDto.builder()
 			.nowPage(goodsInfoPage.getNumber())

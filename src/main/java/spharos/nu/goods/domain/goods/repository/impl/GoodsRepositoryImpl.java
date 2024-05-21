@@ -26,6 +26,7 @@ import spharos.nu.goods.domain.goods.entity.QBiddingCount;
 import spharos.nu.goods.domain.goods.entity.QGoods;
 import spharos.nu.goods.domain.goods.entity.QImage;
 import spharos.nu.goods.domain.goods.entity.QViewsCount;
+import spharos.nu.goods.domain.goods.entity.QWish;
 import spharos.nu.goods.domain.goods.entity.QWishCount;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
 import spharos.nu.goods.global.exception.CustomException;
@@ -64,14 +65,17 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 	}
 
 	@Override
-	public Page<GoodsInfoDto> findAllGoods(byte statusNum, Pageable pageable) {
+	public Page<GoodsInfoDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
 
 		QGoods goods = QGoods.goods;
 		QImage image = QImage.image;
+		QWish wish = QWish.wish;
 
 		List<GoodsInfoDto> goodsList = queryFactory
-			.select(new QGoodsInfoDto(goods.code, image.url, goods.name, goods.minPrice, goods.tradingStatus)).from(goods)
+			.select(new QGoodsInfoDto(goods.code, image.url, goods.name, goods.minPrice, wish.id.isNotNull(),
+				goods.tradingStatus)).from(goods)
 			.join(image).on(goods.code.eq(image.code))
+			.leftJoin(wish).on(goods.code.eq(wish.code).and(wish.uuid.eq(uuid)))
 			.where(image.index.eq(0))
 			.where(tradingStatusEq(statusNum))
 			.orderBy(goods.createdAt.desc())
@@ -117,12 +121,9 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 				case "createdAt", "closedAt" ->
 					new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
 						LocalDateTime.class));
-				case "viewsCount" ->
-					new OrderSpecifier<>(direction, viewsCount.count);
-				case "wishCount" ->
-					new OrderSpecifier<>(direction, wishCount.count);
-				case "biddingCount" ->
-					new OrderSpecifier<>(direction, biddingCount.count);
+				case "viewsCount" -> new OrderSpecifier<>(direction, viewsCount.count);
+				case "wishCount" -> new OrderSpecifier<>(direction, wishCount.count);
+				case "biddingCount" -> new OrderSpecifier<>(direction, biddingCount.count);
 				default -> throw new CustomException(ErrorCode.INVALID_REQUEST_PARAM);
 			};
 

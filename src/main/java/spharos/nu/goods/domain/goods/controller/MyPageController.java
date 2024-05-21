@@ -2,6 +2,7 @@ package spharos.nu.goods.domain.goods.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,10 +27,10 @@ public class MyPageController {
 	// 등록한 상품 조회
 	@GetMapping("/sell")
 	@Operation(summary = "회원이 등록한 상품 조회", description = "상품코드, 상품썸네일, 상품명, 시작가격, 상태 데이터")
-	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(
+	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(@RequestHeader("User-Uuid") String uuid,
 		@RequestParam(value = "page", defaultValue = "0") Integer index,
 		@RequestParam(value = "status", required = false) byte statusNum) {
 
-		return ApiResponse.success(myPageService.SellGoodsGet(index, statusNum), "등록한 상품 조회 성공");
+		return ApiResponse.success(myPageService.SellGoodsGet(uuid, index, statusNum), "등록한 상품 조회 성공");
 	}
 }

@@ -10,5 +10,5 @@ import spharos.nu.goods.domain.goods.entity.Goods;
 public interface GoodsRepositoryCustom {
 	Page<GoodsSummaryDto> findAllGoods(Long categoryPk, boolean isTradingOnly, Pageable pageable);
 
-	Page<GoodsInfoDto> findAllGoods(byte statusNum, Pageable pageable);
+	Page<GoodsInfoDto> findAllGoods(String uuid, byte statusNum, Pageable pageable);
 }
