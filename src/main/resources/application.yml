@@ -7,64 +7,53 @@ spring:
   cloud:
     gateway:
       routes:
+        # goods auth routing
         - id: goods-service
           uri: lb://GOODS-SERVICE
           predicates:
-            - Path=/goods/**
+            - Path=/v1/goods/**
           filters:
-            - StripPrefix=1
+            - JwtAuthenticationFilter
 
-        # auth routing
+        # goods no auth routing
+        - id: goods-service
+          uri: lb://GOODS-SERVICE
+          predicates:
+            - Path=/v1/goods-n/**
+          filters:
+
+
+        # bid auth routing
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Method=POST
-            - Path=/bid/bids/**
+            - Path=/v1/bids/**
           filters:
-            - StripPrefix=1
             - JwtAuthenticationFilter
 
-        # no auth routing
+        # bid no auth routing
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Method=GET
-            - Path=/bid/bids/**
+            - Path=/v1/bids-n/**
           filters:
-            - StripPrefix=1
 
-        # auth routing
+
+        # member auth routing
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Method=GET, PUT
-            - Path=/member/v1/users, /member/v1/users/**, /member/v1/users/pwd
+            - Path=/v1/users/**
           filters:
-            - StripPrefix=1
             - JwtAuthenticationFilter
 
-        # no auth routing
+        # member no auth routing
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Method=POST
-            - Path=/member/v1/users, /member/v1/users/login
+            - Path=/v1/users-n/**
           filters:
-            - StripPrefix=1
 
-        - id: member-service
-          uri: lb://MEMBER-SERVICE
-          predicates:
-            - Method=GET
-            - Path=/member/v1/users/duplication-check/**
-          filters:
-            - StripPrefix=1
-
-
-#          - id: example-service
-#            uri: http://localhost:9002/
-#            predicates:
-#              - Path=/example/**
 
 eureka:
   client:
@@ -76,4 +65,21 @@ eureka:
 
 jwt:
   key: ${JWT_SECRET_KEY}
+
+springdoc:
+  swagger-ui:
+    use-root-path: true
+    urls[0]:
+      name: 회원 서비스
+      url: http://localhost:9000/v1/users-n/swagger/api-docs
+    urls[2]:
+      name: 굿즈 서비스
+      url: http://localhost:9001/v1/goods-n/swagger/api-docs
+    urls[1]:
+      name: 경매 서비스
+      url: http://localhost:9002/v1/bids-n/swagger/api-docs
+
+
+
+
 
