@@ -11,22 +11,23 @@ import org.springframework.data.domain.Sort;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsSummaryDto;
-import spharos.nu.goods.domain.goods.entity.BiddingCount;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.QBiddingCount;
 import spharos.nu.goods.domain.goods.entity.QGoods;
 import spharos.nu.goods.domain.goods.entity.QImage;
 import spharos.nu.goods.domain.goods.entity.QViewsCount;
+import spharos.nu.goods.domain.goods.entity.QWish;
 import spharos.nu.goods.domain.goods.entity.QWishCount;
-import spharos.nu.goods.domain.goods.entity.ViewsCount;
-import spharos.nu.goods.domain.goods.entity.WishCount;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
 import spharos.nu.goods.global.exception.CustomException;
 import spharos.nu.goods.global.exception.errorcode.ErrorCode;
@@ -63,6 +64,36 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		return new PageImpl<>(content, pageable, totalCount);
 	}
 
+	@Override
+	public Page<GoodsInfoDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
+
+		QGoods goods = QGoods.goods;
+		QImage image = QImage.image;
+		QWish wish = QWish.wish;
+
+		List<GoodsInfoDto> goodsList = queryFactory
+			.select(new QGoodsInfoDto(goods.code, image.url, goods.name, goods.minPrice, wish.id.isNotNull(),
+				goods.tradingStatus)).from(goods)
+			.join(image).on(goods.code.eq(image.code))
+			.leftJoin(wish).on(goods.code.eq(wish.code).and(wish.uuid.eq(uuid)))
+			.where(image.index.eq(0))
+			.where(tradingStatusEq(statusNum))
+			.orderBy(goods.createdAt.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		Long total = queryFactory
+			.select(goods.count())
+			.from(goods)
+			.where(tradingStatusEq(statusNum))
+			.fetchOne();
+
+		long totalCount = total != null ? total : 0;
+
+		return new PageImpl<>(goodsList, pageable, totalCount);
+	}
+
 	private Long getTotalCount(QGoods goods, BooleanBuilder whereClause) {
 
 		return queryFactory.select(goods.count()).from(goods).where(whereClause).fetchOne();
@@ -90,12 +121,9 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 				case "createdAt", "closedAt" ->
 					new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
 						LocalDateTime.class));
-				case "viewsCount" ->
-					new OrderSpecifier<>(direction, viewsCount.count);
-				case "wishCount" ->
-					new OrderSpecifier<>(direction, wishCount.count);
-				case "biddingCount" ->
-					new OrderSpecifier<>(direction, biddingCount.count);
+				case "viewsCount" -> new OrderSpecifier<>(direction, viewsCount.count);
+				case "wishCount" -> new OrderSpecifier<>(direction, wishCount.count);
+				case "biddingCount" -> new OrderSpecifier<>(direction, biddingCount.count);
 				default -> throw new CustomException(ErrorCode.INVALID_REQUEST_PARAM);
 			};
 
@@ -106,5 +134,9 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		query.limit(pageable.getPageSize());
 
 		return query.fetch();
+	}
+
+	private BooleanExpression tradingStatusEq(Byte statusNum) {
+		return statusNum == null ? null : QGoods.goods.tradingStatus.eq(statusNum);
 	}
 }
