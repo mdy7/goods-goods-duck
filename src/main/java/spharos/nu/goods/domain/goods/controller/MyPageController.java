@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
+import spharos.nu.goods.domain.goods.dto.GoodsWishResponseDto;
 import spharos.nu.goods.domain.goods.service.MyPageService;
 import spharos.nu.goods.global.apiresponse.ApiResponse;
 
@@ -31,6 +32,14 @@ public class MyPageController {
 		@RequestParam(value = "page", defaultValue = "0") Integer index,
 		@RequestParam(value = "status", required = false) byte statusNum) {
 
-		return ApiResponse.success(myPageService.SellGoodsGet(uuid, index, statusNum), "등록한 상품 조회 성공");
+		return ApiResponse.success(myPageService.sellGoodsGet(uuid, index, statusNum), "등록한 상품 조회 성공");
+	}
+
+	@GetMapping("/wish")
+	@Operation(summary = "관심 상품 조회", description = "상품코드, 상품썸네일, 상품명")
+	public ResponseEntity<ApiResponse<GoodsWishResponseDto>> getWishGoods(@RequestHeader("User-Uuid") String uuid,
+		@RequestParam(value = "page", defaultValue = "0") Integer index) {
+
+		return ApiResponse.success(myPageService.wishGoodsGet(uuid, index), "관심 상품 조회 성공");
 	}
 }
