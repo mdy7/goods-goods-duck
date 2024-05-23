@@ -19,7 +19,7 @@ public class VerificationController {
 
 	private final VerificationService verificationService;
 
-	@PostMapping("")
+	@PostMapping()
 	@Operation(summary = "회원가입용 휴대폰 인증 문자 발송", description = "이미 회원인 경우 409 error")
 	public ResponseEntity<ApiResponse<Void>> joinVerify(@RequestBody VerificationDto verificationDto) {
 		verificationService.sendJoinSms(verificationDto);
