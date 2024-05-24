@@ -14,7 +14,7 @@ import spharos.nu.member.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users/verification")
+@RequestMapping("v1/users-n/verification")
 public class VerificationController {
 
 	private final VerificationService verificationService;
