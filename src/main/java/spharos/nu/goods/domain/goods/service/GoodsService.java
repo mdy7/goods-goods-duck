@@ -25,6 +25,7 @@ import spharos.nu.goods.domain.goods.entity.Tag;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.repository.ImageRepository;
 import spharos.nu.goods.domain.goods.repository.TagRepository;
+import spharos.nu.goods.domain.goods.client.BidServiceClient;
 import spharos.nu.goods.global.apiresponse.ApiResponse;
 
 @Slf4j
@@ -35,7 +36,7 @@ public class GoodsService {
 	private final GoodsRepository goodsRepository;
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
-	private final BidClient bidClient;
+	private final BidServiceClient bidServiceClient;
 	private final TaskScheduler taskScheduler;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
@@ -64,7 +65,7 @@ public class GoodsService {
 			.wishTradeType(goodsCreateDto.getWishTradeType())
 			.uuid("111111")
 			.code(code)
-				.closedAt(openedAt.plusHours(goodsCreateDto.getDurationTime()))
+			.closedAt(openedAt.plusHours(goodsCreateDto.getDurationTime()))
 			.build();
 
 		//굿즈 저장
@@ -159,7 +160,7 @@ public class GoodsService {
 		return null;
 	}
 
-	// 입찰 종료시간에 스케줄링 걸는 메소드
+	// 입찰 종료시간에 스케줄링
 	private void scheduleCloseGoods(Goods goods) {
 		taskScheduler.schedule(() -> CloseGoods(goods), Timestamp.valueOf(goods.getClosedAt()));
 	}
@@ -168,12 +169,12 @@ public class GoodsService {
 	public void CloseGoods(Goods goods) {
 		log.info("(상품 코드: {}) 입찰 종료 ", goods.getCode());
 
-		ResponseEntity<ApiResponse> response = bidClient.selectWinningBid(goods.getCode(), goods.getClosedAt());
+		ResponseEntity<ApiResponse> response = bidServiceClient.selectWinningBid(goods.getCode(), goods.getClosedAt());
 
-		Long winningBidId = null;
+		Long winningBidPrice = null;
 
 		if(response.getBody().getResult() != null){
-			winningBidId = Long.valueOf((Integer)response.getBody().getResult());
+			winningBidPrice = Long.valueOf((Integer)response.getBody().getResult());
 		}
 
 		Goods updatedGoods = Goods.builder()
@@ -188,13 +189,13 @@ public class GoodsService {
 			.uuid(goods.getUuid())
 			.code(goods.getCode())
 			.closedAt(goods.getClosedAt())
-			.winningPrice(winningBidId)
-			.tradingStatus((byte)2) //거래종료로 변경
+			.winningPrice(winningBidPrice)
+			.tradingStatus((byte)2)
 			.isDelete(false)
 			.build();
 
 		Goods uppdateGoods = goodsRepository.save(updatedGoods);
 
-		log.info("(상품 코드: {})", uppdateGoods.getWinningPrice(), uppdateGoods.getCode());
+		log.info("(상품 코드: {}) 낙찰가: {}",  uppdateGoods.getCode(), uppdateGoods.getWinningPrice());
 	}
 }

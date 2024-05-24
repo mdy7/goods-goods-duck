@@ -1,4 +1,4 @@
-package spharos.nu.goods.domain.goods.service;
+package spharos.nu.goods.domain.goods.client;
 
 
 import org.springframework.cloud.openfeign.FeignClient;
@@ -10,8 +10,8 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 
 import java.time.LocalDateTime;
 
-@FeignClient(name = "bid-service", url = "${api.server-uri}")
-public interface BidClient {
+@FeignClient(name = "bid-service")
+public interface BidServiceClient {
 
     @PostMapping("/v1/bids-n/{goodsCode}/winning-bid")
     ResponseEntity<ApiResponse> selectWinningBid(@PathVariable String goodsCode, @RequestBody LocalDateTime closedAt);
