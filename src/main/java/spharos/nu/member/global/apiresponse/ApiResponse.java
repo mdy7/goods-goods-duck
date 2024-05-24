@@ -13,6 +13,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApiResponse<T> {
+
 	private Integer status;
 	private T result;
 	private String message;
