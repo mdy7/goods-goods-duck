@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import spharos.nu.member.global.entity.AuditBaseEntity;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Builder
 @ToString
@@ -28,9 +27,9 @@ public class DuckPoint extends AuditBaseEntity {
 	@Column(name = "duck_point_id")
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(unique = true, nullable = false, updatable = false)
 	private String uuid;
 
-	@Column(name = "now_point")
+	@Column(name = "now_point", nullable = false)
 	private Long nowPoint;
 }

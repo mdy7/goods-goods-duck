@@ -6,7 +6,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import spharos.nu.member.global.entity.CreatedAtBaseEntity;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Builder
 @ToString
@@ -28,18 +27,18 @@ public class DuckPointHistory extends CreatedAtBaseEntity {
 	@Column(name = "duck_point_history_id")
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(unique = true, nullable = false, updatable = false)
 	private String uuid;
 
-	@Column(name = "left_point")
+	@Column(name = "left_point", nullable = false)
 	private Long leftPoint;
 
-	@Column(name = "change_amount")
+	@Column(name = "change_amount", nullable = false)
 	private Long changeAmount;
 
-	@Column(name = "change_status")
-	private boolean changeStatus;
+	@Column(name = "change_status", nullable = false)
+	private Boolean changeStatus;
 
-	@Column(name = "history_detail")
+	@Column(name = "history_detail", nullable = false)
 	private String historyDetail;
 }

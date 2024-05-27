@@ -14,8 +14,13 @@ import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
+import spharos.nu.member.domain.member.entity.DuckPoint;
+import spharos.nu.member.domain.member.entity.DuckPointHistory;
 import spharos.nu.member.domain.member.entity.Member;
+import spharos.nu.member.domain.member.entity.MemberScore;
 import spharos.nu.member.domain.member.entity.SocialMember;
+import spharos.nu.member.domain.member.repository.PointRepository;
+import spharos.nu.member.domain.member.repository.ScoreRepository;
 import spharos.nu.member.domain.member.repository.SocialRepository;
 import spharos.nu.member.domain.member.repository.UserRepository;
 import spharos.nu.member.global.exception.CustomException;
@@ -30,6 +35,8 @@ import spharos.nu.member.utils.jwt.JwtToken;
 public class UserService {
 	private final UserRepository userRepository;
 	private final SocialRepository socialRepository;
+	private final ScoreRepository scoreRepository;
+	private final PointRepository pointRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
@@ -60,6 +67,18 @@ public class UserService {
 
 		Member member = joinDto.toEntity(uuid, encodedPassword);
 		userRepository.save(member);
+
+		MemberScore score = MemberScore.builder()
+			.uuid(uuid)
+			.score(50)
+			.build();
+		scoreRepository.save(score);
+
+		DuckPoint point = DuckPoint.builder()
+			.uuid(uuid)
+			.nowPoint(0L)
+			.build();
+		pointRepository.save(point);
 	}
 
 	public void isDuplicatedId(String userId) {
