@@ -12,8 +12,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import spharos.nu.member.domain.member.dto.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.entity.DuckPoint;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.MemberScore;
+import spharos.nu.member.domain.member.repository.DuckPointRepository;
 import spharos.nu.member.domain.member.repository.ScoreRepository;
 import spharos.nu.member.domain.member.repository.UserRepository;
 
@@ -24,6 +26,8 @@ class MyPageServiceTest {
 	private UserRepository userRepository;
 	@Mock
 	private ScoreRepository scoreRepository;
+	@Mock
+	private DuckPointRepository duckPointRepository;
 
 	@InjectMocks
 	private MyPageService myPageService;
@@ -85,5 +89,23 @@ class MyPageServiceTest {
 
 		Assertions.assertThat(mannerDuckDto2.getLevel()).isEqualTo(5);
 		Assertions.assertThat(mannerDuckDto2.getLeftPoint()).isEqualTo(0);
+	}
+
+	@Test
+	@DisplayName("덕포인트 조회")
+	void duckPointGet() {
+
+		// given
+		DuckPoint duckPoint = DuckPoint.builder()
+			.uuid("test_uuid1")
+			.nowPoint(50000L)
+			.build();
+		given(duckPointRepository.findByUuid("test_uuid1")).willReturn(java.util.Optional.ofNullable(duckPoint));
+
+		// when
+		Long nowPoint = myPageService.duckPointGet("test_uuid1");
+
+		// when
+		Assertions.assertThat(nowPoint).isEqualTo(50000L);
 	}
 }
