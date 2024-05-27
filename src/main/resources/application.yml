@@ -34,6 +34,10 @@ spring:
     port: ${REDIS_PORT}
     password: "${REDIS_PASSWORD}"
 
+springdoc:
+  api-docs:
+    path: /v1/users-n/swagger/api-docs
+
 jwt:
   key: ${JWT_SECRET_KEY}
   token:
