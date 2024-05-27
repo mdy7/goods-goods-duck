@@ -49,9 +49,7 @@ public class MyPageController {
 	// 덕포인트 조회
 	@GetMapping("/users/duck-point")
 	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
-	public ResponseEntity<ApiResponse<Long>> getDuckPoing(@RequestHeader("Authorization") String token) {
-
-		String uuid = jwtProvider.getUuid(token);
+	public ResponseEntity<ApiResponse<Long>> getDuckPoing(@RequestHeader("User-Uuid") String uuid) {
 
 		return ApiResponse.success(myPageService.duckPointGet(uuid), "덕포인트 조회 성공");
 	}
