@@ -2,6 +2,10 @@ package spharos.nu.member.domain.member.service;
 
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,11 +13,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
+import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
+import spharos.nu.member.domain.member.dto.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.ProfileResponseDto;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.MemberScore;
+import spharos.nu.member.domain.member.repository.PointHistoryRepository;
 import spharos.nu.member.domain.member.repository.ScoreRepository;
 import spharos.nu.member.domain.member.repository.UserRepository;
 
@@ -24,9 +36,18 @@ class MyPageServiceTest {
 	private UserRepository userRepository;
 	@Mock
 	private ScoreRepository scoreRepository;
+	@Mock
+	private PointHistoryRepository pointHistoryRepository;
 
 	@InjectMocks
 	private MyPageService myPageService;
+
+	private String uuid;
+	private Integer index;
+
+	private Pageable pageable;
+
+	private Page<DuckPointInfoDto> duckPointInfoPage;
 
 	@Test
 	@DisplayName("회원 프로필 조회")
@@ -85,5 +106,45 @@ class MyPageServiceTest {
 
 		Assertions.assertThat(mannerDuckDto2.getLevel()).isEqualTo(5);
 		Assertions.assertThat(mannerDuckDto2.getLeftPoint()).isEqualTo(0);
+	}
+
+	@Test
+	@DisplayName("덕포인트 상세내역 조회")
+	void testDuckPointDetailGet() {
+
+		// given
+		List<DuckPointInfoDto> pointsList = Arrays.asList(
+			DuckPointInfoDto.builder()
+				.changeAmount(5000L)
+				.leftPoint(50000L)
+				.changeStatus(false)
+				.historyDetail("보증금")
+				.createdAt(LocalDateTime.now())
+				.build(),
+			DuckPointInfoDto.builder()
+				.changeAmount(3000L)
+				.leftPoint(53000L)
+				.changeStatus(true)
+				.historyDetail("입금")
+				.createdAt(LocalDateTime.now())
+				.build()
+		);
+
+		uuid = "test_uuid";
+		index = 0;
+		pageable = PageRequest.of(index, 10, Sort.by("createdAt").descending());
+		duckPointInfoPage = new PageImpl<>(pointsList, pageable, pointsList.size());
+
+		when(pointHistoryRepository.findByUuid(eq(uuid), any(Pageable.class))).thenReturn(duckPointInfoPage);
+
+		// when
+		DuckPointDetailDto res = myPageService.duckPointDetailGet(uuid, index);
+
+		// then
+		Assertions.assertThat(res).isNotNull();
+		Assertions.assertThat(res.getNowPage()).isEqualTo(duckPointInfoPage.getNumber());
+		Assertions.assertThat(res.getMaxPage()).isEqualTo(duckPointInfoPage.getTotalPages());
+		Assertions.assertThat(res.getHistoryList()).isEqualTo(duckPointInfoPage.getContent());
+
 	}
 }
