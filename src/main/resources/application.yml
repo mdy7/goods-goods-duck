@@ -13,38 +13,16 @@ spring:
   config:
     import: optional:configserver:${CONFIG_SERVER_URL}
   jpa:
-    database: mysql
     hibernate:
       ddl-auto: update
+    show-sql: true
     properties:
       hibernate:
-        show_sql: true
         format_sql: true
-#        dialect: org.hibernate.dialect.PostgreSQLDialect
-  datasource:
-    url: jdbc:mysql://localhost:3306/mydb
-    username: root
-    password: 1234
-    driver-class-name: com.mysql.cj.jdbc.Driver
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   web:
     resources:
       add-mappings: false
-  redis:
-    host: ${REDIS_HOST}
-    port: ${REDIS_PORT}
-    password: "${REDIS_PASSWORD}"
-
-jwt:
-  key: ${JWT_SECRET_KEY}
-  token:
-    #    액세스 토큰 1시간, 리프레쉬 토큰 7일
-    access-expire-time: 3600000
-    refresh-expire-time: 604800000
-
-coolSms:
-  key: ${COOL_API_KEY}
-  secret: ${COOL_SECRET_KEY}
-  number: ${COOL_PHONE_NUM}
 
 eureka:
   client:
