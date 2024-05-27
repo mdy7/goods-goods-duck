@@ -1,3 +1,10 @@
+server:
+  port: 9000
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+
 spring:
   application:
     name: member-service

@@ -29,7 +29,7 @@ import spharos.nu.member.utils.jwt.JwtToken;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("v1/users-n")
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 기본적으로 필요한 메소드")
 public class UserController {
 	private final UserService userService;
@@ -91,13 +91,5 @@ public class UserController {
 	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ChangePwdDto changePwdDto) {
 		userService.changePwd(changePwdDto);
 		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
-	}
-
-	@PutMapping()
-	@Operation(summary = "회원 탈퇴", description = "해당 회원의 isWithdraw 를 true 로 변경")
-	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token) {
-		String uuid = jwtProvider.getUuid(token);
-		userService.withdraw(uuid);
-		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 }
