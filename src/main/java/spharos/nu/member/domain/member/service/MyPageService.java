@@ -70,7 +70,7 @@ public class MyPageService {
 
 	public DuckPointDetailDto duckPointDetailGet(String uuid, Integer index) {
 
-		Pageable pageable = PageRequest.of(index, 10, Sort.by("createdDate").descending());
+		Pageable pageable = PageRequest.of(index, 10, Sort.by("createdAt").descending());
 		Page<DuckPointInfoDto> duckPointInfoPage = pointHistoryRepository.findByUuid(uuid, pageable);
 
 		return DuckPointDetailDto.builder()
