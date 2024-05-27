@@ -3,12 +3,14 @@ package spharos.nu.member.domain.member.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.ProfileResponseDto;
 import spharos.nu.member.domain.member.service.MyPageService;
@@ -42,5 +44,16 @@ public class MyPageController {
 		String uuid = jwtProvider.getUuid(token);
 
 		return ApiResponse.success(myPageService.mannerDuckGet(uuid), "매너덕 조회 성공");
+	}
+
+	// 덕포인트 상세 조회
+	@GetMapping("/users/manner-duck/detail")
+	@Operation(summary = "회원의 덕포인트 내역 조회", description = "덕포인트 내역과 관련한 변동금액, 잔여포인트, 입출금여부, 내역상세, 생성날짜 데이터")
+	public ResponseEntity<ApiResponse<DuckPointDetailDto>> getDuckPointDetail(
+		@RequestHeader("Authorization") String token, @RequestParam(value = "page", defaultValue = "0") Integer index) {
+
+		String uuid = jwtProvider.getUuid(token);
+
+		return ApiResponse.success(myPageService.duckPointDetailGet(uuid, index), "덕포인트 상세 내역 조회 성공");
 	}
 }
