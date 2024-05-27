@@ -50,9 +50,7 @@ public class MyPageController {
 	@GetMapping("/users/manner-duck/detail")
 	@Operation(summary = "회원의 덕포인트 내역 조회", description = "덕포인트 내역과 관련한 변동금액, 잔여포인트, 입출금여부, 내역상세, 생성날짜 데이터")
 	public ResponseEntity<ApiResponse<DuckPointDetailDto>> getDuckPointDetail(
-		@RequestHeader("Authorization") String token, @RequestParam(value = "page", defaultValue = "0") Integer index) {
-
-		String uuid = jwtProvider.getUuid(token);
+		@RequestHeader("User-Uuid") String uuid, @RequestParam(value = "page", defaultValue = "0") Integer index) {
 
 		return ApiResponse.success(myPageService.duckPointDetailGet(uuid, index), "덕포인트 상세 내역 조회 성공");
 	}
