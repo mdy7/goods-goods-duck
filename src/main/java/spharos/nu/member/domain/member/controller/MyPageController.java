@@ -3,6 +3,7 @@ package spharos.nu.member.domain.member.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -17,6 +18,7 @@ import spharos.nu.member.utils.jwt.JwtProvider;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1")
 @Slf4j
 @Tag(name = "MyPage", description = "member-service에서 마이페이지 관련 API document")
 public class MyPageController {
@@ -42,5 +44,15 @@ public class MyPageController {
 		String uuid = jwtProvider.getUuid(token);
 
 		return ApiResponse.success(myPageService.mannerDuckGet(uuid), "매너덕 조회 성공");
+	}
+
+	// 덕포인트 조회
+	@GetMapping("/users/duck-point")
+	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
+	public ResponseEntity<ApiResponse<Long>> getDuckPoing(@RequestHeader("Authorization") String token) {
+
+		String uuid = jwtProvider.getUuid(token);
+
+		return ApiResponse.success(myPageService.duckPointGet(uuid), "덕포인트 조회 성공");
 	}
 }
