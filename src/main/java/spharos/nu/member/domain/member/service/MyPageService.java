@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.entity.DuckPoint;
 import spharos.nu.member.domain.member.entity.Member;
 import spharos.nu.member.domain.member.entity.MemberScore;
+import spharos.nu.member.domain.member.repository.DuckPointRepository;
 import spharos.nu.member.domain.member.repository.ScoreRepository;
 import spharos.nu.member.domain.member.repository.UserRepository;
 
@@ -18,6 +20,7 @@ public class MyPageService {
 
 	private final UserRepository userRepository;
 	private final ScoreRepository scoreRepository;
+	private final DuckPointRepository duckPointRepository;
 
 	public ProfileResponseDto profileGet(String uuid) {
 
@@ -58,5 +61,12 @@ public class MyPageService {
 			.level(level)
 			.leftPoint(leftPoint)
 			.build();
+	}
+
+	public Long duckPointGet(String uuid) {
+
+		DuckPoint duckPoint = duckPointRepository.findByUuid(uuid).orElseThrow();
+
+		return duckPoint.getNowPoint();
 	}
 }
