@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: gateway-service
+    name: gateway-server
   cloud:
     gateway:
       routes:
@@ -60,7 +60,7 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: ${EUREKA_SERVER_URL}/eureka/
 
 
 jwt:
