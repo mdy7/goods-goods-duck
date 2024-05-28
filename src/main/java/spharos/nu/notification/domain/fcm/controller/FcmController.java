@@ -16,7 +16,7 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/notification")
+@RequestMapping("/v1/notification-n")
 public class FcmController {
 
     private final FCMService fcmService;
