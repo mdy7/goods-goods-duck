@@ -19,8 +19,10 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.QGoodsWishInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.QBiddingCount;
 import spharos.nu.goods.domain.goods.entity.QGoods;
@@ -87,6 +89,36 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 			.select(goods.count())
 			.from(goods)
 			.where(tradingStatusEq(statusNum))
+			.fetchOne();
+
+		long totalCount = total != null ? total : 0;
+
+		return new PageImpl<>(goodsList, pageable, totalCount);
+	}
+
+	@Override
+	public Page<GoodsWishInfoDto> findWishedGoodsByUuid(String uuid, Pageable pageable) {
+
+		QWish wish = QWish.wish;
+		QGoods goods = QGoods.goods;
+		QImage image = QImage.image;
+
+		List<GoodsWishInfoDto> goodsList = queryFactory
+			.select(new QGoodsWishInfoDto(goods.code, image.url, goods.name))
+			.from(wish)
+			.join(goods).on(wish.code.eq(goods.code))
+			.join(image).on(wish.code.eq(image.code))
+			.where(wish.uuid.eq(uuid))
+			.where(image.index.eq(0))
+			.orderBy(goods.createdAt.desc())
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize())
+			.fetch();
+
+		Long total = queryFactory
+			.select(wish.count())
+			.from(wish)
+			.where(wish.uuid.eq(uuid))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
