@@ -3,6 +3,7 @@ package spharos.nu.member.domain.member.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,7 @@ import spharos.nu.member.utils.jwt.JwtProvider;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/v1")
 @Slf4j
 @Tag(name = "MyPage", description = "member-service에서 마이페이지 관련 API document")
 public class MyPageController {
@@ -29,9 +31,7 @@ public class MyPageController {
 	// 프로필 조회
 	@GetMapping("/users")
 	@Operation(summary = "회원 프로필 조회", description = "회원 프로필이미지, 닉네임, 선호카테고리 데이터")
-	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(@RequestHeader("Authorization") String token) {
-
-		String uuid = jwtProvider.getUuid(token);
+	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(@RequestHeader("User-Uuid") String uuid) {
 
 		return ApiResponse.success(myPageService.profileGet(uuid), "프로필 조회 성공");
 	}
@@ -39,11 +39,17 @@ public class MyPageController {
 	// 매너덕 조회
 	@GetMapping("/users/manner-duck")
 	@Operation(summary = "회원의 매너덕 조회", description = "마이페이지의 매너덕 상태와 다음 매너덕까지 필요한 점수 데이터")
-	public ResponseEntity<ApiResponse<MannerDuckDto>> getMannerDuck(@RequestHeader("Authorization") String token) {
-
-		String uuid = jwtProvider.getUuid(token);
+	public ResponseEntity<ApiResponse<MannerDuckDto>> getMannerDuck(@RequestHeader("User-Uuid") String uuid) {
 
 		return ApiResponse.success(myPageService.mannerDuckGet(uuid), "매너덕 조회 성공");
+	}
+
+	// 덕포인트 조회
+	@GetMapping("/users/duck-point")
+	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
+	public ResponseEntity<ApiResponse<Long>> getDuckPoing(@RequestHeader("User-Uuid") String uuid) {
+
+		return ApiResponse.success(myPageService.duckPointGet(uuid), "덕포인트 조회 성공");
 	}
 
 	// 덕포인트 상세 조회
