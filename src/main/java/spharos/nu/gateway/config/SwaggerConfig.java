@@ -1,4 +1,4 @@
-package spharos.nu.goods.global.config;
+package spharos.nu.gateway.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
