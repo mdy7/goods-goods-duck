@@ -7,7 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import spharos.nu.goods.domain.goods.repository.impl.GoodsRepositoryImpl;
+import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 
 @TestConfiguration
 public class TestQueryDslConfig {
@@ -18,10 +18,5 @@ public class TestQueryDslConfig {
 	@Bean
 	public JPAQueryFactory jpaQueryFactory() {
 		return new JPAQueryFactory(entityManager);
-	}
-
-	@Bean
-	public GoodsRepositoryImpl goodsRepository() {
-		return new GoodsRepositoryImpl(jpaQueryFactory());
 	}
 }

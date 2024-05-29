@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
+import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
+import spharos.nu.goods.domain.goods.dto.GoodsWishResponseDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 
 @Service
@@ -18,7 +20,7 @@ public class MyPageService {
 
 	private final GoodsRepository goodsRepository;
 
-	public GoodsSellResponseDto SellGoodsGet(String uuid, Integer index, byte statusNum) {
+	public GoodsSellResponseDto sellGoodsGet(String uuid, Integer index, byte statusNum) {
 
 		Pageable pageable = PageRequest.of(index, 10);
 		Page<GoodsInfoDto> goodsInfoPage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
@@ -28,6 +30,19 @@ public class MyPageService {
 			.maxPage(goodsInfoPage.getTotalPages())
 			.isLast(goodsInfoPage.isLast())
 			.goodsList(goodsInfoPage.getContent())
+			.build();
+	}
+
+	public GoodsWishResponseDto wishGoodsGet(String uuid, Integer index) {
+
+		Pageable pageable = PageRequest.of(index, 10);
+		Page<GoodsWishInfoDto> goodsWishInfoPage = goodsRepository.findWishedGoodsByUuid(uuid, pageable);
+
+		return GoodsWishResponseDto.builder()
+			.nowPage(goodsWishInfoPage.getNumber())
+			.maxPage(goodsWishInfoPage.getTotalPages())
+			.isLast(goodsWishInfoPage.isLast())
+			.goodsList(goodsWishInfoPage.getContent())
 			.build();
 	}
 }
