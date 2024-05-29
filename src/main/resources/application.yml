@@ -15,7 +15,6 @@ spring:
           predicates:
             - Path=api/v1/goods/**
           filters:
-            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # goods no auth routing
@@ -24,7 +23,6 @@ spring:
           predicates:
             - Path=api/v1/goods-n/**
           filters:
-            - StripPrefix=1
 
 
         # bid auth routing
@@ -33,7 +31,6 @@ spring:
           predicates:
             - Path=api/v1/bids/**
           filters:
-            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # bid no auth routing
@@ -42,7 +39,6 @@ spring:
           predicates:
             - Path=api/v1/bids-n/**
           filters:
-            StripPrefix=1
 
         # member auth routing
         - id: member-service
@@ -50,7 +46,6 @@ spring:
           predicates:
             - Path=api/v1/users/**
           filters:
-            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # member no auth routing
@@ -59,7 +54,6 @@ spring:
           predicates:
             - Path=api/v1/users-n/**
           filters:
-            - StripPrefix=1
 
 
 eureka:
@@ -76,7 +70,7 @@ jwt:
 springdoc:
   swagger-ui:  
     enabled: true
-    path: /api/swagger-ui.html
+    path: /swagger-ui.html
     urls[0]:
       name: 회원 서비스
       url: http://goodsgoodsduck.shop/api/v1/users-n/swagger/api-docs
