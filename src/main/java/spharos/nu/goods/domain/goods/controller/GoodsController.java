@@ -28,7 +28,7 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/v1/goods-n")
+@RequestMapping("api/v1/goods-n")
 @Tag(name = "Goods", description = "굿즈 컨트롤러")
 public class GoodsController {
 	private final GoodsService goodsService;

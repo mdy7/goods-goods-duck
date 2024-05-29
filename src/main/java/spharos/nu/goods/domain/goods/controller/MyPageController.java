@@ -19,7 +19,7 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/v1/goods/users")
+@RequestMapping("api/v1/goods/users")
 @Tag(name = "MyPage", description = "goods-service에서 마이페이지 관련 API document")
 public class MyPageController {
 
