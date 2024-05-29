@@ -13,7 +13,7 @@ spring:
         - id: goods-service
           uri: lb://GOODS-SERVICE
           predicates:
-            - Path=api/v1/goods/**
+            - Path=/api/v1/goods/**
           filters:
             - JwtAuthenticationFilter
 
@@ -21,7 +21,7 @@ spring:
         - id: goods-service
           uri: lb://GOODS-SERVICE
           predicates:
-            - Path=api/v1/goods-n/**
+            - Path=/api/v1/goods-n/**
           filters:
 
 
@@ -29,7 +29,7 @@ spring:
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Path=api/v1/bids/**
+            - Path=/api/v1/bids/**
           filters:
             - JwtAuthenticationFilter
 
@@ -37,14 +37,14 @@ spring:
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Path=api/v1/bids-n/**
+            - Path=/api/v1/bids-n/**
           filters:
 
         # member auth routing
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=api/v1/users/**
+            - Path=/api/v1/users/**
           filters:
             - JwtAuthenticationFilter
 
@@ -52,7 +52,7 @@ spring:
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=api/v1/users-n/**
+            - Path=/api/v1/users-n/**
           filters:
 
 
@@ -70,7 +70,7 @@ jwt:
 springdoc:
   swagger-ui:  
     enabled: true
-    path: /swagger-ui.html
+    path: /api/v1/swagger-ui.html
     urls[0]:
       name: 회원 서비스
       url: http://goodsgoodsduck.shop/api/v1/users-n/swagger/api-docs
