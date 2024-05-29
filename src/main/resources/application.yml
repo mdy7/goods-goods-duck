@@ -71,7 +71,7 @@ jwt:
 springdoc:
   swagger-ui:  
     enabled: true
-    path: /api/v1/swagger-ui.html
+    path: /v3/api-docs/swagger-config
     urls[0]:
       name: 회원 서비스
       url: http://goodsgoodsduck.shop/api/v1/users-n/swagger/api-docs
