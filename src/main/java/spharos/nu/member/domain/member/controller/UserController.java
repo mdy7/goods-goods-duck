@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
+import spharos.nu.member.domain.member.dto.LoginResponseDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
 import spharos.nu.member.domain.member.service.UserService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
@@ -37,10 +38,10 @@ public class UserController {
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인")
-	public ResponseEntity<ApiResponse<JwtToken>> login(@RequestBody LoginDto loginDto) {
-		JwtToken tokens = userService.login(loginDto);
+	public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginDto loginDto) {
+		LoginResponseDto loginResponse = userService.login(loginDto);
 
-		return ApiResponse.success(tokens, "로그인에 성공했습니다.");
+		return ApiResponse.success(loginResponse, "로그인에 성공했습니다.");
 	}
 
 	@PostMapping("/social-login")
