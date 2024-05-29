@@ -13,48 +13,53 @@ spring:
         - id: goods-service
           uri: lb://GOODS-SERVICE
           predicates:
-            - Path=/v1/goods/**
+            - Path=api/v1/goods/**
           filters:
+            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # goods no auth routing
         - id: goods-service
           uri: lb://GOODS-SERVICE
           predicates:
-            - Path=/v1/goods-n/**
+            - Path=api/v1/goods-n/**
           filters:
+            - StripPrefix=1
 
 
         # bid auth routing
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Path=/v1/bids/**
+            - Path=api/v1/bids/**
           filters:
+            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # bid no auth routing
         - id: bid-service
           uri: lb://BID-SERVICE
           predicates:
-            - Path=/v1/bids-n/**
+            - Path=api/v1/bids-n/**
           filters:
-
+            StripPrefix=1
 
         # member auth routing
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/v1/users/**
+            - Path=api/v1/users/**
           filters:
+            - StripPrefix=1
             - JwtAuthenticationFilter
 
         # member no auth routing
         - id: member-service
           uri: lb://MEMBER-SERVICE
           predicates:
-            - Path=/v1/users-n/**
+            - Path=api/v1/users-n/**
           filters:
+            - StripPrefix=1
 
 
 eureka:
