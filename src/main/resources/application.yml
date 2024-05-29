@@ -81,6 +81,9 @@ springdoc:
       name: 경매 서비스
       url: http://goodsgoodsduck.shop/api/v1/bids-n/swagger/api-docs
 
+server:
+  forward-headers-strategy: framework
+
 
 
 
