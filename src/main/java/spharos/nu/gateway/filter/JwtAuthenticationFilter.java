@@ -50,9 +50,9 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
 
 			String uuid = jwtProvider.getUuid(token);
 
-			exchange.getResponse().getHeaders().set("User-Uuid", uuid);
+			request.mutate().header("User-Uuid", uuid).build();
 
-			return chain.filter(exchange);
+			return  chain.filter(exchange.mutate().request(request).build());
 		};
 	}
 
