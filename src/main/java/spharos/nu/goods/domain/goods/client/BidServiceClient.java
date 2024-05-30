@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @FeignClient(name = "bid-service")
 public interface BidServiceClient {
 
-    @PostMapping("/v1/bids-n/{goodsCode}/winning-bid")
+    @PostMapping("api/v1/bids-n/{goodsCode}/winning-bid")
     ResponseEntity<ApiResponse> selectWinningBid(@PathVariable String goodsCode, @RequestBody LocalDateTime closedAt);
 
 
