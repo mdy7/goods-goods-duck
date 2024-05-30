@@ -15,7 +15,7 @@ import spharos.nu.member.utils.jwt.JwtProvider;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/users")
+@RequestMapping("/api//v1/users")
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 기본적으로 필요한 메소드")
 public class WithdrawController {
 	private final UserService userService;

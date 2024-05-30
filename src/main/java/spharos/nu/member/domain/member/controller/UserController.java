@@ -29,7 +29,7 @@ import spharos.nu.member.utils.jwt.JwtToken;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("v1/users-n")
+@RequestMapping("/api/v1/users-n")
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 기본적으로 필요한 메소드")
 public class UserController {
 	private final UserService userService;

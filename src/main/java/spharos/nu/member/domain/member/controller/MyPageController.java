@@ -20,7 +20,7 @@ import spharos.nu.member.utils.jwt.JwtProvider;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1")
+@RequestMapping("/api/v1")
 @Slf4j
 @Tag(name = "MyPage", description = "member-service에서 마이페이지 관련 API document")
 public class MyPageController {
