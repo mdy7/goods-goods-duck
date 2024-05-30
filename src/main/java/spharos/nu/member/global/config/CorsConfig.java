@@ -17,8 +17,8 @@ public class CorsConfig {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
 
-		// config.addAllowedOriginPattern("*")	// 허용할 URL 설정
-		config.addAllowedOrigin("http://localhost:3000");
+		 config.addAllowedOriginPattern("*");
+//		config.addAllowedOrigin("http://localhost:3000");
 		config.addAllowedHeader("*");
 		config.addAllowedMethod("*");
 		config.setExposedHeaders(Arrays.asList("Authorization", "refreshToken"));
