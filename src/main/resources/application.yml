@@ -69,21 +69,24 @@ jwt:
   key: ${JWT_SECRET_KEY}
 
 springdoc:
-  swagger-ui:  
+  swagger-ui:
     enabled: true
     path: /api/swagger/swagger-ui.html
+#    urls[0]:
+#      name: 회원 서비스
+#      url: http://goodsgoodsduck.shop/api/v1/users-n/swagger/api-docs
+#    urls[1]:
+#      name: 굿즈 서비스
+#      url: http://goodsgoodsduck.shop/api/v1/goods-n/swagger/api-docs
+#    urls[2]:
+#      name: 경매 서비스
+#      url: http://goodsgoodsduck.shop/api/v1/bids-n/swagger/api-docs
+#    urls[0]:
+#      name: 회원 서비스
+#      url: http://3.35.70.208:9000/api/v1/users-n/swagger/api-docs
     urls[0]:
-      name: 회원 서비스
-      url: http://goodsgoodsduck.shop/api/v1/users-n/swagger/api-docs
-    urls[2]:
       name: 굿즈 서비스
-      url: http://goodsgoodsduck.shop/api/v1/goods-n/swagger/api-docs
+      url: http://3.35.70.208:9001/api/v1/goods-n/swagger/api-docs
     urls[1]:
       name: 경매 서비스
-      url: http://goodsgoodsduck.shop/api/v1/bids-n/swagger/api-docs
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
+      url: http://3.35.70.208:9002/api/v1/bids-n/swagger/api-docs
