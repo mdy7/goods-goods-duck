@@ -88,7 +88,9 @@ springdoc:
 #      url: http://3.35.70.208:9000/api/v1/users-n/swagger/api-docs
     urls[0]:
       name: 굿즈 서비스
-      url: http://3.35.70.208:9001/api/v1/goods-n/swagger/api-docs
+#      url: http://3.35.70.208:9001/api/v1/goods-n/swagger/api-docs
+      url: https://goodsgoodsduck.com/api/v1/goods-n/swagger/api-docs
     urls[1]:
       name: 경매 서비스
-      url: http://3.35.70.208:9002/api/v1/bids-n/swagger/api-docs
+#      url: http://3.35.70.208:9002/api/v1/bids-n/swagger/api-docs
+      url: https://goodsgoodsduck.com/api/v1/bids-n/swagger/api-docs
