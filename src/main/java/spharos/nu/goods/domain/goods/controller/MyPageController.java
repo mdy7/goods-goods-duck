@@ -28,7 +28,7 @@ public class MyPageController {
 	// 등록한 상품 조회
 	@GetMapping("/sell")
 	@Operation(summary = "회원이 등록한 상품 조회", description = "상품코드, 상품썸네일, 상품명, 시작가격, 상태 데이터")
-	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(@RequestHeader("User-Uuid") String uuid,
+	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@RequestParam(value = "page", defaultValue = "0") Integer index,
 		@RequestParam(value = "status", required = false) byte statusNum) {
 
@@ -37,7 +37,7 @@ public class MyPageController {
 
 	@GetMapping("/wish")
 	@Operation(summary = "관심 상품 조회", description = "상품코드, 상품썸네일, 상품명")
-	public ResponseEntity<ApiResponse<GoodsWishResponseDto>> getWishGoods(@RequestHeader("User-Uuid") String uuid,
+	public ResponseEntity<ApiResponse<GoodsWishResponseDto>> getWishGoods(@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@RequestParam(value = "page", defaultValue = "0") Integer index) {
 
 		return ApiResponse.success(myPageService.wishGoodsGet(uuid, index), "관심 상품 조회 성공");
