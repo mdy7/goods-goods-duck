@@ -33,14 +33,6 @@ public class JwtProvider {
 	private final TokenRepository tokenRepository;
 
 	/**
-	 * 시크릿 키(서명키) 생성
-	 */
-	@PostConstruct
-	protected void init() {
-		secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
-	}
-
-	/**
 	 * 토큰 생성
 	 * role 유저 역할 (USER: 회원 / ADMIN: 어드민)
 	 * @param uuid 유저 uuid
