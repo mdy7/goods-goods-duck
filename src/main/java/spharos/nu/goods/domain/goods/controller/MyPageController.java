@@ -35,11 +35,4 @@ public class MyPageController {
 		return ApiResponse.success(myPageService.sellGoodsGet(uuid, index, statusNum), "등록한 상품 조회 성공");
 	}
 
-	@GetMapping("/wish")
-	@Operation(summary = "관심 상품 조회", description = "상품코드, 상품썸네일, 상품명")
-	public ResponseEntity<ApiResponse<GoodsWishResponseDto>> getWishGoods(@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@RequestParam(value = "page", defaultValue = "0") Integer index) {
-
-		return ApiResponse.success(myPageService.wishGoodsGet(uuid, index), "관심 상품 조회 성공");
-	}
 }
