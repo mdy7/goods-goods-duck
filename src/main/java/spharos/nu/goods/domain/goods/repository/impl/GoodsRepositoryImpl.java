@@ -17,19 +17,13 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
+import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
-import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
-import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
+import spharos.nu.goods.domain.goods.dto.QGoodsCodeDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsSummaryDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsWishInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
-import spharos.nu.goods.domain.goods.entity.QBiddingCount;
 import spharos.nu.goods.domain.goods.entity.QGoods;
 import spharos.nu.goods.domain.goods.entity.QImage;
-import spharos.nu.goods.domain.goods.entity.QViewsCount;
-import spharos.nu.goods.domain.goods.entity.QWish;
-import spharos.nu.goods.domain.goods.entity.QWishCount;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
 import spharos.nu.goods.global.exception.CustomException;
 import spharos.nu.goods.global.exception.errorcode.ErrorCode;
@@ -39,12 +33,8 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	@Override
-	public Page<GoodsSummaryDto> findAllGoods(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
+	public Page<GoodsCodeDto> findAllGoods(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
 		QGoods goods = QGoods.goods;
-		QViewsCount viewsCount = QViewsCount.viewsCount;
-		QWishCount wishCount = QWishCount.wishCount;
-		QBiddingCount biddingCount = QBiddingCount.biddingCount;
-		QImage image = QImage.image;
 
 		BooleanBuilder whereClause = new BooleanBuilder();
 		whereClause
@@ -56,13 +46,10 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 			whereClause.and(goods.tradingStatus.eq((byte)0));
 		}
 
-		System.out.println("거래중만보기" + isTradingOnly);
-		System.out.println("카테고리id" + categoryPk);
 		Long totalCount = getTotalCount(goods, whereClause);
-		List<GoodsSummaryDto> content = getContent(goods, image, viewsCount, wishCount, biddingCount, whereClause,
+		List<GoodsCodeDto> content = getContent(goods, whereClause,
 			pageable);
-		System.out.println("content" + content);
-		System.out.println("count" + totalCount);
+
 		return new PageImpl<>(content, pageable, totalCount);
 	}
 
@@ -73,10 +60,10 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		QImage image = QImage.image;
 
 		List<GoodsInfoDto> goodsList = queryFactory
-			.select(new QGoodsInfoDto(goods.code, image.url, goods.name, goods.minPrice, goods.tradingStatus))
+			.select(new QGoodsInfoDto(goods.goodsCode, image.url, goods.name, goods.minPrice, goods.tradingStatus))
 			.from(goods)
 			.join(image)
-			.on(goods.code.eq(image.code))
+			.on(goods.goodsCode.eq(image.goodsCode))
 			.where(image.index.eq(0))
 			.where(tradingStatusEq(statusNum))
 			.orderBy(goods.createdAt.desc())
@@ -100,17 +87,10 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		return queryFactory.select(goods.count()).from(goods).where(whereClause).fetchOne();
 	}
 
-	private <T> List<GoodsSummaryDto> getContent(QGoods goods, QImage image, QViewsCount viewsCount,
-		QWishCount wishCount, QBiddingCount biddingCount, BooleanBuilder whereClause, Pageable pageable) {
+	private <T> List<GoodsCodeDto> getContent(QGoods goods, BooleanBuilder whereClause, Pageable pageable) {
 
-		JPAQuery<GoodsSummaryDto> query = queryFactory.select(
-				new QGoodsSummaryDto(goods.code, image.url, goods.name, goods.minPrice, goods.closedAt, viewsCount.count,
-					wishCount.count, biddingCount.count, goods.tradingStatus)).from(goods)
-			.join(image).on(goods.code.eq(image.code))
-			.join(viewsCount).on(goods.code.eq(viewsCount.code))
-			.join(wishCount).on(goods.code.eq(wishCount.code))
-			.join(biddingCount).on(goods.code.eq(biddingCount.code))
-			.where(image.index.eq(0))
+		JPAQuery<GoodsCodeDto> query = queryFactory.select(
+				new QGoodsCodeDto(goods.goodsCode)).from(goods)
 			.where(whereClause);
 
 		if (pageable.getSort().isSorted()) {
@@ -119,12 +99,12 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 			Order direction = Sort.Direction.ASC.equals(order.getDirection()) ? Order.ASC : Order.DESC;
 
 			OrderSpecifier<?> orderSpecifier = switch (order.getProperty()) {
-				case "createdAt", "closedAt" ->
-					new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
-						LocalDateTime.class));
-				case "viewsCount" -> new OrderSpecifier<>(direction, viewsCount.count);
-				case "wishCount" -> new OrderSpecifier<>(direction, wishCount.count);
-				case "biddingCount" -> new OrderSpecifier<>(direction, biddingCount.count);
+				case "createdAt" -> new OrderSpecifier<>(Order.DESC, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
+				case "closedAt" -> new OrderSpecifier<>(Order.ASC, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
+				case "etc" -> new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
 				default -> throw new CustomException(ErrorCode.INVALID_REQUEST_PARAM);
 			};
 

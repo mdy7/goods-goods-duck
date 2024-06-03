@@ -28,14 +28,18 @@ public class Goods extends AuditBaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "goods_id")
 	private Long id;
+	@NotNull
+	private Long categoryId;
 	@NotBlank
-	private String uuid;
+	private String sellerUuid;
 	@NotBlank
-	private String code;
+	private String goodsCode;
 	@NotBlank
 	private String name;
 	@NotNull
 	private Long minPrice;
+	@NotNull
+	private Long deposit;
 	@NotBlank
 	private String description;
 	@NotNull
@@ -43,18 +47,11 @@ public class Goods extends AuditBaseEntity {
 	@NotNull
 	private LocalDateTime closedAt;
 	@NotNull
-	@Column(columnDefinition = "SMALLINT DEFAULT 1")
-	private byte durationTime;
-	@NotNull
 	@Column(columnDefinition = "SMALLINT DEFAULT 0")
 	private byte wishTradeType;
 	@NotNull
 	@Column(columnDefinition = "SMALLINT DEFAULT 0")
 	private byte tradingStatus;
-
-	private Long winningPrice;
-	@NotNull
-	private Long categoryId;
 	@NotNull
 	@Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
 	private boolean isDelete;

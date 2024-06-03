@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import spharos.nu.goods.domain.goods.config.TestQueryDslConfig;
-import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 

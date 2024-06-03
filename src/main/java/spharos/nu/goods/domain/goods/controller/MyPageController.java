@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
-import spharos.nu.goods.domain.goods.dto.GoodsWishResponseDto;
 import spharos.nu.goods.domain.goods.service.MyPageService;
 import spharos.nu.goods.global.apiresponse.ApiResponse;
 

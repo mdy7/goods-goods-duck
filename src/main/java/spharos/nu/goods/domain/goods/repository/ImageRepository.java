@@ -9,6 +9,6 @@ import spharos.nu.goods.domain.goods.entity.Image;
 
 @Repository
 public interface ImageRepository extends JpaRepository<Image, Long> {
-	List<Image> findAllByCode(String code);
-	void deleteAllByCode(String code);
+	List<Image> findAllByGoodsCode(String code);
+	void deleteAllByGoodsCode(String code);
 }

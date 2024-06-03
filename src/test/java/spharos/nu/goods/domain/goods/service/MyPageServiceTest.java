@@ -20,8 +20,6 @@ import org.springframework.data.domain.Pageable;
 
 import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
-import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
-import spharos.nu.goods.domain.goods.dto.GoodsWishResponseDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 
 @ExtendWith(MockitoExtension.class)

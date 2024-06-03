@@ -11,7 +11,7 @@ import spharos.nu.goods.domain.goods.entity.Goods;
 public interface GoodsRepository extends JpaRepository<Goods, Long>, GoodsRepositoryCustom {
 	Optional<Goods> findFirstByOrderByIdDesc();
 
-	Optional<Goods> findOneByCode(String code);
+	Optional<Goods> findOneByGoodsCode(String code);
 
-	void deleteByCode(String code);
+	void deleteByGoodsCode(String code);
 }
