@@ -30,8 +30,6 @@ class GoodsRepositoryTest {
 	private GoodsRepository goodsRepository;
 	@Autowired
 	private ImageRepository imageRepository;
-	@Autowired
-	private WishRepository wishRepository;
 
 	@Autowired
 	private JPAQueryFactory queryFactory;
@@ -44,55 +42,45 @@ class GoodsRepositoryTest {
 	public void setUp() {
 
 		goodsRepository.save(Goods.builder()
-			.uuid("test-uuid1")
-			.code("20240522")
+			.sellerUuid("test-uuid1")
+			.goodsCode("20240522")
 			.name("포카")
 			.minPrice(15000L)
 			.description("포카 상태 좋아요")
 			.openedAt(LocalDateTime.now())
 			.closedAt(LocalDateTime.now())
-			.durationTime((byte) 1)
 			.wishTradeType((byte) 0)
 			.tradingStatus((byte) 1)
-			.winningPrice(null)
 			.categoryId(0L)
 			.isDelete(false)
 			.build());
 		imageRepository.save(Image.builder()
-			.code("20240522")
+			.goodsCode("20240522")
 			.url("photo1")
 			.index(0)
 			.build());
-		wishRepository.save(Wish.builder()
-			.uuid("test-uuid1")
-			.code("20240522")
-			.build());
+
 
 
 		goodsRepository.save(Goods.builder()
-			.uuid("test-uuid2")
-			.code("20240523")
+			.sellerUuid("test-uuid2")
+			.goodsCode("20240523")
 			.name("포카2")
 			.minPrice(20000L)
 			.description("포카2 상태 좋아요")
 			.openedAt(LocalDateTime.now())
 			.closedAt(LocalDateTime.now())
-			.durationTime((byte) 1)
 			.wishTradeType((byte) 0)
 			.tradingStatus((byte) 1)
-			.winningPrice(null)
 			.categoryId(0L)
 			.isDelete(false)
 			.build());
 		imageRepository.save(Image.builder()
-			.code("20240523")
+			.goodsCode("20240523")
 			.url("photo2")
 			.index(0)
 			.build());
-		wishRepository.save(Wish.builder()
-			.uuid("test-uuid2")
-			.code("20240523")
-			.build());
+
 	}
 
 	@AfterEach
@@ -100,24 +88,5 @@ class GoodsRepositoryTest {
 
 		// 테스트 데이터 정리
 		goodsRepository.deleteAll();
-	}
-
-	@Test
-	@DisplayName("관심 상품 조회")
-	void testFindWishedGoodsByUuid() {
-
-		// given
-		uuid = "test-uuid1";
-		index = 0;
-		pageable = PageRequest.of(0, 10);
-
-		// then
-		Page<GoodsWishInfoDto> result = goodsRepository.findWishedGoodsByUuid(uuid, pageable);
-
-
-		// when
-		Assertions.assertThat(result).isNotNull();
-		Assertions.assertThat(result.getContent()).isNotEmpty();
-		Assertions.assertThat(result.getContent().get(0).getGoodsCode()).isEqualTo("20240522");
 	}
 }

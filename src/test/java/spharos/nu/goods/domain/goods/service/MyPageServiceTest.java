@@ -36,7 +36,6 @@ class MyPageServiceTest {
 	private byte statusNum;
 	private Pageable pageable;
 	private Page<GoodsInfoDto> goodsInfoPage;
-	private Page<GoodsWishInfoDto> goodsWishInfoPage;
 
 	@BeforeEach
 	void setUp() {
@@ -46,18 +45,11 @@ class MyPageServiceTest {
 		pageable = PageRequest.of(index, 10);
 
 		List<GoodsInfoDto> goodsList = Arrays.asList(
-			new GoodsInfoDto("code1", "url1", "name1", 1000L, true, (byte)1),
-			new GoodsInfoDto("code2", "url2", "name2", 2000L, false, (byte)1)
+			new GoodsInfoDto("code1", "url1", "name1", 1000L, (byte)1),
+			new GoodsInfoDto("code2", "url2", "name2", 2000L, (byte)1)
 		);
 
 		goodsInfoPage = new PageImpl<>(goodsList, pageable, goodsList.size());
-
-		List<GoodsWishInfoDto> goodsWishList = Arrays.asList(
-			new GoodsWishInfoDto("code1", "url1", "name1"),
-			new GoodsWishInfoDto("code2", "url2", "name2")
-		);
-
-		goodsWishInfoPage = new PageImpl<>(goodsWishList, pageable, goodsWishList.size());
 	}
 
 	@Test
@@ -78,21 +70,4 @@ class MyPageServiceTest {
 		Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsInfoPage.getContent());
 	}
 
-	@Test
-	@DisplayName("관심 상품 조회")
-	void testWishGoodsGet() {
-
-		// given
-		when(goodsRepository.findWishedGoodsByUuid(eq(uuid), any(Pageable.class)))
-			.thenReturn(goodsWishInfoPage);
-
-		// when
-		GoodsWishResponseDto res = myPageService.wishGoodsGet(uuid, index);
-
-		// then
-		Assertions.assertThat(res).isNotNull();
-		Assertions.assertThat(res.getNowPage()).isEqualTo(goodsWishInfoPage.getNumber());
-		Assertions.assertThat(res.getMaxPage()).isEqualTo(goodsWishInfoPage.getTotalPages());
-		Assertions.assertThat(res.getGoodsList()).isEqualTo(goodsWishInfoPage.getContent());
-	}
 }
