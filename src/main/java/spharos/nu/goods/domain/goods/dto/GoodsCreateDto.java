@@ -20,10 +20,10 @@ public class GoodsCreateDto {
 	private Long categoryId;
 	@Schema(description = "시작가격")
 	private Long minPrice;
-	@Schema(description = "입찰시작일시")
+	@Schema(description = "경매시작일시")
 	private LocalDateTime openedAt;
-	@Schema(description = "진행시간")
-	private byte durationTime;
+	@Schema(description = "경매마감일시")
+	private LocalDateTime closedAt;
 	@Schema(description = "선호거래방법")
 	private byte wishTradeType;
 	@Schema(description = "태그리스트")

@@ -23,7 +23,7 @@ public class Tag {
 	@Column(name = "tag_id")
 	private Long id;
 	@NotBlank
-	private String code;
+	private String goodsCode;
 	@NotBlank
 	private String name;
 }

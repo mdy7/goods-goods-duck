@@ -27,6 +27,6 @@ public class GoodsAllListDto {
 	@Schema(description = "마지막 페이지 여부")
 	private boolean isLast;
 	@Schema(description = "굿즈 목록")
-	private List<GoodsSummaryDto> goodsList;
+	private List<GoodsCodeDto> goodsList;
 
 }
