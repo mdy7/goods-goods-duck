@@ -79,6 +79,29 @@ class MyPageServiceTest {
 	}
 
 	@Test
+	@DisplayName("프로필 이미지 조회 서비스 테스트")
+	void testProfileImageGet() {
+
+		// given
+		MemberInfo member = MemberInfo.builder()
+			.id(1L)
+			.uuid("테스트_uuid")
+			.nickname("쓰껄쓰껄")
+			.profileImage("img_url")
+			.favoriteCategory("애니")
+			.isNotify(true)
+			.build();
+
+		given(memberInfoRepository.findByUuid("테스트_uuid")).willReturn(java.util.Optional.ofNullable(member));
+
+		// when
+		String imageGet = myPageService.profileImageGet("테스트_uuid");
+
+		// then
+		Assertions.assertThat(imageGet).isEqualTo("img_url");
+	}
+
+	@Test
 	@DisplayName("매너덕 조회 서비스 테스트")
 	void mannerDuckGet() {
 
