@@ -18,18 +18,4 @@ public class JoinDto {
 	private String profileImage;
 	@Schema(description = "선호 카테고리")
 	private String favoriteCategory;
-
-	public Member toEntity(String uuid, String encodedPassword) {
-		return Member.builder()
-			.uuid(uuid)
-			.userId(this.userId)
-			.password(encodedPassword)
-			.phoneNumber(this.phoneNumber)
-			.nickname(this.nickname)
-			.profileImage(this.profileImage)
-			.favoriteCategory(this.favoriteCategory)
-			.isNotify(true)
-			.isWithdraw(false)
-			.build();
-	}
 }

@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import spharos.nu.auth.domain.auth.dto.ChangePwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.LoginResponseDto;
 import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.entity.SocialMember;
@@ -34,7 +33,7 @@ public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
-	public LoginResponseDto login(LoginDto loginDto) {
+	public JwtToken login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -42,14 +41,7 @@ public class UserService {
 			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
-		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
-
-		return LoginResponseDto.builder()
-			.jwtToken(jwtToken)
-			.nickname(member.getNickname())
-			.profileImage(member.getProfileImage())
-			.favoriteCategory(member.getFavoriteCategory())
-			.build();
+		return jwtProvider.createToken(member.getUuid());
 	}
 
 	public JwtToken socialLogin(SocialLoginDto socialLoginDto) {
@@ -66,7 +58,13 @@ public class UserService {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
 
-		Member member = joinDto.toEntity(uuid, encodedPassword);
+		Member member = Member.builder()
+			.uuid(uuid)
+			.userId(joinDto.getUserId())
+			.password(encodedPassword)
+			.phoneNumber(joinDto.getPhoneNumber())
+			.isWithdraw(false)
+			.build();
 		userRepository.save(member);
 
 		// Todo: 카프카로 2개의 추가 엔티티 생성 필요
