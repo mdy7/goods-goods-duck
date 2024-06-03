@@ -13,6 +13,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import spharos.nu.aggregation.global.entity.CreatedAtBaseEntity;
 
 @Entity
 @AllArgsConstructor
@@ -21,7 +22,7 @@ import lombok.ToString;
 @Builder
 @ToString
 @Table(name = "wish")
-public class Wish {
+public class Wish extends CreatedAtBaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
