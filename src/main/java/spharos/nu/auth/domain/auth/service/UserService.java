@@ -31,8 +31,6 @@ import spharos.nu.auth.utils.jwt.JwtToken;
 public class UserService {
 	private final UserRepository userRepository;
 	private final SocialRepository socialRepository;
-	private final ScoreRepository scoreRepository;
-	private final PointRepository pointRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
@@ -71,17 +69,18 @@ public class UserService {
 		Member member = joinDto.toEntity(uuid, encodedPassword);
 		userRepository.save(member);
 
-		MemberScore score = MemberScore.builder()
-			.uuid(uuid)
-			.score(50)
-			.build();
-		scoreRepository.save(score);
-
-		DuckPoint point = DuckPoint.builder()
-			.uuid(uuid)
-			.nowPoint(0L)
-			.build();
-		pointRepository.save(point);
+		// Todo: 카프카로 2개의 추가 엔티티 생성 필요
+		// MemberScore score = MemberScore.builder()
+		// 	.uuid(uuid)
+		// 	.score(50)
+		// 	.build();
+		// scoreRepository.save(score);
+		//
+		// DuckPoint point = DuckPoint.builder()
+		// 	.uuid(uuid)
+		// 	.nowPoint(0L)
+		// 	.build();
+		// pointRepository.save(point);
 	}
 
 	public void isDuplicatedId(String userId) {
