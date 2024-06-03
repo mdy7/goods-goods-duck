@@ -19,7 +19,7 @@ import spharos.nu.member.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/users")
 @Slf4j
 @Tag(name = "MyPage", description = "member-service에서 마이페이지 관련 API document")
 public class MyPageController {
@@ -27,7 +27,7 @@ public class MyPageController {
 	private final MyPageService myPageService;
 
 	// 프로필 조회
-	@GetMapping("/users")
+	@GetMapping("")
 	@Operation(summary = "회원 프로필 조회", description = "회원 프로필이미지, 닉네임, 선호카테고리 데이터")
 	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
@@ -35,8 +35,17 @@ public class MyPageController {
 		return ApiResponse.success(myPageService.profileGet(uuid), "프로필 조회 성공");
 	}
 
+	// 프로필 사진 조회
+	@GetMapping("/profile-img")
+	@Operation(summary = "회원 프로필 이미지 조회", description = "회원 프로필이미지 데이터")
+	public ResponseEntity<ApiResponse<String>> getProfileImage(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
+
+		return ApiResponse.success(myPageService.profileImageGet(uuid), "프로필 이미지 조회 성공");
+	}
+
 	// 매너덕 조회
-	@GetMapping("/users/manner-duck")
+	@GetMapping("/manner-duck")
 	@Operation(summary = "회원의 매너덕 조회", description = "마이페이지의 매너덕 상태와 다음 매너덕까지 필요한 점수 데이터")
 	public ResponseEntity<ApiResponse<MannerDuckDto>> getMannerDuck(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
@@ -45,7 +54,7 @@ public class MyPageController {
 	}
 
 	// 덕포인트 조회
-	@GetMapping("/users/duck-point")
+	@GetMapping("/duck-point")
 	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
 	public ResponseEntity<ApiResponse<Long>> getDuckPoing(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
@@ -54,7 +63,7 @@ public class MyPageController {
 	}
 
 	// 덕포인트 상세 조회
-	@GetMapping("/users/manner-duck/detail")
+	@GetMapping("/manner-duck/detail")
 	@Operation(summary = "회원의 덕포인트 내역 조회", description = "덕포인트 내역과 관련한 변동금액, 잔여포인트, 입출금여부, 내역상세, 생성날짜 데이터")
 	public ResponseEntity<ApiResponse<DuckPointDetailDto>> getDuckPointDetail(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
