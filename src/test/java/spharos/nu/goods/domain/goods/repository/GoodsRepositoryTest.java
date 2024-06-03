@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,7 +20,6 @@ import spharos.nu.goods.domain.goods.config.TestQueryDslConfig;
 import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
-import spharos.nu.goods.domain.goods.entity.Wish;
 
 @DataJpaTest
 // @ExtendWith(SpringExtension.class)
