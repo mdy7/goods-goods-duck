@@ -63,6 +63,14 @@ spring:
             - Path=/api/v1/auth-n/**
           filters:
 
+        # auth auth routing
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - JwtAuthenticationFilter
+
         # aggregation no auth routing
         - id: aggregation-service
           uri: lb://AGGREGATION-SERVICE
