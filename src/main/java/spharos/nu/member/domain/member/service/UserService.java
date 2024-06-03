@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.ChangePwdDto;
 import spharos.nu.member.domain.member.dto.JoinDto;
 import spharos.nu.member.domain.member.dto.LoginDto;
+import spharos.nu.member.domain.member.dto.LoginResponseDto;
 import spharos.nu.member.domain.member.dto.SocialLoginDto;
 import spharos.nu.member.domain.member.entity.DuckPoint;
 import spharos.nu.member.domain.member.entity.DuckPointHistory;
@@ -40,7 +41,7 @@ public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
-	public JwtToken login(LoginDto loginDto) {
+	public LoginResponseDto login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -48,7 +49,14 @@ public class UserService {
 			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
-		return jwtProvider.createToken(member.getUuid());
+		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
+
+		return LoginResponseDto.builder()
+			.jwtToken(jwtToken)
+			.nickname(member.getNickname())
+			.profileImage(member.getProfileImage())
+			.favoriteCategory(member.getFavoriteCategory())
+			.build();
 	}
 
 	public JwtToken socialLogin(SocialLoginDto socialLoginDto) {
