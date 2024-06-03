@@ -41,6 +41,13 @@ public class MyPageService {
 			.build();
 	}
 
+	public String profileImageGet(String uuid) {
+
+		MemberInfo member = memberInfoRepository.findByUuid(uuid).orElseThrow();
+
+		return member.getProfileImage();
+	}
+
 	public MannerDuckDto mannerDuckGet(String uuid) {
 
 		MemberScore memberScore = scoreRepository.findByUuid(uuid).orElseThrow();
