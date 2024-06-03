@@ -79,16 +79,16 @@ spring:
           filters:
 
         # aggregation auth routing
-        - id: aggregation-service
-          uri: lb://AGGREGATION-SERVICE
+        - id: etc-service
+          uri: lb://ETC-SERVICE
           predicates:
             - Path=/api/v1/aggregation/**
           filters:
             - JwtAuthenticationFilter
 
         # etc no auth routing
-        - id: aggregation-service
-          uri: lb://AGGREGATION-SERVICE
+        - id: etc-service
+          uri: lb://ETC-SERVICE
           predicates:
             - Path=/api/v1/etc-n/**
           filters:
