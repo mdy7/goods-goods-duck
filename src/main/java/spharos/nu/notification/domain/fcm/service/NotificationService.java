@@ -16,22 +16,29 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import spharos.nu.notification.domain.fcm.repository.NotificationRepository;
 import spharos.nu.notification.domain.fcm.dto.FcmMessageDto;
-import spharos.nu.notification.domain.fcm.dto.FcmSendDto;
+import spharos.nu.notification.domain.fcm.dto.NotificationSendDto;
+import spharos.nu.notification.global.exception.CustomException;
+
+import static spharos.nu.notification.global.exception.errorcode.ErrorCode.FCM_SEND_FAIL;
 
 
 @Slf4j
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
-public class FCMService {
+public class NotificationService {
 
     @Value("${fcm.certification}")
     String firebaseConfigPath;
 
-    public int sendMessageTo(FcmSendDto fcmSendDto) throws IOException {
+    private final NotificationRepository fcmRepository;
 
-        String message = makeMessage(fcmSendDto);
+    @Transactional
+    public void sendMessageTo(NotificationSendDto notificationSendDto) throws IOException {
+
+        String message = makeMessage(notificationSendDto);
         log.info("message : " + message);
         RestTemplate restTemplate = new RestTemplate();
 
@@ -43,8 +50,14 @@ public class FCMService {
 
         String API_URL = "https://fcm.googleapis.com/v1/projects/goodsgoodsduck/messages:send";
 
-        ResponseEntity<String> response = restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
-        return response.getStatusCode() == HttpStatus.OK ? 1 : 0;
+        try {
+            restTemplate.exchange(API_URL, HttpMethod.POST, entity, String.class);
+        } catch (Exception e){
+            throw new CustomException(FCM_SEND_FAIL);
+        }
+
+        saveMessage(notificationSendDto);
+
     }
 
     private String getAccessToken() throws IOException {
@@ -53,20 +66,19 @@ public class FCMService {
                 .createScoped(List.of("https://www.googleapis.com/auth/cloud-platform"));
 
         googleCredentials.refreshIfExpired();
-        log.info("Access Token : " + googleCredentials.getAccessToken().getTokenValue());
         return googleCredentials.getAccessToken().getTokenValue();
     }
 
 
-    private String makeMessage(FcmSendDto fcmSendDto) throws JsonProcessingException {
+    private String makeMessage(NotificationSendDto notificationSendDto) throws JsonProcessingException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         FcmMessageDto fcmMessageDto = FcmMessageDto.builder()
                 .message(FcmMessageDto.Message.builder()
-                        .token(fcmSendDto.getToken())
+                        .token(notificationSendDto.getToken())
                         .notification(FcmMessageDto.Notification.builder()
-                                .title(fcmSendDto.getTitle())
-                                .body(fcmSendDto.getBody())
+                                .title(notificationSendDto.getTitle())
+                                .body(notificationSendDto.getBody())
                                 .image(null)
                                 .build()
                         ).build()).validateOnly(false).build();
@@ -74,4 +86,17 @@ public class FCMService {
         return objectMapper.writeValueAsString(fcmMessageDto);
     }
 
+
+    @Transactional
+    private void saveMessage(NotificationSendDto notificationSendDto) {
+        fcmRepository.save(spharos.nu.notification.domain.fcm.entity.Notification.builder()
+                .title(notificationSendDto.getTitle())
+                .body(notificationSendDto.getBody())
+                .userUuid(notificationSendDto.getUserUuid())
+                .isRead(false)
+                .type((byte) 1)
+                .build()
+        );
+
+    }
 }

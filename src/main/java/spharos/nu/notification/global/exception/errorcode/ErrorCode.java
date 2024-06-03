@@ -16,6 +16,7 @@ public enum ErrorCode {
 	INVALID_REQUEST_METHOD(400, "요청 메서드가 유효하지 않습니다"),
 	TYPE_MISMATCH(400,"요청 데이터 중 유효하지 않은 타입이 있습니다."),
 	WRONG_NUMBER(400, "인증번호가 일치하지 않습니다."),
+	FCM_SEND_FAIL(400, "FCM 전송에 실패하였습니다."),
 
 	// 401 : 접근 권한이 없음
 	NO_AUTHORITY(401, "접근 권한이 없습니다."),

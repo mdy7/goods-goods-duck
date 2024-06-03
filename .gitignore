@@ -36,8 +36,7 @@ out/
 ### VS Code ###
 .vscode/
 
-
-*.yml
+firebase/certification.json
 .DS_Store
 ._.DS_Store
 **/.DS_Store
