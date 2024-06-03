@@ -23,22 +23,17 @@ public class GoodsInfoDto {
 	@Schema(description = "시작가격")
 	private Long minPrice;
 
-	@Schema(description = "좋아요 여부")
-	private boolean liked;
-
 	@Schema(description = "상품거래상태")
 	private byte tradingStatus;
 
 	@Builder
 	@QueryProjection
-	public GoodsInfoDto(String goodsCode, String thumbnail, String goodsName, Long minPrice, boolean liked,
-		byte tradingStatus) {
+	public GoodsInfoDto(String goodsCode, String thumbnail, String goodsName, Long minPrice, byte tradingStatus) {
 
 		this.goodsCode = goodsCode;
 		this.thumbnail = thumbnail;
 		this.goodsName = goodsName;
 		this.minPrice = minPrice;
-		this.liked = liked;
 		this.tradingStatus = tradingStatus;
 	}
 }

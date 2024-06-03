@@ -17,19 +17,13 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
-import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.GoodsWishInfoDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
+import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsWishInfoDto;
+import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
-import spharos.nu.goods.domain.goods.entity.QBiddingCount;
 import spharos.nu.goods.domain.goods.entity.QGoods;
 import spharos.nu.goods.domain.goods.entity.QImage;
-import spharos.nu.goods.domain.goods.entity.QViewsCount;
-import spharos.nu.goods.domain.goods.entity.QWish;
-import spharos.nu.goods.domain.goods.entity.QWishCount;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
 import spharos.nu.goods.global.exception.CustomException;
 import spharos.nu.goods.global.exception.errorcode.ErrorCode;
@@ -55,7 +49,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		Long totalCount = getTotalCount(goods, whereClause);
 		List<GoodsCodeDto> content = getContent(goods, whereClause,
 			pageable);
-		
+
 		return new PageImpl<>(content, pageable, totalCount);
 	}
 
@@ -64,13 +58,12 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 
 		QGoods goods = QGoods.goods;
 		QImage image = QImage.image;
-		QWish wish = QWish.wish;
 
 		List<GoodsInfoDto> goodsList = queryFactory
-			.select(new QGoodsInfoDto(goods.goodsCode, image.url, goods.name, goods.minPrice, wish.id.isNotNull(),
-				goods.tradingStatus)).from(goods)
-			.join(image).on(goods.goodsCode.eq(image.goodsCode))
-			.leftJoin(wish).on(goods.goodsCode.eq(wish.goodsCode).and(wish.uuid.eq(uuid)))
+			.select(new QGoodsInfoDto(goods.goodsCode, image.url, goods.name, goods.minPrice, goods.tradingStatus))
+			.from(goods)
+			.join(image)
+			.on(goods.goodsCode.eq(image.goodsCode))
 			.where(image.index.eq(0))
 			.where(tradingStatusEq(statusNum))
 			.orderBy(goods.createdAt.desc())
@@ -82,36 +75,6 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 			.select(goods.count())
 			.from(goods)
 			.where(tradingStatusEq(statusNum))
-			.fetchOne();
-
-		long totalCount = total != null ? total : 0;
-
-		return new PageImpl<>(goodsList, pageable, totalCount);
-	}
-
-	@Override
-	public Page<GoodsWishInfoDto> findWishedGoodsByUuid(String uuid, Pageable pageable) {
-
-		QWish wish = QWish.wish;
-		QGoods goods = QGoods.goods;
-		QImage image = QImage.image;
-
-		List<GoodsWishInfoDto> goodsList = queryFactory
-			.select(new QGoodsWishInfoDto(goods.goodsCode, image.url, goods.name))
-			.from(wish)
-			.join(goods).on(wish.goodsCode.eq(goods.goodsCode))
-			.join(image).on(wish.goodsCode.eq(image.goodsCode))
-			.where(wish.uuid.eq(uuid))
-			.where(image.index.eq(0))
-			.orderBy(goods.createdAt.desc())
-			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize())
-			.fetch();
-
-		Long total = queryFactory
-			.select(wish.count())
-			.from(wish)
-			.where(wish.uuid.eq(uuid))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
@@ -136,15 +99,12 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 			Order direction = Sort.Direction.ASC.equals(order.getDirection()) ? Order.ASC : Order.DESC;
 
 			OrderSpecifier<?> orderSpecifier = switch (order.getProperty()) {
-				case "createdAt" ->
-					new OrderSpecifier<>(Order.DESC, goodsPath.getDateTime(order.getProperty(),
-						LocalDateTime.class));
-				case "closedAt" ->
-					new OrderSpecifier<>(Order.ASC, goodsPath.getDateTime(order.getProperty(),
-						LocalDateTime.class));
-				case "etc" ->
-					new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
-						LocalDateTime.class));
+				case "createdAt" -> new OrderSpecifier<>(Order.DESC, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
+				case "closedAt" -> new OrderSpecifier<>(Order.ASC, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
+				case "etc" -> new OrderSpecifier<>(direction, goodsPath.getDateTime(order.getProperty(),
+					LocalDateTime.class));
 				default -> throw new CustomException(ErrorCode.INVALID_REQUEST_PARAM);
 			};
 
