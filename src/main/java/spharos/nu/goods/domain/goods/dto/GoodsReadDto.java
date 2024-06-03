@@ -20,18 +20,14 @@ public class GoodsReadDto {
 	private String description;
 	@Schema(description = "시작가격")
 	private Long minPrice;
-	@Schema(description = "입찰시작일시")
+	@Schema(description = "경매시작일시")
 	private LocalDateTime openedAt;
-	@Schema(description = "입찰마감일시")
+	@Schema(description = "경매마감일시")
 	private LocalDateTime closedAt;
-	@Schema(description = "진행시간")
-	private byte durationTime;
 	@Schema(description = "선호거래방법")
 	private byte wishTradeType;
 	@Schema(description = "태그리스트")
 	private List<String> tags;
 	@Schema(description = "이미지url리스트")
 	private List<String> imageUrls;
-	@Schema(description = "낙찰가")
-	private Long winningPrice;
 }

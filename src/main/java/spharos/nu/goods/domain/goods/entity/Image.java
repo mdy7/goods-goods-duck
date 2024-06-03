@@ -24,7 +24,7 @@ public class Image {
 	@Column(name = "image_id")
 	private Long id;
 	@NotBlank
-	private String code;
+	private String goodsCode;
 	@NotBlank
 	private String url;
 	@NotNull

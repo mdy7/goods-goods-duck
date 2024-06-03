@@ -27,5 +27,5 @@ public class Wish {
     private String uuid;
 
     @NotBlank
-    private String code;
+    private String goodsCode;
 }

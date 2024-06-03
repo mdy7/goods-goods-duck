@@ -1,7 +1,6 @@
 package spharos.nu.goods.domain.goods.service;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -9,7 +8,6 @@ import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.GoodsReadDto;
-import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
@@ -26,7 +24,6 @@ import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.repository.ImageRepository;
 import spharos.nu.goods.domain.goods.repository.TagRepository;
 import spharos.nu.goods.domain.goods.client.BidServiceClient;
-import spharos.nu.goods.global.apiresponse.ApiResponse;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,7 +37,7 @@ public class GoodsService {
 	private final TaskScheduler taskScheduler;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
-		Page<GoodsSummaryDto> goodsPage = goodsRepository.findAllGoods(categoryPk,isTradingOnly,pageable);
+		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk,isTradingOnly,pageable);
 		return GoodsAllListDto.builder()
 			.maxPage(goodsPage.getTotalPages())
 			.nowPage(goodsPage.getNumber())
@@ -50,22 +47,20 @@ public class GoodsService {
 			.build();
 	}
 
-	public String goodsCreate(GoodsCreateDto goodsCreateDto) {
+	public String goodsCreate(String uuid, GoodsCreateDto goodsCreateDto) {
 
-		String code = createCode(goodsCreateDto);
-		LocalDateTime openedAt = goodsCreateDto.getOpenedAt();
+		String goodsCode = createCode(goodsCreateDto);
 
 		Goods goods = Goods.builder()
 			.name(goodsCreateDto.getGoodsName())
 			.description(goodsCreateDto.getDescription())
 			.categoryId(goodsCreateDto.getCategoryId())
 			.minPrice(goodsCreateDto.getMinPrice())
-			.openedAt(openedAt)
-			.durationTime(goodsCreateDto.getDurationTime())
+			.openedAt(goodsCreateDto.getOpenedAt())
+			.closedAt(goodsCreateDto.getClosedAt())
 			.wishTradeType(goodsCreateDto.getWishTradeType())
-			.uuid("111111")
-			.code(code)
-			.closedAt(openedAt.plusHours(goodsCreateDto.getDurationTime()))
+			.sellerUuid(uuid)
+			.goodsCode(goodsCode)
 			.build();
 
 		//굿즈 저장
@@ -78,7 +73,7 @@ public class GoodsService {
 		goodsCreateDto.getTags().forEach((tag) ->
 			tagRepository.save(Tag.builder()
 				.name(tag)
-				.code(code)
+				.goodsCode(goodsCode)
 				.build())
 		);
 
@@ -88,12 +83,12 @@ public class GoodsService {
 				String imageUrl = goodsCreateDto.getImageUrls().get(index);
 				imageRepository.save(Image.builder()
 					.url(imageUrl)
-					.code(code)
+					.goodsCode(goodsCode)
 					.index(index)
 					.build());
 			});
 
-		return savedGoods.getCode();
+		return savedGoods.getGoodsCode();
 	}
 
 	private String createCode(GoodsCreateDto goodsCreateDto) {
@@ -107,10 +102,10 @@ public class GoodsService {
 	}
 
 	public GoodsReadDto goodsRead(String code) {
-		Goods goods = goodsRepository.findOneByCode(code).orElseThrow();
+		Goods goods = goodsRepository.findOneByGoodsCode(code).orElseThrow();
 
-		List<String> tags = tagRepository.findAllByCode(code).stream().map(Tag::getName).toList();
-		List<String> imageUrls = imageRepository.findAllByCode(code).stream().map(Image::getUrl).toList();
+		List<String> tags = tagRepository.findAllByGoodsCode(code).stream().map(Tag::getName).toList();
+		List<String> imageUrls = imageRepository.findAllByGoodsCode(code).stream().map(Image::getUrl).toList();
 
 		return GoodsReadDto.builder()
 			.tradingStatus(goods.getTradingStatus())
@@ -119,25 +114,23 @@ public class GoodsService {
 			.minPrice(goods.getMinPrice())
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
-			.durationTime(goods.getDurationTime())
 			.wishTradeType(goods.getWishTradeType())
 			.tags(tags)
 			.imageUrls(imageUrls)
-			.winningPrice(goods.getWinningPrice())
 			.build();
 	}
 
 	@Transactional
 	public Void goodsDelete(String code) {
-		goodsRepository.deleteByCode(code);
-		tagRepository.deleteAllByCode(code);
-		imageRepository.deleteAllByCode(code);
+		goodsRepository.deleteByGoodsCode(code);
+		tagRepository.deleteAllByGoodsCode(code);
+		imageRepository.deleteAllByGoodsCode(code);
 		return null;
 	}
 
 	@Transactional
-	public Void goodsDisable(String code) {
-		Goods goods = goodsRepository.findOneByCode(code).orElseThrow();
+	public Void goodsDisable(String uuid, String goodsCode) {
+		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 
 		Goods updatedGoods = Goods.builder()
 			.id(goods.getId())
@@ -146,14 +139,12 @@ public class GoodsService {
 			.categoryId(goods.getCategoryId())
 			.minPrice(goods.getMinPrice())
 			.openedAt(goods.getOpenedAt())
-			.durationTime(goods.getDurationTime())
 			.wishTradeType(goods.getWishTradeType())
-			.uuid("111111")
-			.code(goods.getCode())
+			.sellerUuid(uuid)
+			.goodsCode(goods.getGoodsCode())
 			.closedAt(goods.getClosedAt())
-			.winningPrice(goods.getWinningPrice())
-			.tradingStatus((byte)2) //거래무산으로 변경
-			.isDelete(true) //삭제여부 true로 변경
+			.tradingStatus((byte)4) //거래취소로 변경
+			.isDelete(true) //삭제여부 true 로 변경
 			.build();
 
 		goodsRepository.save(updatedGoods);
@@ -167,15 +158,19 @@ public class GoodsService {
 
 	@Transactional
 	public void CloseGoods(Goods goods) {
-		log.info("(상품 코드: {}) 입찰 종료 ", goods.getCode());
+		log.info("(상품 코드: {}) 입찰 종료 ", goods.getGoodsCode());
 
-		ResponseEntity<ApiResponse> response = bidServiceClient.selectWinningBid(goods.getCode(), goods.getClosedAt());
+		bidServiceClient.selectWinningBid(goods.getGoodsCode(), goods.getClosedAt());
+        /*
+        erd 변경으로, goods엔티티에 낙찰가 필드가 없어져서 필요없는 코드로 판단 주석
+		ResponseEntity<ApiResponse> response = bidServiceClient.selectWinningBid(goods.getGoodsCode(), goods.getClosedAt());
 
 		Long winningBidPrice = null;
 
 		if(response.getBody().getResult() != null){
 			winningBidPrice = Long.valueOf((Integer)response.getBody().getResult());
 		}
+        */
 
 		Goods updatedGoods = Goods.builder()
 			.id(goods.getId())
@@ -184,18 +179,16 @@ public class GoodsService {
 			.categoryId(goods.getCategoryId())
 			.minPrice(goods.getMinPrice())
 			.openedAt(goods.getOpenedAt())
-			.durationTime(goods.getDurationTime())
 			.wishTradeType(goods.getWishTradeType())
-			.uuid(goods.getUuid())
-			.code(goods.getCode())
+			.sellerUuid(goods.getSellerUuid())
+			.goodsCode(goods.getGoodsCode())
 			.closedAt(goods.getClosedAt())
-			.winningPrice(winningBidPrice)
 			.tradingStatus((byte)2)
 			.isDelete(false)
 			.build();
 
 		Goods uppdateGoods = goodsRepository.save(updatedGoods);
 
-		log.info("(상품 코드: {}) 낙찰가: {}",  uppdateGoods.getCode(), uppdateGoods.getWinningPrice());
+		// log.info("(상품 코드: {}) 낙찰가: {}",  uppdateGoods.getGoodsCode(), uppdateGoods.getWinningPrice());
 	}
 }
