@@ -33,16 +33,4 @@ public class MyPageService {
 			.build();
 	}
 
-	public GoodsWishResponseDto wishGoodsGet(String uuid, Integer index) {
-
-		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsWishInfoDto> goodsWishInfoPage = goodsRepository.findWishedGoodsByUuid(uuid, pageable);
-
-		return GoodsWishResponseDto.builder()
-			.nowPage(goodsWishInfoPage.getNumber())
-			.maxPage(goodsWishInfoPage.getTotalPages())
-			.isLast(goodsWishInfoPage.isLast())
-			.goodsList(goodsWishInfoPage.getContent())
-			.build();
-	}
 }
