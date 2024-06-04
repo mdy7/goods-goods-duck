@@ -2,6 +2,8 @@ package spharos.nu.member.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,9 +13,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
-import spharos.nu.member.domain.member.dto.MannerDuckDto;
-import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
+import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
+import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
 import spharos.nu.member.domain.member.service.MyPageService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 
@@ -42,6 +45,16 @@ public class MyPageController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
 
 		return ApiResponse.success(myPageService.profileImageGet(uuid), "프로필 이미지 조회 성공");
+	}
+
+	// 프로필 사진 수정
+	@PatchMapping("/profile-img")
+	@Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필이미지 수정")
+	public ResponseEntity<ApiResponse<String>> updateProfileImage(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid,
+		@RequestBody ProfileImageRequestDto profileImageRequestDto) {
+
+		return ApiResponse.success(myPageService.profileImageUpdate(uuid, profileImageRequestDto), "프로필 이미지 수정 성공");
 	}
 
 	// 매너덕 조회

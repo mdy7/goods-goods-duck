@@ -1,4 +1,4 @@
-package spharos.nu.member.domain.member.dto;
+package spharos.nu.member.domain.member.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;

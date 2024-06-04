@@ -37,4 +37,37 @@ class MemberInfoRepositoryTest {
 		Assertions.assertThat(member.getNickname()).isEqualTo("쓰껄쓰껄");
 		Assertions.assertThat(member.getFavoriteCategory()).isEqualTo("애니");
 	}
+
+	@Test
+	@DisplayName("프로필이미지 수정 테스트")
+	void profileImageUpdateTest() {
+
+		// given
+		MemberInfo member = MemberInfo.builder()
+			.uuid("test-uuid")
+			.nickname("테스트닉네임")
+			.profileImage("기존이미지URL")
+			.favoriteCategory("취미")
+			.isNotify(true)
+			.build();
+		member = memberInfoRepository.save(member);
+		Long originalId = member.getId();
+
+		// when
+		String newImgUrl = "새로운이미지URL";
+		memberInfoRepository.save(MemberInfo.builder()
+			.id(member.getId())
+			.uuid(member.getUuid())
+			.nickname(member.getNickname())
+			.profileImage(newImgUrl)
+			.favoriteCategory(member.getFavoriteCategory())
+			.isNotify(member.isNotify())
+			.build());
+
+		MemberInfo updatedMember = memberInfoRepository.findByUuid("test-uuid").get();
+
+		// then
+		Assertions.assertThat(updatedMember.getId()).isEqualTo(originalId);
+		Assertions.assertThat(updatedMember.getProfileImage()).isEqualTo(newImgUrl);
+	}
 }

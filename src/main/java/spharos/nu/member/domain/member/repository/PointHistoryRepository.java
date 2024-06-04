@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import spharos.nu.member.domain.member.dto.DuckPointInfoDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.entity.DuckPointHistory;
 
 @Repository

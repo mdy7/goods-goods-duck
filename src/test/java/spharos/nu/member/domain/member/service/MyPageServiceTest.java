@@ -19,10 +19,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
-import spharos.nu.member.domain.member.dto.DuckPointInfoDto;
-import spharos.nu.member.domain.member.dto.MannerDuckDto;
-import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
+import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
+import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
 import spharos.nu.member.domain.member.entity.DuckPoint;
 import spharos.nu.member.domain.member.entity.MemberInfo;
 import spharos.nu.member.domain.member.entity.MemberScore;
@@ -99,6 +100,31 @@ class MyPageServiceTest {
 
 		// then
 		Assertions.assertThat(imageGet).isEqualTo("img_url");
+	}
+
+	@Test
+	@DisplayName("프로필이미지 수정 서비스 테스트")
+	void testProfileImageUpdate() {
+
+		// given
+		String testUuid = "테스트_uuid";
+		MemberInfo member = MemberInfo.builder()
+			.uuid(testUuid)
+			.nickname("쓰껄쓰껄")
+			.profileImage("img_url")
+			.favoriteCategory("애니")
+			.isNotify(true)
+			.build();
+
+		given(memberInfoRepository.findByUuid(testUuid)).willReturn(java.util.Optional.of(member));
+
+		// when
+		String newImgUrl = "새로운이미지URL";
+		ProfileImageRequestDto profileImageRequestDto = new ProfileImageRequestDto(newImgUrl);
+		String imageUpdate = myPageService.profileImageUpdate(testUuid, profileImageRequestDto);
+
+		// then
+		Assertions.assertThat(imageUpdate).isEqualTo(newImgUrl);
 	}
 
 	@Test
