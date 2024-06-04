@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
-import spharos.nu.member.domain.member.dto.DuckPointInfoDto;
-import spharos.nu.member.domain.member.dto.MannerDuckDto;
-import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
+import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
+import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
 import spharos.nu.member.domain.member.entity.DuckPoint;
 import spharos.nu.member.domain.member.entity.MemberInfo;
 import spharos.nu.member.domain.member.entity.MemberScore;

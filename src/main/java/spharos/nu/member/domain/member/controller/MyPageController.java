@@ -12,9 +12,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.member.domain.member.dto.DuckPointDetailDto;
-import spharos.nu.member.domain.member.dto.MannerDuckDto;
-import spharos.nu.member.domain.member.dto.ProfileResponseDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
+import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
+import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
 import spharos.nu.member.domain.member.service.MyPageService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 

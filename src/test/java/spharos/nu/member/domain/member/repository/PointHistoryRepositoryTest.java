@@ -10,7 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import spharos.nu.member.domain.member.dto.DuckPointInfoDto;
+import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.entity.DuckPointHistory;
 
 @DataJpaTest
