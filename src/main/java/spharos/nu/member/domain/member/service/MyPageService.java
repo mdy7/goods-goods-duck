@@ -77,6 +77,22 @@ public class MyPageService {
 		return imgUrl;
 	}
 
+	public Void profileImageDelete(String uuid) {
+
+		MemberInfo member = getMemberInfo(uuid);
+
+		memberInfoRepository.save(MemberInfo.builder()
+			.id(member.getId())
+			.uuid(member.getUuid())
+			.nickname(member.getNickname())
+			.profileImage(null)
+			.favoriteCategory(member.getFavoriteCategory())
+			.isNotify(member.isNotify())
+			.build());
+
+		return null;
+	}
+
 	public MannerDuckDto mannerDuckGet(String uuid) {
 
 		MemberScore memberScore = scoreRepository.findByUuid(uuid).orElseThrow();
