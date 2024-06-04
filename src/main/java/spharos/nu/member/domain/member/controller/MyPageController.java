@@ -2,6 +2,7 @@ package spharos.nu.member.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +43,16 @@ public class MyPageController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
 
 		return ApiResponse.success(myPageService.profileImageGet(uuid), "프로필 이미지 조회 성공");
+	}
+
+	// 프로필 사진 수정
+	@PatchMapping("/profile-img")
+	@Operation(summary = "회원 프로필 이미지 수정", description = "회원 프로필이미지 수정")
+	public ResponseEntity<ApiResponse<String>> updateProfileImage(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid,
+		@RequestParam("profileImage") String profileImage) {
+
+		return ApiResponse.success(myPageService.profileImageUpdate(uuid, profileImage), "프로필 이미지 수정 성공");
 	}
 
 	// 매너덕 조회

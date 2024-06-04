@@ -32,7 +32,7 @@ public class MyPageService {
 
 	public ProfileResponseDto profileGet(String uuid) {
 
-		MemberInfo member = memberInfoRepository.findByUuid(uuid).orElseThrow();
+		MemberInfo member = getMemberInfo(uuid);
 
 		return ProfileResponseDto.builder()
 			.profileImg(member.getProfileImage())
@@ -43,9 +43,25 @@ public class MyPageService {
 
 	public String profileImageGet(String uuid) {
 
-		MemberInfo member = memberInfoRepository.findByUuid(uuid).orElseThrow();
+		MemberInfo member = getMemberInfo(uuid);
 
 		return member.getProfileImage();
+	}
+
+	public String  profileImageUpdate(String uuid, String imgUrl) {
+
+		MemberInfo member = getMemberInfo(uuid);
+
+		memberInfoRepository.save(MemberInfo.builder()
+			.id(member.getId())
+			.uuid(member.getUuid())
+			.nickname(member.getNickname())
+			.profileImage(imgUrl)
+			.favoriteCategory(member.getFavoriteCategory())
+			.isNotify(member.isNotify())
+			.build());
+
+		return imgUrl;
 	}
 
 	public MannerDuckDto mannerDuckGet(String uuid) {
@@ -96,5 +112,10 @@ public class MyPageService {
 			.isLast(duckPointInfoPage.isLast())
 			.historyList(duckPointInfoPage.getContent())
 			.build();
+	}
+
+	private MemberInfo getMemberInfo(String uuid) {
+
+		return memberInfoRepository.findByUuid(uuid).orElseThrow();
 	}
 }
