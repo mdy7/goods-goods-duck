@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
@@ -48,9 +49,10 @@ public class MyPageService {
 		return member.getProfileImage();
 	}
 
-	public String  profileImageUpdate(String uuid, String imgUrl) {
+	public String profileImageUpdate(String uuid, ProfileImageRequestDto profileImageRequestDto) {
 
 		MemberInfo member = getMemberInfo(uuid);
+		String imgUrl = profileImageRequestDto.getImgUrl();
 
 		memberInfoRepository.save(MemberInfo.builder()
 			.id(member.getId())
