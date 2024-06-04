@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import spharos.nu.auth.domain.auth.dto.ChangePwdDto;
+import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
 import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
@@ -86,9 +86,9 @@ public class UserNController {
 	}
 
 	@PutMapping("/pwd")
-	@Operation(summary = "비밀번호 재설정", description = "이전 비밀번호와 같다면 409 error")
-	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ChangePwdDto changePwdDto) {
-		userService.changePwd(changePwdDto);
+	@Operation(summary = "비밀번호 초기화", description = "이전 비밀번호와 같다면 409 error")
+	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ResetPwdDto resetPwdDto) {
+		userService.resetPwd(resetPwdDto);
 		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
 	}
 }

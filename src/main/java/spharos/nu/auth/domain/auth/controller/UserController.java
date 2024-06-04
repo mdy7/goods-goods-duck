@@ -2,6 +2,7 @@ package spharos.nu.auth.domain.auth.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import spharos.nu.auth.domain.auth.dto.UpdatePwdDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
 import spharos.nu.auth.utils.jwt.JwtProvider;
@@ -27,5 +29,13 @@ public class UserController {
 		String uuid = jwtProvider.getUuid(token);
 		userService.withdraw(uuid);
 		return ApiResponse.success(null, "회원 탈퇴 성공");
+	}
+
+	@PutMapping("/pwd")
+	@Operation(summary = "비밀번호 변경", description = "해당 회원의 비밀번호를 변경")
+	public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestHeader("Authorization") String token, @RequestBody UpdatePwdDto updatePwdDto) {
+		String uuid = jwtProvider.getUuid(token);
+		userService.updatePwd(updatePwdDto, uuid);
+		return ApiResponse.success(null, "정보 수정 성공");
 	}
 }

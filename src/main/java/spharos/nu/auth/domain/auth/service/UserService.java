@@ -10,10 +10,11 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.auth.domain.auth.dto.ChangePwdDto;
+import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
 import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.UpdatePwdDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.entity.SocialMember;
 import spharos.nu.auth.domain.auth.repository.SocialRepository;
@@ -107,16 +108,25 @@ public class UserService {
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 	}
 
-	public void changePwd(ChangePwdDto changePwdDto) {
-		Member member = userRepository.findByPhoneNumber(changePwdDto.getPhoneNumber())
+	public void resetPwd(ResetPwdDto resetPwdDto) {
+		Member member = userRepository.findByPhoneNumber(resetPwdDto.getPhoneNumber())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-		if (passwordEncoder.matches(changePwdDto.getNewPassword(), member.getPassword())) {
+		if (passwordEncoder.matches(resetPwdDto.getNewPassword(), member.getPassword())) {
 			throw new CustomException(ErrorCode.ALREADY_EXIST_PASSWORD);
 		}
 
-		String encodedNewPassword = passwordEncoder.encode(changePwdDto.getNewPassword());
-		changePwdDto.updatePassword(member, encodedNewPassword);
+		String encodedNewPassword = passwordEncoder.encode(resetPwdDto.getNewPassword());
+		resetPwdDto.resetPassword(member, encodedNewPassword);
+		userRepository.save(member);
+	}
+
+	public void updatePwd(UpdatePwdDto updatePwdDto, String uuid) {
+		Member member = userRepository.findByUuid(uuid)
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		String encodedNewPassword = passwordEncoder.encode(updatePwdDto.getNewPassword());
+		updatePwdDto.updatePassword(member, encodedNewPassword);
 		userRepository.save(member);
 	}
 
