@@ -102,6 +102,29 @@ class MyPageServiceTest {
 	}
 
 	@Test
+	@DisplayName("프로필이미지 수정 서비스 테스트")
+	void testProfileImageUpdate() {
+
+		// given
+		MemberInfo member = MemberInfo.builder()
+			.uuid("테스트_uuid")
+			.nickname("쓰껄쓰껄")
+			.profileImage("img_url")
+			.favoriteCategory("애니")
+			.isNotify(true)
+			.build();
+
+		given(memberInfoRepository.findByUuid("테스트_uuid")).willReturn(java.util.Optional.ofNullable(member));
+
+		// when
+		String newImgUrl = "새로운이미지URL";
+		String imageUpdate = myPageService.profileImageUpdate("테스트_uuid", newImgUrl);
+
+		// then
+		Assertions.assertThat(imageUpdate).isEqualTo(newImgUrl);
+	}
+
+	@Test
 	@DisplayName("매너덕 조회 서비스 테스트")
 	void mannerDuckGet() {
 
