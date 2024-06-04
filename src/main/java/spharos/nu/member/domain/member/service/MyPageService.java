@@ -1,5 +1,7 @@
 package spharos.nu.member.domain.member.service;
 
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,8 @@ import spharos.nu.member.domain.member.repository.DuckPointRepository;
 import spharos.nu.member.domain.member.repository.MemberInfoRepository;
 import spharos.nu.member.domain.member.repository.PointHistoryRepository;
 import spharos.nu.member.domain.member.repository.ScoreRepository;
+import spharos.nu.member.global.exception.CustomException;
+import spharos.nu.member.global.exception.errorcode.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,13 @@ public class MyPageService {
 	private final ScoreRepository scoreRepository;
 	private final PointHistoryRepository pointHistoryRepository;
 	private final DuckPointRepository duckPointRepository;
+
+	public void isDuplicatedNick(String nickname) {
+		Optional<MemberInfo> isMember = memberInfoRepository.findByNickname(nickname);
+		if (isMember.isPresent()) {
+			throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
+		}
+	}
 
 	public ProfileResponseDto profileGet(String uuid) {
 

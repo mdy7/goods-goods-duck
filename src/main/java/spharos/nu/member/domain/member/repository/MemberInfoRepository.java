@@ -11,4 +11,5 @@ import spharos.nu.member.domain.member.entity.MemberInfo;
 public interface MemberInfoRepository extends JpaRepository<MemberInfo, Long> {
 
 	Optional<MemberInfo> findByUuid(String uuid);
+	Optional<MemberInfo> findByNickname(String nickname);
 }
