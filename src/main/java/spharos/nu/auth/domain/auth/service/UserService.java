@@ -89,8 +89,8 @@ public class UserService {
 		}
 	}
 
-	public String findId(String nickname) {
-		Member member = userRepository.findByNickname(nickname)
+	public String findId(String phoneNumber) {
+		Member member = userRepository.findByPhoneNumber(phoneNumber)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
 		return member.getUserId();

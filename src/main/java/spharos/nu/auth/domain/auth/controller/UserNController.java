@@ -65,7 +65,7 @@ public class UserNController {
 	}
 
 	@GetMapping("/find/{tab}")
-	@Operation(summary = "아이디/비밀번호 찾기", description = "닉네임 활용해서 아이디 찾기, 없는 정보면 404 error")
+	@Operation(summary = "아이디/비밀번호 찾기", description = "핸드폰 번호 활용해서 아이디 찾기, 없는 정보면 404 error")
 	public ResponseEntity<ApiResponse<Optional<String>>> findUser(@PathVariable String tab, @RequestParam String inputParams) {
 		if (Objects.equals(tab, "id")) {
 			String userId = userService.findId(inputParams);
