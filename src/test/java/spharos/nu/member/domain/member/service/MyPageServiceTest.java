@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -125,6 +126,34 @@ class MyPageServiceTest {
 
 		// then
 		Assertions.assertThat(imageUpdate).isEqualTo(newImgUrl);
+	}
+
+	@Test
+	@DisplayName("프로필이미지 삭제 서비스 테스트")
+	void testProfileImageDelete() {
+
+		// given
+		MemberInfo member = MemberInfo.builder()
+			.id(1L)
+			.uuid("테스트_uuid")
+			.nickname("쓰껄쓰껄")
+			.profileImage("img_url")
+			.favoriteCategory("애니")
+			.isNotify(true)
+			.build();
+
+		given(memberInfoRepository.findByUuid("테스트_uuid")).willReturn(java.util.Optional.ofNullable(member));
+		given(memberInfoRepository.save(any(MemberInfo.class))).willAnswer(invocation -> invocation.getArgument(0));
+
+		// when
+		myPageService.profileImageDelete("테스트_uuid");
+
+		// then
+		ArgumentCaptor<MemberInfo> captor = ArgumentCaptor.forClass(MemberInfo.class);
+		verify(memberInfoRepository).save(captor.capture());
+		MemberInfo savedMember = captor.getValue();
+
+		Assertions.assertThat(savedMember.getProfileImage()).isEqualTo(null);
 	}
 
 	@Test
