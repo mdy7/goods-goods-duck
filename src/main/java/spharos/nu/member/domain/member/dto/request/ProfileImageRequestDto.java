@@ -8,4 +8,8 @@ import lombok.NoArgsConstructor;
 public class ProfileImageRequestDto {
 
 	private String imgUrl;
+
+	public ProfileImageRequestDto(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
 }

@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
@@ -106,19 +107,21 @@ class MyPageServiceTest {
 	void testProfileImageUpdate() {
 
 		// given
+		String testUuid = "테스트_uuid";
 		MemberInfo member = MemberInfo.builder()
-			.uuid("테스트_uuid")
+			.uuid(testUuid)
 			.nickname("쓰껄쓰껄")
 			.profileImage("img_url")
 			.favoriteCategory("애니")
 			.isNotify(true)
 			.build();
 
-		given(memberInfoRepository.findByUuid("테스트_uuid")).willReturn(java.util.Optional.ofNullable(member));
+		given(memberInfoRepository.findByUuid(testUuid)).willReturn(java.util.Optional.of(member));
 
 		// when
 		String newImgUrl = "새로운이미지URL";
-		String imageUpdate = myPageService.profileImageUpdate("테스트_uuid", newImgUrl);
+		ProfileImageRequestDto profileImageRequestDto = new ProfileImageRequestDto(newImgUrl);
+		String imageUpdate = myPageService.profileImageUpdate(testUuid, profileImageRequestDto);
 
 		// then
 		Assertions.assertThat(imageUpdate).isEqualTo(newImgUrl);
