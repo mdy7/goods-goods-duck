@@ -57,18 +57,11 @@ public class UserNController {
 		return ApiResponse.created("회원가입에 성공했습니다.");
 	}
 
-	@GetMapping("/duplication-check/{type}")
-	@Operation(summary = "아이디 중복체크", description = "아이디/닉네임이 중복되었다면 409 error, 아니면 200 ok")
-	public ResponseEntity<ApiResponse<String>> duplicationCheck(@PathVariable String type, @RequestParam String inputParams) {
-		if (Objects.equals(type, "id")) {
-			userService.isDuplicatedId(inputParams);
-			return ApiResponse.success(inputParams, "사용 가능한 아이디입니다.");
-		} else if (Objects.equals(type, "nick")) {
-			userService.isDuplicatedNick(inputParams);
-			return ApiResponse.success(inputParams, "사용 가능한 닉네임입니다.");
-		} else {
-			return ApiResponse.fail(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다.");
-		}
+	@GetMapping("/duplication-check")
+	@Operation(summary = "아이디 중복체크", description = "아이디가 중복되었다면 409 error, 아니면 200 ok")
+	public ResponseEntity<ApiResponse<String>> duplicationCheck(@RequestParam String inputParams) {
+		userService.isDuplicatedId(inputParams);
+		return ApiResponse.success(inputParams, "사용 가능한 아이디입니다.");
 	}
 
 	@GetMapping("/find/{tab}")
