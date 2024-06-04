@@ -89,13 +89,6 @@ public class UserService {
 		}
 	}
 
-	public void isDuplicatedNick(String nickname) {
-		Optional<Member> isMember = userRepository.findByNickname(nickname);
-		if (isMember.isPresent()) {
-			throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
-		}
-	}
-
 	public String findId(String nickname) {
 		Member member = userRepository.findByNickname(nickname)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
