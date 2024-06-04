@@ -5,10 +5,10 @@ import lombok.Getter;
 import spharos.nu.auth.domain.auth.entity.Member;
 
 @Getter
-public class ChangePwdDto {
+public class UpdatePwdDto {
 
-	@Schema(description = "유저 조회에 사용할 핸드폰 번호")
-	private String phoneNumber;
+	@Schema(description = "현재 비밀번호")
+	private String currentPassword;
 	@Schema(description = "새로운 비밀번호")
 	private String newPassword;
 

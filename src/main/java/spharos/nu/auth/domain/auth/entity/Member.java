@@ -45,18 +45,6 @@ public class Member extends AuditBaseEntity {
 	@Column(name = "email")
 	private String email;
 
-	@Column(name = "nickname", nullable = false)
-	private String nickname;
-
-	@Column(name = "profile_image")
-	private String profileImage;
-
-	@Column(name = "favorite_category", nullable = false)
-	private String favoriteCategory;
-
-	@Column(name = "is_notify", nullable = false)
-	private boolean isNotify;
-
 	@Column(name = "is_withdraw", nullable = false)
 	private boolean isWithdraw;
 

@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.auth.domain.auth.dto.ChangePwdDto;
+import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.LoginResponseDto;
 import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.UpdatePwdDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.entity.SocialMember;
 import spharos.nu.auth.domain.auth.repository.SocialRepository;
@@ -34,7 +34,7 @@ public class UserService {
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
-	public LoginResponseDto login(LoginDto loginDto) {
+	public JwtToken login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -42,14 +42,7 @@ public class UserService {
 			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
-		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
-
-		return LoginResponseDto.builder()
-			.jwtToken(jwtToken)
-			.nickname(member.getNickname())
-			.profileImage(member.getProfileImage())
-			.favoriteCategory(member.getFavoriteCategory())
-			.build();
+		return jwtProvider.createToken(member.getUuid());
 	}
 
 	public JwtToken socialLogin(SocialLoginDto socialLoginDto) {
@@ -66,7 +59,13 @@ public class UserService {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
 
-		Member member = joinDto.toEntity(uuid, encodedPassword);
+		Member member = Member.builder()
+			.uuid(uuid)
+			.userId(joinDto.getUserId())
+			.password(encodedPassword)
+			.phoneNumber(joinDto.getPhoneNumber())
+			.isWithdraw(false)
+			.build();
 		userRepository.save(member);
 
 		// Todo: 카프카로 2개의 추가 엔티티 생성 필요
@@ -109,16 +108,25 @@ public class UserService {
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 	}
 
-	public void changePwd(ChangePwdDto changePwdDto) {
-		Member member = userRepository.findByPhoneNumber(changePwdDto.getPhoneNumber())
+	public void resetPwd(ResetPwdDto resetPwdDto) {
+		Member member = userRepository.findByPhoneNumber(resetPwdDto.getPhoneNumber())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-		if (passwordEncoder.matches(changePwdDto.getNewPassword(), member.getPassword())) {
+		if (passwordEncoder.matches(resetPwdDto.getNewPassword(), member.getPassword())) {
 			throw new CustomException(ErrorCode.ALREADY_EXIST_PASSWORD);
 		}
 
-		String encodedNewPassword = passwordEncoder.encode(changePwdDto.getNewPassword());
-		changePwdDto.updatePassword(member, encodedNewPassword);
+		String encodedNewPassword = passwordEncoder.encode(resetPwdDto.getNewPassword());
+		resetPwdDto.resetPassword(member, encodedNewPassword);
+		userRepository.save(member);
+	}
+
+	public void updatePwd(UpdatePwdDto updatePwdDto, String uuid) {
+		Member member = userRepository.findByUuid(uuid)
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		String encodedNewPassword = passwordEncoder.encode(updatePwdDto.getNewPassword());
+		updatePwdDto.updatePassword(member, encodedNewPassword);
 		userRepository.save(member);
 	}
 

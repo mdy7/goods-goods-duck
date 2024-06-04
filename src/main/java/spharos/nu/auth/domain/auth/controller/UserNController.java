@@ -17,10 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import spharos.nu.auth.domain.auth.dto.ChangePwdDto;
+import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.LoginResponseDto;
 import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
@@ -37,10 +36,10 @@ public class UserNController {
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인")
-	public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginDto loginDto) {
-		LoginResponseDto loginResponse = userService.login(loginDto);
+	public ResponseEntity<ApiResponse<JwtToken>> login(@RequestBody LoginDto loginDto) {
+		JwtToken jwtToken = userService.login(loginDto);
 
-		return ApiResponse.success(loginResponse, "로그인에 성공했습니다.");
+		return ApiResponse.success(jwtToken, "로그인에 성공했습니다.");
 	}
 
 	@PostMapping("/social-login")
@@ -87,9 +86,9 @@ public class UserNController {
 	}
 
 	@PutMapping("/pwd")
-	@Operation(summary = "비밀번호 재설정", description = "이전 비밀번호와 같다면 409 error")
-	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ChangePwdDto changePwdDto) {
-		userService.changePwd(changePwdDto);
+	@Operation(summary = "비밀번호 초기화", description = "이전 비밀번호와 같다면 409 error")
+	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ResetPwdDto resetPwdDto) {
+		userService.resetPwd(resetPwdDto);
 		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
 	}
 }
