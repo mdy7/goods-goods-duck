@@ -69,7 +69,7 @@ public class GoodsService {
 		//태그 저장
 		goodsCreateDto.getTags().forEach((tag) ->
 			tagRepository.save(Tag.builder()
-				.name(tag.getTagName())
+				.name(tag.getName())
 				.goodsCode(goodsCode)
 				.build())
 		);

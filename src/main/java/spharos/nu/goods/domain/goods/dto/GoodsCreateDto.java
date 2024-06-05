@@ -33,8 +33,8 @@ public class GoodsCreateDto {
 
 	@Getter
 	public static class TagDto {
-		private Long tagId;
-		private String tagName;
+		private Long id;
+		private String name;
 	}
 
 }
