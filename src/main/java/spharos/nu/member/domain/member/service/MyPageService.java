@@ -79,7 +79,7 @@ public class MyPageService {
 	public String profileImageUpdate(String uuid, ProfileImageRequestDto profileImageRequestDto) {
 
 		MemberInfo member = getMemberInfo(uuid);
-		String imgUrl = profileImageRequestDto.getImgUrl();
+		String imgUrl = profileImageRequestDto.getProfileImage();
 
 		memberInfoRepository.save(MemberInfo.builder()
 			.id(member.getId())
