@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.GoodsReadDto;
@@ -30,6 +31,7 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("api/v1/goods")
+@Slf4j
 @Tag(name = "Goods", description = "토큰을 검증하는 굿즈 컨트롤러")
 public class GoodsController {
 	private final GoodsService goodsService;
@@ -40,6 +42,7 @@ public class GoodsController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@RequestBody GoodsCreateDto goodsCreateDto
 	) {
+
 		return ApiResponse.success(goodsService.goodsCreate(uuid, goodsCreateDto), "굿즈 등록 성공");
 	}
 

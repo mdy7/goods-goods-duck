@@ -12,7 +12,7 @@ public enum ErrorCode {
 	// 400 : 잘못된 요청
 	MISSING_PATH_VARIALBE(400,"pathVariable이 누락되었습니다"),
 	MISSING_QUERY_PARAM(400,"QueryParameter이 누락되었습니다"),
-	MISSING_BODY_REQUEST(400,"RequestBody가 누락되었습니다"),
+	MISSING_BODY_REQUEST(400,"RequestBody가 누락되었습니다. 혹은 각 필드값이 적절한지 확인하세요"),
 	INVALID_REQUEST_BODY(400, "RequestBody가 유효하지 않습니다"),
 	INVALID_REQUEST_PARAM(400, "RequestParameter가 유효하지 않습니다"),
 	INVALID_REQUEST_METHOD(400, "요청 메서드가 유효하지 않습니다"),

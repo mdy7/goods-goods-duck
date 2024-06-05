@@ -27,8 +27,14 @@ public class GoodsCreateDto {
 	@Schema(description = "선호거래방법")
 	private byte wishTradeType;
 	@Schema(description = "태그리스트")
-	private List<String> tags;
+	private List<TagDto> tags;
 	@Schema(description = "이미지url리스트")
 	private List<String> imageUrls;
+
+	@Getter
+	public static class TagDto {
+		private Long id;
+		private String name;
+	}
 
 }
