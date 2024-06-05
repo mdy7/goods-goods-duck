@@ -60,6 +60,7 @@ public class MyPageService {
 
 		memberInfoRepository.save(MemberInfo.builder()
 			.id(member.getId())
+			.uuid(member.getUuid())
 			.profileImage(profileRequestDto.getProfileImage())
 			.nickname(profileRequestDto.getNickname())
 			.favoriteCategory(profileRequestDto.getFavoriteCategory())
