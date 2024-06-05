@@ -1,6 +1,7 @@
 package spharos.nu.member.domain.member.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,6 +56,15 @@ public class MyPageController {
 		@RequestBody ProfileImageRequestDto profileImageRequestDto) {
 
 		return ApiResponse.success(myPageService.profileImageUpdate(uuid, profileImageRequestDto), "프로필 이미지 수정 성공");
+	}
+
+	// 프로필 사진 삭제
+	@DeleteMapping("/profile-img")
+	@Operation(summary = "회원 프로필 이미지 삭제", description = "회원 프로필 이미지 삭제")
+	public ResponseEntity<ApiResponse<Void>> deleteProfileImage(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
+
+		return ApiResponse.success(myPageService.profileImageDelete(uuid), "프로필이미지 삭제 성공");
 	}
 
 	// 매너덕 조회
