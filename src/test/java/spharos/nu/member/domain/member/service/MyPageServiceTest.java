@@ -21,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
+import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
@@ -78,6 +79,44 @@ class MyPageServiceTest {
 		Assertions.assertThat(profileResponseDto.getProfileImg()).isEqualTo("img_url");
 		Assertions.assertThat(profileResponseDto.getNickname()).isEqualTo("쓰껄쓰껄");
 		Assertions.assertThat(profileResponseDto.getFavCategory()).isEqualTo("애니");
+	}
+
+	@Test
+	@DisplayName("프로필 수정 서비스 테스트")
+	void testProfileUpdate() {
+
+		// given
+		String testUuid = "테스트_uuid";
+		MemberInfo member = MemberInfo.builder()
+			.uuid(testUuid)
+			.nickname("쓰껄쓰껄")
+			.profileImage("img_url")
+			.favoriteCategory("애니")
+			.isNotify(true)
+			.build();
+
+		given(memberInfoRepository.findByUuid(testUuid)).willReturn(java.util.Optional.of(member));
+
+		// ArgumentCaptor 인스턴스 생성
+		ArgumentCaptor<MemberInfo> argumentCaptor = ArgumentCaptor.forClass(MemberInfo.class);
+
+		// when
+		String newImgUrl = "새로운이미지URL";
+		String newNickname = "새로운닉네임";
+		String newCat = "애니";
+		ProfileRequestDto profileRequestDto = new ProfileRequestDto(newImgUrl, newNickname, newCat);
+		myPageService.profileUpdate(testUuid, profileRequestDto);
+
+		// then
+		// 메서드 호출 검증 및 인자 캡처
+		verify(memberInfoRepository).save(argumentCaptor.capture());
+
+		// 캡처된 인자 검증
+		MemberInfo capturedMemberInfo = argumentCaptor.getValue();
+		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(newImgUrl);
+		Assertions.assertThat(capturedMemberInfo.getNickname()).isEqualTo(newNickname);
+		Assertions.assertThat(capturedMemberInfo.getFavoriteCategory()).isEqualTo(newCat);
+		Assertions.assertThat(capturedMemberInfo.getUuid()).isEqualTo(testUuid);
 	}
 
 	@Test

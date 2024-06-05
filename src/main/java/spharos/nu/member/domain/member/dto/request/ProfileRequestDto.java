@@ -18,10 +18,10 @@ public class ProfileRequestDto {
 	@Schema(description = "선호 카테고리")
 	private String favoriteCategory;
 
-	// public ProfileRequestDto(MemberInfo memberInfo) {
-	//
-	// 	this.profileImage = memberInfo.getProfileImage();
-	// 	this.nickname = memberInfo.getNickname();
-	// 	this.favoriteCategory = memberInfo.getFavoriteCategory();
-	// }
+	public ProfileRequestDto(String profileImage, String nickname, String favoriteCategory) {
+
+		this.profileImage = profileImage;
+		this.nickname = nickname;
+		this.favoriteCategory = favoriteCategory;
+	}
 }
