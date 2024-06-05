@@ -85,10 +85,10 @@ public class GoodsService {
 					.build());
 			});
 
-		// 입찰 시작시간에 스케줄링 걸기
+		// 경매 시작시간에 스케줄링 걸기
 		scheduleOpenGoods(savedGoods);
 
-		// 입찰 종료시간에 스케줄링 걸기
+		// 경매 종료시간에 스케줄링 걸기
 		scheduleCloseGoods(savedGoods);
 
 		return savedGoods.getGoodsCode();
