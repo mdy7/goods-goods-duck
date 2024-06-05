@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
+import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
@@ -37,6 +38,16 @@ public class MyPageController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
 
 		return ApiResponse.success(myPageService.profileGet(uuid), "프로필 조회 성공");
+	}
+
+	// 프로필 수정
+	@PatchMapping("")
+	@Operation(summary = "회원 프로필 수정", description = "회원 프로필이미지, 닉네임, 선호카테고리 수정")
+	public ResponseEntity<ApiResponse<Void>> updateProfile(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid,
+		@RequestBody ProfileRequestDto profileRequestDto) {
+
+		return ApiResponse.success(myPageService.profileUpdate(uuid, profileRequestDto), "프로필 수정 성공");
 	}
 
 	// 프로필 사진 조회

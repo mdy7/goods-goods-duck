@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
+import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
@@ -51,6 +52,21 @@ public class MyPageService {
 			.nickname(member.getNickname())
 			.favCategory(member.getFavoriteCategory())
 			.build();
+	}
+
+	public Void profileUpdate(String uuid, ProfileRequestDto profileRequestDto) {
+
+		MemberInfo member = getMemberInfo(uuid);
+
+		memberInfoRepository.save(MemberInfo.builder()
+			.id(member.getId())
+			.profileImage(profileRequestDto.getProfileImage())
+			.nickname(profileRequestDto.getNickname())
+			.favoriteCategory(profileRequestDto.getFavoriteCategory())
+			.isNotify(member.isNotify())
+			.build());
+
+		return null;
 	}
 
 	public String profileImageGet(String uuid) {
