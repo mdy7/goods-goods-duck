@@ -66,13 +66,10 @@ public class GoodsService {
 		//굿즈 저장
 		Goods savedGoods = goodsRepository.save(goods);
 
-		// 입찰 종료시간에 스케줄링 걸기
-		scheduleCloseGoods(savedGoods);
-
 		//태그 저장
 		goodsCreateDto.getTags().forEach((tag) ->
 			tagRepository.save(Tag.builder()
-				.name(tag)
+				.name(tag.getTagName())
 				.goodsCode(goodsCode)
 				.build())
 		);
@@ -87,6 +84,12 @@ public class GoodsService {
 					.index(index)
 					.build());
 			});
+
+		// 입찰 시작시간에 스케줄링 걸기
+		scheduleOpenGoods(savedGoods);
+
+		// 입찰 종료시간에 스케줄링 걸기
+		scheduleCloseGoods(savedGoods);
 
 		return savedGoods.getGoodsCode();
 	}
@@ -151,14 +154,18 @@ public class GoodsService {
 		return null;
 	}
 
-	// 입찰 종료시간에 스케줄링
+	// 경매 시작시간에 스케줄링
+	private void scheduleOpenGoods(Goods goods) {
+	}
+
+	// 경매 종료시간에 스케줄링
 	private void scheduleCloseGoods(Goods goods) {
 		taskScheduler.schedule(() -> CloseGoods(goods), Timestamp.valueOf(goods.getClosedAt()));
 	}
 
 	@Transactional
 	public void CloseGoods(Goods goods) {
-		log.info("(상품 코드: {}) 입찰 종료 ", goods.getGoodsCode());
+		log.info("(상품 코드: {}) 경매 종료 ", goods.getGoodsCode());
 
 		bidServiceClient.selectWinningBid(goods.getGoodsCode(), goods.getClosedAt());
         /*
