@@ -7,9 +7,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ProfileImageRequestDto {
 
-	private String imgUrl;
+	private String profileImage;
 
-	public ProfileImageRequestDto(String imgUrl) {
-		this.imgUrl = imgUrl;
+	public ProfileImageRequestDto(String profileImage) {
+		this.profileImage = profileImage;
 	}
 }
