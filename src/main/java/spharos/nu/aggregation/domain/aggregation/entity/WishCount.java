@@ -14,7 +14,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 @Builder
 @ToString
 @Table(name = "wish_count")
