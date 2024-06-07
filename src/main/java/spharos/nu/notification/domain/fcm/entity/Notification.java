@@ -14,13 +14,13 @@ public class Notification extends CreatedAtBaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "notification_id")
-    private Long notificationId;
+    private Long id;
 
     private String title;
-    private String body;
-    private String userUuid;
+    private String content;
+    private String uuid;
     private boolean isRead;
-    private byte type;
+    private byte notificationType;
 
 
 
