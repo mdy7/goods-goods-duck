@@ -24,8 +24,8 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_SERVER_URL}/eureka/
 
-springdoc:
-  api-docs:
-    path: /api/v1/aggregation-n/swagger/api-docs
-  swagger-ui:
+#springdoc:
+#  api-docs:
+#    path: /api/v1/aggregation-n/swagger/api-docs
+#  swagger-ui:
 #    path: /swagger-ui/index.html
