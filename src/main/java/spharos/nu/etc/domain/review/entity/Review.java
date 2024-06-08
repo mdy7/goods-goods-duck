@@ -28,11 +28,11 @@ public class Review extends CreatedAtBaseEntity {
 	@Column(name = "review_id", nullable = false)
 	private Long id;
 
-	@Column(name = "seller_uuid", unique = true)
-	private String sellerUuid;
+	@Column(name = "writer_uuid")
+	private String writerUuid;
 
-	@Column(name = "bidder_uuid", unique = true)
-	private String bidderUuid;
+	@Column(name = "receiver_uuid")
+	private String receiverUuid;
 
 	@Column(name = "goods_code", nullable = false)
 	private String goodsCode;
