@@ -24,6 +24,7 @@ public class MyPageService {
 		Page<GoodsInfoDto> goodsInfoPage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
 
 		return GoodsSellResponseDto.builder()
+			.totalCount(goodsInfoPage.getTotalElements())
 			.nowPage(goodsInfoPage.getNumber())
 			.maxPage(goodsInfoPage.getTotalPages())
 			.isLast(goodsInfoPage.isLast())
