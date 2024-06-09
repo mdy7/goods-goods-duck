@@ -1,6 +1,5 @@
 package spharos.nu.aggregation.domain.wish.service;
 
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import spharos.nu.aggregation.global.exception.CustomException;
 
 import static spharos.nu.aggregation.global.exception.errorcode.ErrorCode.ALREADY_EXIST_LIKE;
 import static spharos.nu.aggregation.global.exception.errorcode.ErrorCode.NOT_FOUND_ENTITY;
+
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -73,5 +74,15 @@ public class WishService {
      */
     public boolean isWished(String goodsCode, String uuid) {
         return wishRepository.findByGoodsCodeAndUuid(goodsCode, uuid).isPresent();
+    }
+
+    /**
+     * 단일 상품에 대한 관심 여부 확인
+     */
+    public boolean getIsWish(String uuid, String goodsCode) {
+
+        Optional<Wish> optionalWish = wishRepository.findByUuidAndGoodsCode(uuid, goodsCode);
+
+        return optionalWish.isPresent();
     }
 }

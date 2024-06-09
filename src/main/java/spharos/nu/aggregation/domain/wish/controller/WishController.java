@@ -1,11 +1,19 @@
 package spharos.nu.aggregation.domain.wish.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
+
 import spharos.nu.aggregation.domain.wish.service.WishService;
 import spharos.nu.aggregation.global.apiresponse.ApiResponse;
 
@@ -35,4 +43,11 @@ public class WishController {
         return ApiResponse.success(wishService.isWished(goodsCode, uuid), "관심상품 여부 확인 성공");
     }
 
+	@GetMapping("/{goodsCode}/is-wish")
+	@Operation(summary = "관심(좋아요) 여부 조회", description = "상품코드로 좋아요 여부를 조회합니다")
+	public ResponseEntity<ApiResponse<Boolean>> getIsWish(@RequestHeader(value = "User-Uuid", required = false) String uuid,
+		@PathVariable(value = "goodsCode") String goodsCode) {
+
+		return ApiResponse.success(wishService.getIsWish(uuid, goodsCode), "좋아요 여부 조회 성공");
+	}
 }
