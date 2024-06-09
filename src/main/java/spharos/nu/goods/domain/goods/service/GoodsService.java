@@ -15,8 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
-import spharos.nu.goods.domain.goods.dto.GoodsReadDto;
+import spharos.nu.goods.domain.goods.dto.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
@@ -104,13 +105,13 @@ public class GoodsService {
 		return goodsCreateDto.getCategoryId() + String.valueOf(lastGoodsId);
 	}
 
-	public GoodsReadDto goodsRead(String code) {
-		Goods goods = goodsRepository.findOneByGoodsCode(code).orElseThrow();
+	public GoodsDetailDto getGoodsDetail(String goodsCode) {
+		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 
-		List<String> tags = tagRepository.findAllByGoodsCode(code).stream().map(Tag::getName).toList();
-		List<String> imageUrls = imageRepository.findAllByGoodsCode(code).stream().map(Image::getUrl).toList();
+		List<String> tags = tagRepository.findAllByGoodsCode(goodsCode).stream().map(Tag::getName).toList();
+		List<String> imageUrls = imageRepository.findAllByGoodsCode(goodsCode).stream().map(Image::getUrl).toList();
 
-		return GoodsReadDto.builder()
+		return GoodsDetailDto.builder()
 			.tradingStatus(goods.getTradingStatus())
 			.goodsName(goods.getName())
 			.description(goods.getDescription())
@@ -123,11 +124,25 @@ public class GoodsService {
 			.build();
 	}
 
+	public GoodsSummaryDto getGoodsSummary(String goodsCode) {
+		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
+		String thumbnailUrl = imageRepository.findAllByGoodsCode(goodsCode).get(0).getUrl();
+
+		return GoodsSummaryDto.builder()
+			.thumbnailUrl(thumbnailUrl)
+			.goodsName(goods.getName())
+			.minPrice(goods.getMinPrice())
+			.openedAt(goods.getOpenedAt())
+			.closedAt(goods.getClosedAt())
+			.tradingStatus(goods.getTradingStatus())
+			.build();
+	}
+
 	@Transactional
-	public Void goodsDelete(String code) {
-		goodsRepository.deleteByGoodsCode(code);
-		tagRepository.deleteAllByGoodsCode(code);
-		imageRepository.deleteAllByGoodsCode(code);
+	public Void goodsDelete(String goodsCode) {
+		goodsRepository.deleteByGoodsCode(goodsCode);
+		tagRepository.deleteAllByGoodsCode(goodsCode);
+		imageRepository.deleteAllByGoodsCode(goodsCode);
 		return null;
 	}
 
@@ -197,5 +212,11 @@ public class GoodsService {
 		Goods uppdateGoods = goodsRepository.save(updatedGoods);
 
 		// log.info("(상품 코드: {}) 낙찰가: {}",  uppdateGoods.getGoodsCode(), uppdateGoods.getWinningPrice());
+	}
+
+	public byte getGoodsTradingStatus(String goodsCode) {
+		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
+
+		return goods.getTradingStatus();
 	}
 }
