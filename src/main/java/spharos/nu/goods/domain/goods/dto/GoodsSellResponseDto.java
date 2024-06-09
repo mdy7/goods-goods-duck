@@ -15,6 +15,9 @@ import lombok.ToString;
 @ToString
 public class GoodsSellResponseDto {
 
+	@Schema(description = "등록 상품 총 개수")
+	private Long totalCount;
+
 	@Schema(description = "현재 페이지")
 	private Integer nowPage;
 
