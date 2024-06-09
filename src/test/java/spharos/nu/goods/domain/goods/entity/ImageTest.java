@@ -14,25 +14,25 @@ class ImageTest {
 
 		// given
 		Image image1 = Image.builder()
-			.code("test")
+			.goodsCode("test")
 			.url("img1")
 			.index(0)
 			.build();
 		Image image2 = Image.builder()
-			.code("test")
+			.goodsCode("test")
 			.url("img2")
 			.index(1)
 			.build();
 		Image image3 = Image.builder()
-			.code("test")
+			.goodsCode("test")
 			.url("img3")
 			.index(2)
 			.build();
 
 		// when, then
-		Assertions.assertThat(image1.getCode()).isEqualTo("test");
-		Assertions.assertThat(image2.getCode()).isEqualTo("test");
-		Assertions.assertThat(image3.getCode()).isEqualTo("test");
+		Assertions.assertThat(image1.getGoodsCode()).isEqualTo("test");
+		Assertions.assertThat(image2.getGoodsCode()).isEqualTo("test");
+		Assertions.assertThat(image3.getGoodsCode()).isEqualTo("test");
 
 		Assertions.assertThat(image1.getIndex()).isEqualTo(0);
 		Assertions.assertThat(image2.getIndex()).isEqualTo(1);

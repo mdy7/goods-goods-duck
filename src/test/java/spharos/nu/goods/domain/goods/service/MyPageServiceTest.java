@@ -65,6 +65,7 @@ class MyPageServiceTest {
 
 		// then
 		Assertions.assertThat(response).isNotNull();
+		Assertions.assertThat(response.getTotalCount()).isEqualTo(goodsInfoPage.getTotalElements());
 		Assertions.assertThat(response.getNowPage()).isEqualTo(goodsInfoPage.getNumber());
 		Assertions.assertThat(response.getMaxPage()).isEqualTo(goodsInfoPage.getTotalPages());
 		Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsInfoPage.getContent());
