@@ -2,6 +2,7 @@ package spharos.nu.aggregation.domain.aggregation.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +22,7 @@ public class AggregationNController {
 	@GetMapping("/{goodsCode}/wish-count")
 	@Operation(summary = "좋아요수 조회", description = "상품코드로 좋아요수를 조회합니다")
 	public ResponseEntity<ApiResponse<Long>> getWishCount(
-		@RequestParam(value = "goodsCode") String goodsCode
+		@PathVariable(value = "goodsCode") String goodsCode
 	) {
 		return ApiResponse.success(aggregationService.getWishCount(goodsCode),"좋아요수 조회 성공");
 	}
