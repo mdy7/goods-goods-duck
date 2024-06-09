@@ -11,4 +11,5 @@ import spharos.nu.aggregation.domain.aggregation.entity.WishCount;
 public interface WishCountRepository extends JpaRepository<WishCount, Long> {
 
 	Optional<WishCount> findByGoodsCode(String goodsCode);
+
 }

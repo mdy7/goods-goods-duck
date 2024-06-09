@@ -8,12 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @AllArgsConstructor
@@ -35,4 +30,13 @@ public class WishCount {
 
 	@NotNull
 	private Long count;
+
+
+	public void increaseWishCount() {
+		this.count++;
+	}
+
+	public void decreaseWishCount() {
+		this.count--;
+	}
 }
