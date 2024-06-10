@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.dto;
+package spharos.nu.notification.domain.fcm.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
