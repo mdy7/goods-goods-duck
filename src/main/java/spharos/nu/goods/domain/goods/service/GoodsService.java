@@ -8,16 +8,19 @@ import java.util.stream.IntStream;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import spharos.nu.goods.domain.goods.dto.CloseEventDto;
 import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.OpenEventDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
@@ -34,8 +37,9 @@ public class GoodsService {
 	private final GoodsRepository goodsRepository;
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
-	private final BidServiceClient bidServiceClient;
 	private final TaskScheduler taskScheduler;
+	private final KafkaTemplate<String, OpenEventDto> openEventDtoKafkaTemplate;
+	private final KafkaTemplate<String, CloseEventDto> closeEventDtoKafkaTemplate;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
 		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk,isTradingOnly,pageable);
@@ -171,6 +175,20 @@ public class GoodsService {
 
 	// 경매 시작시간에 스케줄링
 	private void scheduleOpenGoods(Goods goods) {
+		taskScheduler.schedule(() -> OpenGoods(goods),Timestamp.valueOf(goods.getOpenedAt()));
+	}
+
+	@Transactional
+	public void OpenGoods(Goods goods) {
+		log.info("(상품 코드: {}) 경매 시작 ",goods.getGoodsCode());
+
+		OpenEventDto openEventDto = OpenEventDto.builder()
+			.goodsCode(goods.getGoodsCode())
+			.openedAt(goods.getOpenedAt())
+			.build();
+
+		openEventDtoKafkaTemplate.send("goods-open-topic", openEventDto);
+
 	}
 
 	// 경매 종료시간에 스케줄링
@@ -180,38 +198,16 @@ public class GoodsService {
 
 	@Transactional
 	public void CloseGoods(Goods goods) {
-		log.info("(상품 코드: {}) 경매 종료 ", goods.getGoodsCode());
+		log.info("(상품 코드: {}) 경매 종료 ",goods.getGoodsCode());
 
-		bidServiceClient.selectWinningBid(goods.getGoodsCode(), goods.getClosedAt());
-        /*
-        erd 변경으로, goods엔티티에 낙찰가 필드가 없어져서 필요없는 코드로 판단 주석
-		ResponseEntity<ApiResponse> response = bidServiceClient.selectWinningBid(goods.getGoodsCode(), goods.getClosedAt());
-
-		Long winningBidPrice = null;
-
-		if(response.getBody().getResult() != null){
-			winningBidPrice = Long.valueOf((Integer)response.getBody().getResult());
-		}
-        */
-
-		Goods updatedGoods = Goods.builder()
-			.id(goods.getId())
-			.name(goods.getName())
-			.description(goods.getDescription())
-			.categoryId(goods.getCategoryId())
-			.minPrice(goods.getMinPrice())
-			.openedAt(goods.getOpenedAt())
-			.wishTradeType(goods.getWishTradeType())
-			.sellerUuid(goods.getSellerUuid())
+		CloseEventDto closeEventDto = CloseEventDto.builder()
 			.goodsCode(goods.getGoodsCode())
 			.closedAt(goods.getClosedAt())
-			.tradingStatus((byte)2)
-			.isDelete(false)
+			.sellerUuid(goods.getSellerUuid())
 			.build();
 
-		Goods uppdateGoods = goodsRepository.save(updatedGoods);
+		closeEventDtoKafkaTemplate.send("goods-close-topic", closeEventDto);
 
-		// log.info("(상품 코드: {}) 낙찰가: {}",  uppdateGoods.getGoodsCode(), uppdateGoods.getWinningPrice());
 	}
 
 	public byte getGoodsTradingStatus(String goodsCode) {
