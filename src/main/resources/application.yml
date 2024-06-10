@@ -16,6 +16,10 @@ spring:
   web:
     resources:
       add-mappings: false
+  kafka:
+    bootstrap-server: ${KAFKA_SERVER_URL}
+    consumer:
+      group-id: ${GROUP_ID}
 
 eureka:
   client:
