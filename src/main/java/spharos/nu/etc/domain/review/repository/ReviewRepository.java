@@ -11,5 +11,5 @@ import spharos.nu.etc.domain.review.entity.Review;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-	Page<ReviewListDto> findByReceiverUuidOrderByCreatedAtDesc(String uuid, Pageable pageable);
+	Page<ReviewListDto> findByReceiverUuidOrderByCreatedAtDesc(String receiverUuid, Pageable pageable);
 }
