@@ -101,6 +101,21 @@ spring:
           filters:
             - JwtAuthenticationFilter
 
+        # notification auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # notification no auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification-n/**
+          filters:
+
 
 eureka:
   client:
@@ -137,3 +152,6 @@ springdoc:
     urls[5]:
       name: 기타 등등 서비스
       url: http://3.35.70.208:8000/api/v1/etc-n/swagger/api-docs
+    urls[6]:
+      name: 알림 서비스
+      url: http://3.35.70.208:8000/api/v1/notification-n/swagger/api-docs
