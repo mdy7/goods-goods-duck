@@ -14,14 +14,6 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/goodsdb
-    platform: postgres
-    username: moon
-    password: 1234
-
 eureka:
   client:
     register-with-eureka: true
