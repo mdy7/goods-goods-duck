@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.auth.domain.auth.dto.KafkaUserCreatedDto;
 import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.JoinDto;
 import spharos.nu.auth.domain.auth.dto.LoginDto;
@@ -33,6 +35,7 @@ public class UserService {
 	private final SocialRepository socialRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
+	private final KafkaTemplate<Long, KafkaUserCreatedDto> kafkaTemplate;
 
 	public JwtToken login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
@@ -58,7 +61,6 @@ public class UserService {
 	public void join(JoinDto joinDto) {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
-
 		Member member = Member.builder()
 			.uuid(uuid)
 			.userId(joinDto.getUserId())
@@ -68,18 +70,13 @@ public class UserService {
 			.build();
 		userRepository.save(member);
 
-		// Todo: 카프카로 2개의 추가 엔티티 생성 필요
-		// MemberScore score = MemberScore.builder()
-		// 	.uuid(uuid)
-		// 	.score(50)
-		// 	.build();
-		// scoreRepository.save(score);
-		//
-		// DuckPoint point = DuckPoint.builder()
-		// 	.uuid(uuid)
-		// 	.nowPoint(0L)
-		// 	.build();
-		// pointRepository.save(point);
+		KafkaUserCreatedDto kafka = KafkaUserCreatedDto.builder()
+			.uuid(uuid)
+			.nickname(joinDto.getNickname())
+			.profileImage(joinDto.getProfileImage())
+			.favoriteCategory(joinDto.getFavoriteCategory())
+			.build();
+		kafkaTemplate.send("join-topic", member.getId(), kafka);
 	}
 
 	public void isDuplicatedId(String userId) {

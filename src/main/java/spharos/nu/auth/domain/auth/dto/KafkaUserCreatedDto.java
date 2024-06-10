@@ -6,13 +6,9 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class JoinDto {
-	@Schema(description = "유저 아이디")
-	private String userId;
-	@Schema(description = "비밀번호")
-	private String password;
-	@Schema(description = "핸드폰 번호")
-	private String phoneNumber;
+public class KafkaUserCreatedDto {
+	@Schema(description = "유저 uuid")
+	private String uuid;
 	@Schema(description = "유저 닉네임")
 	private String nickname;
 	@Schema(description = "유저 프로필 사진")
