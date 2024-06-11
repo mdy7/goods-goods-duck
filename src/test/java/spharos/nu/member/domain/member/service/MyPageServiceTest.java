@@ -105,7 +105,7 @@ class MyPageServiceTest {
 		String newNickname = "새로운닉네임";
 		String newCat = "애니";
 		ProfileRequestDto profileRequestDto = new ProfileRequestDto(newImgUrl, newNickname, newCat);
-		myPageService.profileUpdate(testUuid, profileRequestDto);
+		ProfileResponseDto nProfile =  myPageService.profileUpdate(testUuid, profileRequestDto);
 
 		// then
 		// 메서드 호출 검증 및 인자 캡처
@@ -114,9 +114,13 @@ class MyPageServiceTest {
 		// 캡처된 인자 검증
 		MemberInfo capturedMemberInfo = argumentCaptor.getValue();
 		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(newImgUrl);
+		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(nProfile.getProfileImg());
 		Assertions.assertThat(capturedMemberInfo.getNickname()).isEqualTo(newNickname);
+		Assertions.assertThat(capturedMemberInfo.getNickname()).isEqualTo(nProfile.getNickname());
 		Assertions.assertThat(capturedMemberInfo.getFavoriteCategory()).isEqualTo(newCat);
+		Assertions.assertThat(capturedMemberInfo.getFavoriteCategory()).isEqualTo(nProfile.getFavCategory());
 		Assertions.assertThat(capturedMemberInfo.getUuid()).isEqualTo(testUuid);
+		Assertions.assertThat(capturedMemberInfo.getUuid()).isEqualTo(nProfile.getUserUuid());
 	}
 
 	@Test
