@@ -30,6 +30,7 @@ public enum ErrorCode {
 	NOT_FOUND_GATEWAY(404, "존재하지 않는 경로입니다."),
 	NOT_FOUND_ENTITY(404, "해당 객체를 찾지 못했습니다."),
 	NOT_FOUND_USER(404, "존재하지 않는 사용자입니다."),
+	NOT_FOUND_CHAT_ROOM(404, "존재하지 않는 채팅방입니다."),
 
 	//409 : 중복된 리소스
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),

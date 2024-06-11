@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Builder
@@ -24,11 +25,7 @@ public class ChatRoom {
 	@Id
 	@Field("chat_room_id")
 	private String id;
-	private List<String> participants;
-	@Field("last_message")
-	private String lastMessage;
-	@Field("unread_count")
-	private Integer unreadCount;
+	private List<ChatMember> members;
 	@Field("goods_code")
 	private String goodsCode;
 	@CreatedDate
@@ -38,4 +35,13 @@ public class ChatRoom {
 	@Field("updated_at")
 	private LocalDateTime updatedAt;
 
+	@Getter
+	@Setter
+	@Builder
+	public static class ChatMember {
+
+		private String userUuid;
+		private int unreadCount;
+
+	}
 }
