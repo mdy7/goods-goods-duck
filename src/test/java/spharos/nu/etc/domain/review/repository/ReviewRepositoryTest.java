@@ -1,5 +1,10 @@
 package spharos.nu.etc.domain.review.repository;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.util.Optional;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +18,8 @@ import org.springframework.data.domain.Pageable;
 
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
 import spharos.nu.etc.domain.review.entity.Review;
+import spharos.nu.etc.global.exception.CustomException;
+import spharos.nu.etc.global.exception.errorcode.ErrorCode;
 
 @DataJpaTest
 class ReviewRepositoryTest {
@@ -44,6 +51,8 @@ class ReviewRepositoryTest {
 			.content("훌륭합니다.")
 			.build();
 		reviewRepository.save(review2);
+
+		System.out.printf("@@@@@@@@@@@@@@@@@@@@@@@" + review1);
 	}
 
 	@AfterEach
@@ -71,6 +80,25 @@ class ReviewRepositoryTest {
 		Assertions.assertThat(res.getContent().size()).isEqualTo(2);
 		Assertions.assertThat(res.getContent().get(0).getGoodsCode()).isEqualTo("20240611");
 		Assertions.assertThat(res.getContent().get(1).getGoodsCode()).isEqualTo("20240610");
+	}
 
+	@Test
+	@DisplayName("writeruuid, goodscode repository 테스트")
+	void findByWriterUuidAndGoodsCode() {
+
+		// given
+		String writerUuid = "writer_uuid1";
+		String goodsCode = "20240610";
+
+		// when & then
+		CustomException thrownException = assertThrows(CustomException.class, () -> {
+			reviewRepository.findByWriterUuidAndGoodsCode(writerUuid, goodsCode)
+				.ifPresent(review -> {
+					throw new CustomException(ErrorCode.ALREADY_REVIEW_CREATE);
+				});
+		});
+
+		// 예외 메시지 검증
+		Assertions.assertThat(thrownException.getMessage()).isEqualTo(ErrorCode.ALREADY_REVIEW_CREATE.getMessage());
 	}
 }

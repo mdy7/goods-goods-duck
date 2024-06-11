@@ -16,7 +16,7 @@ import spharos.nu.etc.global.entity.CreatedAtBaseEntity;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Getter
 @Builder
 @ToString

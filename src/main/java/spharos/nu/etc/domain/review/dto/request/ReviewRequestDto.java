@@ -22,4 +22,12 @@ public class ReviewRequestDto {
 
 	@Schema(description = "후기 내용")
 	private String content;
+
+	public ReviewRequestDto(String bidderUuid, String sellerUuid, String goodsCode, Integer score, String content) {
+		this.bidderUuid = bidderUuid;
+		this.sellerUuid = sellerUuid;
+		this.goodsCode = goodsCode;
+		this.score = score;
+		this.content = content;
+	}
 }
