@@ -55,22 +55,30 @@ public class MyPageService {
 			.build();
 	}
 
-	public Void profileUpdate(String uuid, ProfileRequestDto profileRequestDto) {
+	public ProfileResponseDto profileUpdate(String uuid, ProfileRequestDto profileRequestDto) {
 
 		MemberInfo member = getMemberInfo(uuid);
+		String profileImage = profileRequestDto.getProfileImage();
+		String nickname = profileRequestDto.getNickname();
+		String favCategory = profileRequestDto.getFavoriteCategory();
 
 		memberInfoRepository.save(MemberInfo.builder()
 			.id(member.getId())
-			.uuid(member.getUuid())
-			.profileImage(profileRequestDto.getProfileImage())
-			.nickname(profileRequestDto.getNickname())
-			.favoriteCategory(profileRequestDto.getFavoriteCategory())
+			.uuid(uuid)
+			.profileImage(profileImage)
+			.nickname(nickname)
+			.favoriteCategory(favCategory)
 			.isNotify(member.isNotify())
 			.build());
 
-		return null;
+		return ProfileResponseDto.builder()
+			.userUuid(uuid)
+			.profileImg(profileImage)
+			.nickname(nickname)
+			.favCategory(favCategory)
+			.build();
 	}
-
+	
 	public String profileImageGet(String uuid) {
 
 		MemberInfo member = getMemberInfo(uuid);
