@@ -31,15 +31,6 @@ public class MyPageController {
 
 	private final MyPageService myPageService;
 
-	// 프로필 조회
-	@GetMapping("")
-	@Operation(summary = "회원 프로필 조회", description = "회원 프로필이미지, 닉네임, 선호카테고리 데이터")
-	public ResponseEntity<ApiResponse<ProfileResponseDto>> getProfile(
-		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
-
-		return ApiResponse.success(myPageService.profileGet(uuid), "프로필 조회 성공");
-	}
-
 	// 프로필 수정
 	@PatchMapping("")
 	@Operation(summary = "회원 프로필 수정", description = "회원 프로필이미지, 닉네임, 선호카테고리 수정")
