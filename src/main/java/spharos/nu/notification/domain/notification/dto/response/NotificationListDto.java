@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.dto.response;
+package spharos.nu.notification.domain.notification.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;

@@ -1,12 +1,11 @@
-package spharos.nu.notification.domain.fcm.controller;
+package spharos.nu.notification.domain.notification.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spharos.nu.notification.domain.fcm.dto.request.NotificationSaveDto;
-import spharos.nu.notification.domain.fcm.service.FcmService;
-import spharos.nu.notification.domain.fcm.service.NotificationService;
+import spharos.nu.notification.domain.notification.dto.request.NotificationSaveDto;
+import spharos.nu.notification.domain.notification.service.NotificationService;
 import spharos.nu.notification.global.apiresponse.ApiResponse;
 
 

@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.service;
+package spharos.nu.notification.domain.notification.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,8 +16,8 @@ import java.io.IOException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
-import spharos.nu.notification.domain.fcm.dto.request.FcmSendDto;
-import spharos.nu.notification.domain.fcm.dto.request.FcmMessageDto;
+import spharos.nu.notification.domain.notification.dto.request.FcmSendDto;
+import spharos.nu.notification.domain.notification.dto.request.FcmMessageDto;
 
 
 @Slf4j

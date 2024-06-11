@@ -1,13 +1,13 @@
-package spharos.nu.notification.domain.fcm.service;
+package spharos.nu.notification.domain.notification.service;
 
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spharos.nu.notification.domain.fcm.dto.request.NotificationTokenDto;
-import spharos.nu.notification.domain.fcm.entity.UserNotificationInfo;
-import spharos.nu.notification.domain.fcm.repository.UserNotificationInfoRepository;
+import spharos.nu.notification.domain.notification.dto.request.NotificationTokenDto;
+import spharos.nu.notification.domain.notification.entity.UserNotificationInfo;
+import spharos.nu.notification.domain.notification.repository.UserNotificationInfoRepository;
 import spharos.nu.notification.global.exception.CustomException;
 
 import java.util.Optional;

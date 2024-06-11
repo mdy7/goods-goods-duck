@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.service;
+package spharos.nu.notification.domain.notification.service;
 
 
 import lombok.RequiredArgsConstructor;
@@ -7,14 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import spharos.nu.notification.domain.fcm.dto.request.FcmSendDto;
-import spharos.nu.notification.domain.fcm.dto.request.NotificationSaveDto;
-import spharos.nu.notification.domain.fcm.dto.response.NotificationListDto;
-import spharos.nu.notification.domain.fcm.dto.response.NotificationInfoDto;
-import spharos.nu.notification.domain.fcm.entity.Notification;
-import spharos.nu.notification.domain.fcm.entity.UserNotificationInfo;
-import spharos.nu.notification.domain.fcm.repository.NotificationRepository;
-import spharos.nu.notification.domain.fcm.repository.UserNotificationInfoRepository;
+import spharos.nu.notification.domain.notification.dto.request.FcmSendDto;
+import spharos.nu.notification.domain.notification.dto.request.NotificationSaveDto;
+import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
+import spharos.nu.notification.domain.notification.dto.response.NotificationInfoDto;
+import spharos.nu.notification.domain.notification.entity.Notification;
+import spharos.nu.notification.domain.notification.entity.UserNotificationInfo;
+import spharos.nu.notification.domain.notification.repository.NotificationRepository;
+import spharos.nu.notification.domain.notification.repository.UserNotificationInfoRepository;
 import spharos.nu.notification.global.exception.CustomException;
 
 

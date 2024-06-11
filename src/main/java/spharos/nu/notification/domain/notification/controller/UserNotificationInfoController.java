@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.controller;
+package spharos.nu.notification.domain.notification.controller;
 
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,8 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spharos.nu.notification.domain.fcm.dto.request.NotificationTokenDto;
-import spharos.nu.notification.domain.fcm.service.UserNotificationInfoService;
+import spharos.nu.notification.domain.notification.dto.request.NotificationTokenDto;
+import spharos.nu.notification.domain.notification.service.UserNotificationInfoService;
 import spharos.nu.notification.global.apiresponse.ApiResponse;
 
 @Slf4j

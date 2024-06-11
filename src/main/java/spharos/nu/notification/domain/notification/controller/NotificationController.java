@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.controller;
+package spharos.nu.notification.domain.notification.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spharos.nu.notification.domain.fcm.dto.response.NotificationListDto;
-import spharos.nu.notification.domain.fcm.service.NotificationService;
+import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
+import spharos.nu.notification.domain.notification.service.NotificationService;
 import spharos.nu.notification.global.apiresponse.ApiResponse;
 
 

@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.config;
+package spharos.nu.notification.domain.notification.config;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;

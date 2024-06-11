@@ -1,4 +1,4 @@
-package spharos.nu.notification.domain.fcm.entity;
+package spharos.nu.notification.domain.notification.entity;
 
 
 import jakarta.persistence.*;
