@@ -18,10 +18,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
-import spharos.nu.auth.domain.auth.dto.JoinDto;
-import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.request.ResetPwdDto;
+import spharos.nu.auth.domain.auth.dto.request.JoinDto;
+import spharos.nu.auth.domain.auth.dto.request.LoginDto;
+import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
 import spharos.nu.auth.utils.jwt.JwtProvider;
@@ -34,14 +35,11 @@ import spharos.nu.auth.utils.jwt.JwtToken;
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 인증과 관련하여 기본적으로 필요한 메소드")
 public class UserNController {
 	private final UserService userService;
-	private final JwtProvider jwtProvider;
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인")
-	public ResponseEntity<ApiResponse<JwtToken>> login(@RequestBody LoginDto loginDto) {
-		JwtToken jwtToken = userService.login(loginDto);
-
-		return ApiResponse.success(jwtToken, "로그인에 성공했습니다.");
+	public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginDto loginDto) {
+		return ApiResponse.success(userService.login(loginDto), "로그인에 성공했습니다.");
 	}
 
 	@PostMapping("/social-login")
@@ -55,7 +53,6 @@ public class UserNController {
 	@PostMapping()
 	@Operation(summary = "회원가입")
 	public ResponseEntity<ApiResponse<Void>> join(@RequestBody JoinDto joinDto) {
-		log.info(joinDto.getFavoriteCategory(), "여기선 찍히냐?");
 		userService.join(joinDto);
 		return ApiResponse.created("회원가입에 성공했습니다.");
 	}

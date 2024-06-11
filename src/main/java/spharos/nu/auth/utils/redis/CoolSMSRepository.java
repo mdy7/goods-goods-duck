@@ -6,7 +6,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
-import spharos.nu.auth.domain.auth.dto.VerificationDto;
+import spharos.nu.auth.domain.auth.dto.request.VerificationDto;
 
 @RequiredArgsConstructor
 @Component

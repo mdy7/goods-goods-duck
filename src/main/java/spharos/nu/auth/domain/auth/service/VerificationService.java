@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.auth.domain.auth.dto.VerificationDto;
+import spharos.nu.auth.domain.auth.dto.request.VerificationDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.repository.UserRepository;
 import spharos.nu.auth.global.exception.CustomException;

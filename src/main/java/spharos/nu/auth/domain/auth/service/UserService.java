@@ -12,11 +12,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.auth.domain.auth.dto.KafkaUserCreatedDto;
-import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
-import spharos.nu.auth.domain.auth.dto.JoinDto;
-import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
-import spharos.nu.auth.domain.auth.dto.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.request.ResetPwdDto;
+import spharos.nu.auth.domain.auth.dto.request.JoinDto;
+import spharos.nu.auth.domain.auth.dto.request.LoginDto;
+import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.request.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.entity.SocialMember;
 import spharos.nu.auth.domain.auth.repository.SocialRepository;
@@ -37,7 +38,7 @@ public class UserService {
 	private final JwtProvider jwtProvider;
 	private final KafkaTemplate<Long, KafkaUserCreatedDto> kafkaTemplate;
 
-	public JwtToken login(LoginDto loginDto) {
+	public LoginResponseDto login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
@@ -45,7 +46,13 @@ public class UserService {
 			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
-		return jwtProvider.createToken(member.getUuid());
+		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
+
+		return LoginResponseDto.builder()
+			.uuid(member.getUuid())
+			.accessToken(jwtToken.getAccessToken())
+			.refreshToken(jwtToken.getRefreshToken())
+			.build();
 	}
 
 	public JwtToken socialLogin(SocialLoginDto socialLoginDto) {

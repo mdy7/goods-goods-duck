@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import spharos.nu.auth.domain.auth.dto.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.request.UpdatePwdDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
 import spharos.nu.auth.utils.jwt.JwtProvider;
