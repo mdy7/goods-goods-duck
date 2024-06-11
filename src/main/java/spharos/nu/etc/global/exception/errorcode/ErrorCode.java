@@ -27,6 +27,7 @@ public enum ErrorCode {
 	//409 : 중복된 리소스
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),
 	WINNING_BID_ALREADY_EXIST(409, "이미 낙찰된 상품입니다."),
+	ALREADY_REVIEW_CREATE(409, "이미 작성한 후기입니다."),
 
 	//500 : INTERNAL SERVER ERROR
 	INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다.");
