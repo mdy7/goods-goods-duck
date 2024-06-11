@@ -32,6 +32,7 @@ public enum ErrorCode {
 	NOT_FOUND_GOODS(404, "존재하지 않는 상품입니다."),
 	NOT_FOUND_LIKE(404,  "해당 상품에 대한 좋아요를 찾을 수 없습니다."),
 	NOT_FOUND_NOTIFICATION(404, "존재하지 않는 알림입니다."),
+	NOT_FOUND_USER_NOTIFICATION_INFO(404, "유저 알림정보가 존재하지 않습니다."),
 
 	//409 : 중복된 리소스
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),

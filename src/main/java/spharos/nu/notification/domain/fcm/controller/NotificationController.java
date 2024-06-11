@@ -1,5 +1,6 @@
 package spharos.nu.notification.domain.fcm.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @GetMapping
-    @Tag(name = "notification", description = "알림 전체 조회")
+    @Operation(summary = "알림 조회", description = "알림 조회")
     public ResponseEntity<ApiResponse<NotificationListDto>> notificationList(
             @RequestHeader("User-Uuid") String uuid,
             @PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -32,7 +33,7 @@ public class NotificationController {
     }
 
     @PutMapping("/{notificationId}/read")
-    @Tag(name = "notification", description = "알림 읽음 처리")
+    @Operation(summary = "알림 읽음 처리", description = "알림 읽음 처리")
     public ResponseEntity<ApiResponse<Void>> notificationRead(
             @PathVariable("notificationId") Long notificationId
     ) {
@@ -41,7 +42,7 @@ public class NotificationController {
     }
 
     @DeleteMapping("/{notificationId}")
-    @Tag(name = "notification", description = "알림 삭제")
+    @Operation(summary = "알림 삭제", description = "알림 삭제")
     public ResponseEntity<ApiResponse<Void>> notificationDelete(
             @PathVariable("notificationId") Long notificationId
     ) {

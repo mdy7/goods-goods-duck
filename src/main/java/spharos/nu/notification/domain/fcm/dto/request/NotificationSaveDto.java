@@ -14,7 +14,4 @@ public class NotificationSaveDto {
     private String content;
     private String uuid;
     private byte notificationType;
-    private boolean isNotify;
-    private String token;
-
 }
