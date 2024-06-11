@@ -10,6 +10,9 @@ import lombok.ToString;
 @ToString
 public class ProfileResponseDto {
 
+	@Schema(description = "회원 uuid")
+	private String userUuid;
+
 	@Schema(description = "프로필 사진")
 	private String profileImg;
 

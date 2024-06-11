@@ -48,6 +48,7 @@ public class MyPageService {
 		MemberInfo member = getMemberInfo(uuid);
 
 		return ProfileResponseDto.builder()
+			.userUuid(member.getUuid())
 			.profileImg(member.getProfileImage())
 			.nickname(member.getNickname())
 			.favCategory(member.getFavoriteCategory())
