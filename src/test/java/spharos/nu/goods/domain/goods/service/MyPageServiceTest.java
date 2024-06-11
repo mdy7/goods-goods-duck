@@ -18,7 +18,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
+import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 
@@ -35,7 +35,7 @@ class MyPageServiceTest {
 	private Integer index;
 	private byte statusNum;
 	private Pageable pageable;
-	private Page<GoodsInfoDto> goodsInfoPage;
+	private Page<GoodsCodeDto> goodsCodePage;
 
 	@BeforeEach
 	void setUp() {
@@ -44,12 +44,12 @@ class MyPageServiceTest {
 		statusNum = 1;
 		pageable = PageRequest.of(index, 10);
 
-		List<GoodsInfoDto> goodsList = Arrays.asList(
-			new GoodsInfoDto("code1", "url1", "name1", 1000L, (byte)1),
-			new GoodsInfoDto("code2", "url2", "name2", 2000L, (byte)1)
+		List<GoodsCodeDto> goodsList = Arrays.asList(
+			new GoodsCodeDto("code1"),
+			new GoodsCodeDto("code2")
 		);
 
-		goodsInfoPage = new PageImpl<>(goodsList, pageable, goodsList.size());
+		goodsCodePage = new PageImpl<>(goodsList, pageable, goodsList.size());
 	}
 
 	@Test
@@ -58,17 +58,17 @@ class MyPageServiceTest {
 
 		// given
 		when(goodsRepository.findAllGoods(eq(uuid), eq(statusNum), any(Pageable.class)))
-			.thenReturn(goodsInfoPage);
+			.thenReturn(goodsCodePage);
 
 		// when
 		GoodsSellResponseDto response = myPageService.sellGoodsGet(uuid, index, statusNum);
 
 		// then
 		Assertions.assertThat(response).isNotNull();
-		Assertions.assertThat(response.getTotalCount()).isEqualTo(goodsInfoPage.getTotalElements());
-		Assertions.assertThat(response.getNowPage()).isEqualTo(goodsInfoPage.getNumber());
-		Assertions.assertThat(response.getMaxPage()).isEqualTo(goodsInfoPage.getTotalPages());
-		Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsInfoPage.getContent());
+		Assertions.assertThat(response.getTotalCount()).isEqualTo(goodsCodePage.getTotalElements());
+		Assertions.assertThat(response.getNowPage()).isEqualTo(goodsCodePage.getNumber());
+		Assertions.assertThat(response.getMaxPage()).isEqualTo(goodsCodePage.getTotalPages());
+		Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsCodePage.getContent());
 	}
 
 }
