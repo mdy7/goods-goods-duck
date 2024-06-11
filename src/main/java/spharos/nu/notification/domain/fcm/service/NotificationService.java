@@ -12,11 +12,14 @@ import spharos.nu.notification.domain.fcm.dto.request.NotificationSaveDto;
 import spharos.nu.notification.domain.fcm.dto.response.NotificationListDto;
 import spharos.nu.notification.domain.fcm.dto.response.NotificationInfoDto;
 import spharos.nu.notification.domain.fcm.entity.Notification;
+import spharos.nu.notification.domain.fcm.entity.UserNotificationInfo;
 import spharos.nu.notification.domain.fcm.repository.NotificationRepository;
+import spharos.nu.notification.domain.fcm.repository.UserNotificationInfoRepository;
 import spharos.nu.notification.global.exception.CustomException;
 
 
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_NOTIFICATION;
+import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_USER_NOTIFICATION_INFO;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
-
+    private final UserNotificationInfoRepository userNotificationInfoRepository;
     /**
      * 알림 저장 후 푸시알림 보냄
      */
@@ -43,14 +46,21 @@ public class NotificationService {
         notificationRepository.save(notification);
 
         // 푸시알림 전송
-        sendPushAlarm(notificationSaveDto);
+        try {
+            sendPushAlarm(notificationSaveDto);
+        } catch (Exception e) {
+            log.error("푸시알림 전송 실패 : {}", e.getMessage());
+        }
 
     }
 
     private void sendPushAlarm(NotificationSaveDto notificationSaveDto) {
-        if (!notificationSaveDto.isNotify()) {
+        UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(notificationSaveDto.getUuid())
+                .orElseThrow(() -> new CustomException(NOT_FOUND_USER_NOTIFICATION_INFO));
+
+        if (userNotificationInfo.isNotify()) {
             FcmSendDto fcmSendDto = FcmSendDto.builder()
-                    .token(notificationSaveDto.getToken())
+                    .token(userNotificationInfo.getDeviceToken())
                     .title(notificationSaveDto.getTitle())
                     .content(notificationSaveDto.getContent())
                     .build();

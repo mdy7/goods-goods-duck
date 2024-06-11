@@ -9,7 +9,6 @@ import spharos.nu.notification.domain.fcm.service.FcmService;
 import spharos.nu.notification.domain.fcm.service.NotificationService;
 import spharos.nu.notification.global.apiresponse.ApiResponse;
 
-import java.io.IOException;
 
 
 @Slf4j
@@ -19,7 +18,6 @@ import java.io.IOException;
 public class NotificationNController {
 
     private final NotificationService notificationService;
-    private final FcmService fcmService;
 
     @PostMapping("/fcm/send")
     public ResponseEntity<ApiResponse<Void>> sendFcm(@RequestBody NotificationSaveDto notificationSaveDto) {
