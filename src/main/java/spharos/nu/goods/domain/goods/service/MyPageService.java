@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
+import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 
@@ -21,14 +21,14 @@ public class MyPageService {
 	public GoodsSellResponseDto sellGoodsGet(String uuid, Integer index, byte statusNum) {
 
 		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsInfoDto> goodsInfoPage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
+		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
 
 		return GoodsSellResponseDto.builder()
-			.totalCount(goodsInfoPage.getTotalElements())
-			.nowPage(goodsInfoPage.getNumber())
-			.maxPage(goodsInfoPage.getTotalPages())
-			.isLast(goodsInfoPage.isLast())
-			.goodsList(goodsInfoPage.getContent())
+			.totalCount(goodsCodePage.getTotalElements())
+			.nowPage(goodsCodePage.getNumber())
+			.maxPage(goodsCodePage.getTotalPages())
+			.isLast(goodsCodePage.isLast())
+			.goodsList(goodsCodePage.getContent())
 			.build();
 	}
 

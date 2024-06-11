@@ -18,12 +18,9 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
 import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.GoodsInfoDto;
 import spharos.nu.goods.domain.goods.dto.QGoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsInfoDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.QGoods;
-import spharos.nu.goods.domain.goods.entity.QImage;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
 import spharos.nu.goods.global.exception.CustomException;
 import spharos.nu.goods.global.exception.errorcode.ErrorCode;
@@ -54,17 +51,13 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 	}
 
 	@Override
-	public Page<GoodsInfoDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
+	public Page<GoodsCodeDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
 
 		QGoods goods = QGoods.goods;
-		QImage image = QImage.image;
 
-		List<GoodsInfoDto> goodsList = queryFactory
-			.select(new QGoodsInfoDto(goods.goodsCode, image.url, goods.name, goods.minPrice, goods.tradingStatus))
+		List<GoodsCodeDto> goodsList = queryFactory
+			.select(new QGoodsCodeDto(goods.goodsCode))
 			.from(goods)
-			.join(image)
-			.on(goods.goodsCode.eq(image.goodsCode))
-			.where(image.index.eq(0))
 			.where(tradingStatusEq(statusNum))
 			.orderBy(goods.createdAt.desc())
 			.offset(pageable.getOffset())
