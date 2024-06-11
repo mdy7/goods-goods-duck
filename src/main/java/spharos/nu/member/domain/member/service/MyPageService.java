@@ -115,8 +115,8 @@ public class MyPageService {
 
 		MemberScore memberScore = scoreRepository.findByUuid(uuid).orElseThrow();
 		Integer score = memberScore.getScore();
-		Integer level;
-		Integer leftPoint;
+		int level;
+		int leftPoint;
 
 		if (score >= 80) {
 			level = 5;

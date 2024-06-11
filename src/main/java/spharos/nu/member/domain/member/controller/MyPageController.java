@@ -69,15 +69,6 @@ public class MyPageController {
 		return ApiResponse.success(myPageService.profileImageDelete(uuid), "프로필이미지 삭제 성공");
 	}
 
-	// 매너덕 조회
-	@GetMapping("/manner-duck")
-	@Operation(summary = "회원의 매너덕 조회", description = "마이페이지의 매너덕 상태와 다음 매너덕까지 필요한 점수 데이터")
-	public ResponseEntity<ApiResponse<MannerDuckDto>> getMannerDuck(
-		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
-
-		return ApiResponse.success(myPageService.mannerDuckGet(uuid), "매너덕 조회 성공");
-	}
-
 	// 덕포인트 조회
 	@GetMapping("/duck-point")
 	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
