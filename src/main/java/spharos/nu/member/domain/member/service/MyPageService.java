@@ -2,18 +2,16 @@ package spharos.nu.member.domain.member.service;
 
 import java.util.Optional;
 
-import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.member.domain.member.dto.request.KafkaUserCreatedDto;
+import spharos.nu.member.domain.member.dto.event.JoinEventDto;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
@@ -46,28 +44,25 @@ public class MyPageService {
 		}
 	}
 
-	@KafkaListener(topics = "join-topic")
 	@Transactional
-	public void join(ConsumerRecord<Long, KafkaUserCreatedDto> record) {
-		KafkaUserCreatedDto kafkaUserCreatedDto = record.value();
-
+	public void join(JoinEventDto joinEventDto) {
 		MemberInfo memberInfo = MemberInfo.builder()
-			.uuid(kafkaUserCreatedDto.getUuid())
-			.nickname(kafkaUserCreatedDto.getNickname())
-			.profileImage(kafkaUserCreatedDto.getProfileImage())
-			.favoriteCategory(kafkaUserCreatedDto.getFavoriteCategory())
+			.uuid(joinEventDto.getUuid())
+			.nickname(joinEventDto.getNickname())
+			.profileImage(joinEventDto.getProfileImage())
+			.favoriteCategory(joinEventDto.getFavoriteCategory())
 			.isNotify(true)
 			.build();
 		memberInfoRepository.save(memberInfo);
 
 		DuckPoint duckPoint = DuckPoint.builder()
-			.uuid(kafkaUserCreatedDto.getUuid())
+			.uuid(joinEventDto.getUuid())
 			.nowPoint(0L)
 			.build();
 		duckPointRepository.save(duckPoint);
 
 		MemberScore memberScore = MemberScore.builder()
-			.uuid(kafkaUserCreatedDto.getUuid())
+			.uuid(joinEventDto.getUuid())
 			.score(50)
 			.build();
 		scoreRepository.save(memberScore);

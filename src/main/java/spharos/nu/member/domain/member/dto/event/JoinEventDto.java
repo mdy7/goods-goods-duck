@@ -1,4 +1,4 @@
-package spharos.nu.member.domain.member.dto.request;
+package spharos.nu.member.domain.member.dto.event;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KafkaUserCreatedDto {
+public class JoinEventDto {
 	@Schema(description = "유저 uuid")
 	private String uuid;
 	@Schema(description = "유저 닉네임")
