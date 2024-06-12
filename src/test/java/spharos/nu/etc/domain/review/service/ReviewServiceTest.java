@@ -69,7 +69,7 @@ class ReviewServiceTest {
 			reviewListPage);
 
 		// when
-		ReviewResponseDto res = reviewService.reviewsGet(sellerUuid, index);
+		ReviewResponseDto res = reviewService.reviewsGet(sellerUuid, pageable);
 
 		// then
 		Assertions.assertThat(res).isNotNull();

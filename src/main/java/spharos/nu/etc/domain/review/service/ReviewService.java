@@ -22,9 +22,8 @@ public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
 
-	public ReviewResponseDto reviewsGet(String receiverUuid, Integer index) {
+	public ReviewResponseDto reviewsGet(String receiverUuid, Pageable pageable) {
 
-		Pageable pageable = PageRequest.of(index, 10);
 		Page<ReviewListDto> reviewPage = reviewRepository.findByReceiverUuidOrderByCreatedAtDesc(receiverUuid,
 			pageable);
 
