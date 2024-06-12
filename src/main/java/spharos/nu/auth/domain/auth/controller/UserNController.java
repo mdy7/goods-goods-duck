@@ -44,10 +44,9 @@ public class UserNController {
 
 	@PostMapping("/social-login")
 	@Operation(summary = "소셜 로그인", description = "소셜로 가입된 유저라면 토큰 발급, 아니라면 회원가입 페이지로 리다이렉트")
-	public ResponseEntity<ApiResponse<JwtToken>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
-		JwtToken tokens = userService.socialLogin(socialLoginDto);
+	public ResponseEntity<ApiResponse<LoginResponseDto>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
 
-		return ApiResponse.success(tokens, "로그인에 성공했습니다.");
+		return ApiResponse.success(userService.socialLogin(socialLoginDto), "로그인에 성공했습니다.");
 	}
 
 	@PostMapping()

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.auth.domain.auth.dto.KafkaUserCreatedDto;
+import spharos.nu.auth.domain.auth.dto.event.JoinEventDto;
 import spharos.nu.auth.domain.auth.dto.request.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.request.JoinDto;
 import spharos.nu.auth.domain.auth.dto.request.LoginDto;
@@ -36,7 +36,7 @@ public class UserService {
 	private final SocialRepository socialRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
-	private final KafkaTemplate<Long, KafkaUserCreatedDto> kafkaTemplate;
+	private final KafkaTemplate<String, JoinEventDto> kafkaTemplate;
 
 	public LoginResponseDto login(LoginDto loginDto) {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
@@ -55,14 +55,20 @@ public class UserService {
 			.build();
 	}
 
-	public JwtToken socialLogin(SocialLoginDto socialLoginDto) {
+	public LoginResponseDto socialLogin(SocialLoginDto socialLoginDto) {
 		SocialMember social = socialRepository.findByMemberCode(socialLoginDto.getMemberCode())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
 		Member member = userRepository.findByUuid(social.getUuid())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-		return jwtProvider.createToken(member.getUuid());
+		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
+
+		return LoginResponseDto.builder()
+			.uuid(member.getUuid())
+			.accessToken(jwtToken.getAccessToken())
+			.accessToken(jwtToken.getRefreshToken())
+			.build();
 	}
 
 	public void join(JoinDto joinDto) {
@@ -77,13 +83,13 @@ public class UserService {
 			.build();
 		userRepository.save(member);
 
-		KafkaUserCreatedDto kafka = KafkaUserCreatedDto.builder()
+		JoinEventDto kafka = JoinEventDto.builder()
 			.uuid(uuid)
 			.nickname(joinDto.getNickname())
 			.profileImage(joinDto.getProfileImage())
 			.favoriteCategory(joinDto.getFavoriteCategory())
 			.build();
-		kafkaTemplate.send("join-topic", member.getId(), kafka);
+		kafkaTemplate.send("join-topic", kafka);
 	}
 
 	public void isDuplicatedId(String userId) {
