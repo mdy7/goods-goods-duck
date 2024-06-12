@@ -36,7 +36,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		BooleanBuilder whereClause = new BooleanBuilder();
 		whereClause
 			.and(goods.categoryId.eq(categoryPk))
-			.and(goods.isDelete.eq(false));
+			.and(goods.isDisable.eq(false));
 
 		if (isTradingOnly) {
 			// true 일 때 tradingStatus 가 0

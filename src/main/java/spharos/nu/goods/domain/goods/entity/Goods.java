@@ -54,6 +54,6 @@ public class Goods extends AuditBaseEntity {
 	private byte tradingStatus;
 	@NotNull
 	@Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-	private boolean isDelete;
+	private boolean isDisable;
 
 }

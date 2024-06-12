@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import spharos.nu.goods.domain.goods.dto.request.ImageDto;
+import spharos.nu.goods.domain.goods.dto.request.TagDto;
 
 @Getter
 @Builder
@@ -27,7 +29,7 @@ public class GoodsDetailDto {
 	@Schema(description = "선호거래방법")
 	private byte wishTradeType;
 	@Schema(description = "태그리스트")
-	private List<String> tags;
+	private List<TagDto> tags;
 	@Schema(description = "이미지url리스트")
-	private List<String> imageUrls;
+	private List<ImageDto> imageUrls;
 }

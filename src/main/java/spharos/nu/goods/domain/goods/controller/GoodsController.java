@@ -50,7 +50,7 @@ public class GoodsController {
 	/*
 	입찰 시작되면 disable 처리
 	 */
-	@Operation(summary = "굿즈 Soft Delete", description = "굿즈를 삭제합니다")
+	@Operation(summary = "굿즈 Soft Delete", description = "굿즈를 숨김합니다")
 	@DeleteMapping("/{goodsCode}/disable")
 	public ResponseEntity<ApiResponse<Void>> goodsDisable(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,

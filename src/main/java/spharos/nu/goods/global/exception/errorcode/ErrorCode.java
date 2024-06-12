@@ -25,6 +25,7 @@ public enum ErrorCode {
 
 	// 403: Forbidden
 	PASSWORD_ERROR(403, "비밀번호가 일치하지 않습니다."),
+	FORBIDDEN_DELETE(403, "이미 경매가 시작되어 삭제 불가능합니다"),
 
 	// 404: 잘못된 리소스 접근
 	NOT_FOUND_GATEWAY(404, "존재하지 않는 경로입니다."),
