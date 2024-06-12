@@ -34,7 +34,7 @@ public class MyPageController {
 	// 프로필 수정
 	@PatchMapping("")
 	@Operation(summary = "회원 프로필 수정", description = "회원 프로필이미지, 닉네임, 선호카테고리 수정")
-	public ResponseEntity<ApiResponse<Void>> updateProfile(
+	public ResponseEntity<ApiResponse<ProfileResponseDto>> updateProfile(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@RequestBody ProfileRequestDto profileRequestDto) {
 
@@ -60,14 +60,14 @@ public class MyPageController {
 		return ApiResponse.success(myPageService.profileImageUpdate(uuid, profileImageRequestDto), "프로필 이미지 수정 성공");
 	}
 
-	// 프로필 사진 삭제
-	@DeleteMapping("/profile-img")
-	@Operation(summary = "회원 프로필 이미지 삭제", description = "회원 프로필 이미지 삭제")
-	public ResponseEntity<ApiResponse<Void>> deleteProfileImage(
-		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
-
-		return ApiResponse.success(myPageService.profileImageDelete(uuid), "프로필이미지 삭제 성공");
-	}
+	// // 프로필 사진 삭제
+	// @DeleteMapping("/profile-img")
+	// @Operation(summary = "회원 프로필 이미지 삭제", description = "회원 프로필 이미지 삭제")
+	// public ResponseEntity<ApiResponse<Void>> deleteProfileImage(
+	// 	@RequestHeader(value = "User-Uuid", required = false) String uuid) {
+	//
+	// 	return ApiResponse.success(myPageService.profileImageDelete(uuid), "프로필이미지 삭제 성공");
+	// }
 
 	// 덕포인트 조회
 	@GetMapping("/duck-point")
