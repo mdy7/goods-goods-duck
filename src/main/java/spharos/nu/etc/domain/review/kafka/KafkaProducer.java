@@ -1,4 +1,21 @@
 package spharos.nu.etc.domain.review.kafka;
 
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
 public class KafkaProducer {
+
+	private final KafkaTemplate<String, TradingCompleteEventDto> statusKafkaTemplate;
+
+	public void sendTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
+
+		statusKafkaTemplate.send("trading-status-topic", tradingCompleteEventDto);
+	}
 }

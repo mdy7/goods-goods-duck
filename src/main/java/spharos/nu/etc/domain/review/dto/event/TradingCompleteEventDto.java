@@ -8,7 +8,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class DealCompleteEventDto {
+public class TradingCompleteEventDto {
 
 	@Schema(description = "굿즈코드")
 	private String goodsCode;

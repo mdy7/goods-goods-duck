@@ -9,7 +9,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import spharos.nu.etc.domain.review.dto.event.DealCompleteEventDto;
+import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 
 @Configuration
 public class ReviewProducerConfig {
@@ -24,12 +24,12 @@ public class ReviewProducerConfig {
 
 	// 거래 상태 전송
 	@Bean
-	public ProducerFactory<String, DealCompleteEventDto> DealCompleteEventProducerFactory() {
+	public ProducerFactory<String, TradingCompleteEventDto> DealCompleteEventProducerFactory() {
 		return new DefaultKafkaProducerFactory<>(reviewProducerConfigs());
 	}
 
 	@Bean
-	public KafkaTemplate<String, DealCompleteEventDto> DealCompleteEventKafkaTemplate() {
+	public KafkaTemplate<String, TradingCompleteEventDto> DealCompleteEventKafkaTemplate() {
 		return new KafkaTemplate<>(DealCompleteEventProducerFactory());
 	}
 }
