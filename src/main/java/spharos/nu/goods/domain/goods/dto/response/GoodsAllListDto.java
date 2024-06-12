@@ -1,12 +1,10 @@
-package spharos.nu.goods.domain.goods.dto;
+package spharos.nu.goods.domain.goods.dto.response;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package spharos.nu.goods.domain.goods.dto;
+package spharos.nu.goods.domain.goods.dto.event;
 
 import java.time.LocalDateTime;
 

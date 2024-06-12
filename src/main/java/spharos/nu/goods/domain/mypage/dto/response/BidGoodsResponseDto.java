@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
 
 @Getter
 @Builder

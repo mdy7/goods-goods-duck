@@ -19,6 +19,7 @@ import spharos.nu.goods.domain.bid.entity.WinningBid;
 import spharos.nu.goods.domain.bid.kafka.KafkaProducer;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
+import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.global.exception.CustomException;
 
 @Slf4j
@@ -64,21 +65,17 @@ public class BidService {
 	 * 기준 : 가장 높은 가격, 가장 빠른 시간
 	 */
 	@Transactional
-	public void addWinningBid(CloseEventDto closeEventDto) {
-		String goodsCode = closeEventDto.getGoodsCode();
-		String sellerUuid = closeEventDto.getSellerUuid();
-		LocalDateTime closedAt = closeEventDto.getClosedAt();
-		log.info("이벤트 파싱중...");
-		log.info("굿즈코드: "+goodsCode);
-		log.info("판매자: "+sellerUuid);
-		log.info("경매마감시간: "+closedAt);
+	public void addWinningBid(Goods goods) {
+		String goodsCode = goods.getGoodsCode();
+		String sellerUuid = goods.getSellerUuid();
+		LocalDateTime closedAt = goods.getClosedAt();
 
 		log.info("낙찰자 선정 시작...");
 		List<Bid> bid = bidRepository.findByGoodsCodeAndCreatedAtBeforeOrderByPriceDescCreatedAtAsc(
 			goodsCode, closedAt);
 
 		if (bid.isEmpty()) {
-			log.info("입찰자가 없어...");
+			log.info("(상품코드: {})에 대한 입찰자가 없습니다.",goodsCode);
 			return;
 		}
 

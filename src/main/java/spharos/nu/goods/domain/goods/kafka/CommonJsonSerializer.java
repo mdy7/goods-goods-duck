@@ -16,8 +16,8 @@ public class CommonJsonSerializer {
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 		props.put(org.springframework.kafka.support.serializer.JsonSerializer.TYPE_MAPPINGS,
-		    "CloseEventDto:spharos.nu.goods.domain.goods.dto.CloseEventDto," +
-			"OpenEventDto:spharos.nu.goods.domain.goods.dto.OpenEventDto");
+		    "CloseEventDto:spharos.nu.goods.domain.goods.dto.event.CloseEventDto," +
+			"OpenEventDto:spharos.nu.goods.domain.goods.dto.event.OpenEventDto");
 
 		return props;
 	}
