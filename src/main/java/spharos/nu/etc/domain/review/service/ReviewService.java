@@ -57,6 +57,10 @@ public class ReviewService {
 			.content(reviewRequestDto.getContent())
 			.build());
 
+		// 점수 반영 로직 처리 후 카프카 통신
+
+		// 판매자, 입찰자 모두 후기 작성 완료시 상태 거래완료로 바꾸는 카프카 통신
+
 		return null;
 	}
 }
