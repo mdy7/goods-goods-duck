@@ -16,6 +16,6 @@ public class KafkaProducer {
 
 	public void sendTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
 
-		statusKafkaTemplate.send("trading-status-topic", tradingCompleteEventDto);
+		statusKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
 	}
 }

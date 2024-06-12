@@ -1,12 +1,13 @@
 package spharos.nu.etc.domain.review.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewResponseDto;
@@ -21,6 +22,7 @@ import spharos.nu.etc.global.exception.errorcode.ErrorCode;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
+	private final KafkaTemplate<String, TradingCompleteEventDto> tradingKafkaTemplate;
 
 	public ReviewResponseDto reviewsGet(String receiverUuid, Pageable pageable) {
 
@@ -55,6 +57,34 @@ public class ReviewService {
 			.score(reviewRequestDto.getScore())
 			.content(reviewRequestDto.getContent())
 			.build());
+
+		// 점수 반영 로직 처리 후 카프카 통신
+
+		// 판매자, 입찰자 모두 후기 작성 완료시 상태 거래 완료로 바꾸는 카프카 통신
+		// 변수 값 확인
+		log.info("Receiver UUID: {}, Goods Code: {}", receiverUuid, goodsCode);
+		// reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode)
+		// 	.ifPresent(review -> {
+		// 		// 개발 확인용 로그
+		// 		log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
+		//
+		// 		TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
+		// 			.goodsCode(goodsCode)
+		// 			.build();
+		//
+		// 		tradingKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
+		// 	});
+		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
+
+			// 개발 확인용 로그
+			log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
+
+			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
+						.goodsCode(goodsCode)
+						.build();
+
+			tradingKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
+		}
 
 		return null;
 	}
