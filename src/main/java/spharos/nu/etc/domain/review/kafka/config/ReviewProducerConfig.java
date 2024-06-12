@@ -22,4 +22,14 @@ public class ReviewProducerConfig {
 		return CommonJsonSerializer.getStringObjectMap(bootstrapServer);
 	}
 
+	// 회원 점수 전송
+	@Bean
+	public ProducerFactory<String, MemberScoreEventDto> MemberScoreEventProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(reviewProducerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, MemberScoreEventDto> MemberScoreEventKafkaTemplate() {
+		return new KafkaTemplate<>(MemberScoreEventProducerFactory());
+	}
 }
