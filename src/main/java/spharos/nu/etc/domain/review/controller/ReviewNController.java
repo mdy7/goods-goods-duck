@@ -1,5 +1,7 @@
 package spharos.nu.etc.domain.review.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,8 +30,8 @@ public class ReviewNController {
 	@Operation(summary = "받은 거래 후기 조회", description = "")
 	public ResponseEntity<ApiResponse<ReviewResponseDto>> getReviews(
 		@PathVariable("receiverUuid") String receiverUuid,
-		@RequestParam(value = "page", defaultValue = "0") Integer index) {
+		@PageableDefault(size = 10, page = 0) Pageable pageable) {
 
-		return ApiResponse.success(reviewService.reviewsGet(receiverUuid, index), "받은 거래 후기 조회 성공");
+		return ApiResponse.success(reviewService.reviewsGet(receiverUuid, pageable), "받은 거래 후기 조회 성공");
 	}
 }
