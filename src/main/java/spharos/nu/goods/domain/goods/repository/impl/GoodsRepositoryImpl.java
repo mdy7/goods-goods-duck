@@ -51,14 +51,14 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 	}
 
 	@Override
-	public Page<GoodsCodeDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
+	public Page<GoodsCodeDto> findAllGoods(String uuid, byte status, Pageable pageable) {
 
 		QGoods goods = QGoods.goods;
 
 		List<GoodsCodeDto> goodsList = queryFactory
 			.select(new QGoodsCodeDto(goods.goodsCode))
 			.from(goods)
-			.where(tradingStatusEq(statusNum))
+			.where(tradingStatusEq(status))
 			.orderBy(goods.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -67,7 +67,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		Long total = queryFactory
 			.select(goods.count())
 			.from(goods)
-			.where(tradingStatusEq(statusNum))
+			.where(tradingStatusEq(status))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
