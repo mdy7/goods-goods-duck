@@ -12,6 +12,7 @@ import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewResponseDto;
 import spharos.nu.etc.domain.review.entity.Review;
+import spharos.nu.etc.domain.review.kafka.KafkaProducer;
 import spharos.nu.etc.domain.review.repository.ReviewRepository;
 import spharos.nu.etc.global.exception.CustomException;
 import spharos.nu.etc.global.exception.errorcode.ErrorCode;
@@ -22,7 +23,7 @@ import spharos.nu.etc.global.exception.errorcode.ErrorCode;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
-	private final KafkaTemplate<String, TradingCompleteEventDto> tradingKafkaTemplate;
+	private final KafkaProducer kafkaProducer;
 
 	public ReviewResponseDto reviewsGet(String receiverUuid, Pageable pageable) {
 
@@ -76,15 +77,15 @@ public class ReviewService {
 		// 	});
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
 
-			// 개발 확인용 로그
-			log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
-
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
 						.goodsCode(goodsCode)
 						.build();
 
-			tradingKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
+			kafkaProducer.sendTradingStatus(tradingCompleteEventDto);
 		}
+
+		// 개발 확인용 로그
+		log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
 
 		return null;
 	}
