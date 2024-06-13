@@ -24,12 +24,12 @@ public class ReviewProducerConfig {
 
 	// 거래 상태 전송
 	@Bean
-	public ProducerFactory<String, TradingCompleteEventDto> DealCompleteEventProducerFactory() {
+	public ProducerFactory<String, TradingCompleteEventDto> tradingCompleteEventProducerFactory() {
 		return new DefaultKafkaProducerFactory<>(reviewProducerConfigs());
 	}
 
 	@Bean
-	public KafkaTemplate<String, TradingCompleteEventDto> DealCompleteEventKafkaTemplate() {
-		return new KafkaTemplate<>(DealCompleteEventProducerFactory());
+	public KafkaTemplate<String, TradingCompleteEventDto> tradingCompleteEventKafkaTemplate() {
+		return new KafkaTemplate<>(tradingCompleteEventProducerFactory());
 	}
 }
