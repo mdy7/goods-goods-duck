@@ -64,29 +64,17 @@ public class ReviewService {
 		// 판매자, 입찰자 모두 후기 작성 완료시 상태 거래 완료로 바꾸는 카프카 통신
 		// 변수 값 확인
 		log.info("Receiver UUID: {}, Goods Code: {}", receiverUuid, goodsCode);
-		// reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode)
-		// 	.ifPresent(review -> {
-		// 		// 개발 확인용 로그
-		// 		log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
-		//
-		// 		TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
-		// 			.goodsCode(goodsCode)
-		// 			.build();
-		//
-		// 		tradingKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
-		// 	});
+
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
 			log.info("여기 오시나요?");
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
 						.goodsCode(goodsCode)
 						.build();
-			log.info("여기는요?");
 			kafkaProducer.sendTradingStatus(tradingCompleteEventDto);
-			log.info("뭐가 문제일까요");
-		}
 
-		// 개발 확인용 로그
-		log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
+			// 개발 확인용 로그
+			log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
+		}
 
 		return null;
 	}

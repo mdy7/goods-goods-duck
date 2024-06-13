@@ -15,7 +15,7 @@ public class KafkaProducer {
 	private final KafkaTemplate<String, TradingCompleteEventDto> statusKafkaTemplate;
 
 	public void sendTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
-		log.info("오고계신가요?");
+
 		statusKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
 	}
 }
