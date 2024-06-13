@@ -83,7 +83,6 @@ public class UserService {
 			.userId(joinDto.getUserId())
 			.password(encodedPassword)
 			.phoneNumber(joinDto.getPhoneNumber())
-			.isWithdraw(false)
 			.build();
 		userRepository.save(member);
 

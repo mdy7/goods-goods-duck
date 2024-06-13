@@ -30,17 +30,15 @@ public class UserController {
 
 	@PostMapping("/withdraw")
 	@Operation(summary = "회원 탈퇴", description = "해당 회원의 isWithdraw 를 true 로 변경")
-	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token, @RequestBody
+	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader(value = "User-Uuid", required = false) String uuid, @RequestBody
 		WithdrawDto withdrawDto) {
-		String uuid = jwtProvider.getUuid(token);
 		userService.withdraw(withdrawDto, uuid);
 		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 
 	@PutMapping("/pwd")
 	@Operation(summary = "비밀번호 변경", description = "해당 회원의 비밀번호를 변경")
-	public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestHeader("Authorization") String token, @RequestBody UpdatePwdDto updatePwdDto) {
-		String uuid = jwtProvider.getUuid(token);
+	public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestHeader(value = "User-Uuid", required = false) String uuid, @RequestBody UpdatePwdDto updatePwdDto) {
 		userService.updatePwd(updatePwdDto, uuid);
 		return ApiResponse.success(null, "정보 수정 성공");
 	}

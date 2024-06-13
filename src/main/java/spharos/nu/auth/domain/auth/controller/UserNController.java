@@ -84,10 +84,4 @@ public class UserNController {
 		userService.resetPwd(resetPwdDto);
 		return ApiResponse.success(null, "정보 수정이 완료됐습니다.");
 	}
-
-	@DeleteMapping("/withdraw/cancel")
-	@Operation(summary = "회원 탈퇴 취소", description = "탈퇴 회원은 15일 이내 탈퇴 철회 가능")
-	public ResponseEntity<ApiResponse<LoginResponseDto>> cancelWithdraw(@RequestBody LoginDto loginDto) {
-		return ApiResponse.success(userService.cancelWithdraw(loginDto), "회원 탈퇴가 철회되었습니다.");
-	}
 }
