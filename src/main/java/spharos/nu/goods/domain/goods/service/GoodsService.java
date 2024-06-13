@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -14,20 +15,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import spharos.nu.goods.domain.goods.dto.CloseEventDto;
-import spharos.nu.goods.domain.goods.dto.GoodsAllListDto;
-import spharos.nu.goods.domain.goods.dto.GoodsCreateDto;
-import spharos.nu.goods.domain.goods.dto.GoodsDetailDto;
-import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.GoodsSummaryDto;
-import spharos.nu.goods.domain.goods.dto.OpenEventDto;
+import spharos.nu.goods.domain.bid.service.BidService;
+import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
+import spharos.nu.goods.domain.goods.dto.request.ImageDto;
+import spharos.nu.goods.domain.goods.dto.request.TagDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsAllListDto;
+import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsDetailDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsSummaryDto;
+import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.repository.ImageRepository;
 import spharos.nu.goods.domain.goods.repository.TagRepository;
-import spharos.nu.goods.domain.goods.client.BidServiceClient;
+import spharos.nu.goods.global.exception.CustomException;
+import spharos.nu.goods.global.exception.errorcode.ErrorCode;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,12 +42,12 @@ public class GoodsService {
 	private final GoodsRepository goodsRepository;
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
+	private final BidService bidService;
 	private final TaskScheduler taskScheduler;
 	private final KafkaTemplate<String, OpenEventDto> openEventDtoKafkaTemplate;
-	private final KafkaTemplate<String, CloseEventDto> closeEventDtoKafkaTemplate;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
-		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk,isTradingOnly,pageable);
+		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk, isTradingOnly, pageable);
 		return GoodsAllListDto.builder()
 			.maxPage(goodsPage.getTotalPages())
 			.nowPage(goodsPage.getNumber())
@@ -78,17 +83,14 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
-
 		//이미지 저장
-		IntStream.range(0, goodsCreateDto.getImageUrls().size())
-			.forEach(index -> {
-				String imageUrl = goodsCreateDto.getImageUrls().get(index);
-				imageRepository.save(Image.builder()
-					.url(imageUrl)
-					.goodsCode(goodsCode)
-					.index(index)
-					.build());
-			});
+		goodsCreateDto.getImages().forEach((image) ->
+			imageRepository.save(Image.builder()
+				.url(image.getUrl())
+				.index(image.getId())
+				.goodsCode(goodsCode)
+				.build())
+		);
 
 		// 경매 시작시간에 스케줄링 걸기
 		scheduleOpenGoods(savedGoods);
@@ -112,8 +114,10 @@ public class GoodsService {
 	public GoodsDetailDto getGoodsDetail(String goodsCode) {
 		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 
-		List<String> tags = tagRepository.findAllByGoodsCode(goodsCode).stream().map(Tag::getName).toList();
-		List<String> imageUrls = imageRepository.findAllByGoodsCode(goodsCode).stream().map(Image::getUrl).toList();
+		List<TagDto> tags = tagRepository.findAllByGoodsCode(goodsCode).stream()
+			.map((tag) -> TagDto.builder().id(tag.getId()).name(tag.getName()).build()).toList();
+		List<ImageDto> imageUrls = imageRepository.findAllByGoodsCode(goodsCode).stream()
+			.map((image) -> ImageDto.builder().id(image.getIndex()).url(image.getUrl()).build()).toList();
 
 		return GoodsDetailDto.builder()
 			.tradingStatus(goods.getTradingStatus())
@@ -144,9 +148,16 @@ public class GoodsService {
 
 	@Transactional
 	public Void goodsDelete(String goodsCode) {
+		/*상태가 0이 아닌 경우 삭제 불가능*/
+		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
+		if (goods.getTradingStatus() != 0) {
+			throw new CustomException(ErrorCode.FORBIDDEN_DELETE);
+		}
+
 		goodsRepository.deleteByGoodsCode(goodsCode);
 		tagRepository.deleteAllByGoodsCode(goodsCode);
 		imageRepository.deleteAllByGoodsCode(goodsCode);
+
 		return null;
 	}
 
@@ -165,8 +176,8 @@ public class GoodsService {
 			.sellerUuid(uuid)
 			.goodsCode(goods.getGoodsCode())
 			.closedAt(goods.getClosedAt())
-			.tradingStatus((byte)4) //거래취소로 변경
-			.isDelete(true) //삭제여부 true 로 변경
+			.tradingStatus(goods.getTradingStatus())
+			.isDisable(true) //숨김 여부 true 로 변경
 			.build();
 
 		goodsRepository.save(updatedGoods);
@@ -175,12 +186,12 @@ public class GoodsService {
 
 	// 경매 시작시간에 스케줄링
 	private void scheduleOpenGoods(Goods goods) {
-		taskScheduler.schedule(() -> OpenGoods(goods),Timestamp.valueOf(goods.getOpenedAt()));
+		taskScheduler.schedule(() -> OpenGoods(goods), Timestamp.valueOf(goods.getOpenedAt()));
 	}
 
 	@Transactional
 	public void OpenGoods(Goods goods) {
-		log.info("(상품 코드: {}) 경매 시작 ",goods.getGoodsCode());
+		log.info("(상품 코드: {}) 경매 시작 ", goods.getGoodsCode());
 
 		OpenEventDto openEventDto = OpenEventDto.builder()
 			.goodsCode(goods.getGoodsCode())
@@ -188,26 +199,11 @@ public class GoodsService {
 			.build();
 
 		openEventDtoKafkaTemplate.send("goods-open-topic", openEventDto);
-
 	}
 
 	// 경매 종료시간에 스케줄링
 	private void scheduleCloseGoods(Goods goods) {
-		taskScheduler.schedule(() -> CloseGoods(goods), Timestamp.valueOf(goods.getClosedAt()));
-	}
-
-	@Transactional
-	public void CloseGoods(Goods goods) {
-		log.info("(상품 코드: {}) 경매 종료 ",goods.getGoodsCode());
-
-		CloseEventDto closeEventDto = CloseEventDto.builder()
-			.goodsCode(goods.getGoodsCode())
-			.closedAt(goods.getClosedAt())
-			.sellerUuid(goods.getSellerUuid())
-			.build();
-
-		closeEventDtoKafkaTemplate.send("goods-close-topic", closeEventDto);
-
+		taskScheduler.schedule(() -> bidService.addWinningBid(goods), Timestamp.valueOf(goods.getClosedAt()));
 	}
 
 	public byte getGoodsTradingStatus(String goodsCode) {

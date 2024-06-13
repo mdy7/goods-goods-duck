@@ -25,6 +25,7 @@ public enum ErrorCode {
 
 	// 403: Forbidden
 	PASSWORD_ERROR(403, "비밀번호가 일치하지 않습니다."),
+	FORBIDDEN_DELETE(403, "이미 경매가 시작되어 삭제 불가능합니다"),
 
 	// 404: 잘못된 리소스 접근
 	NOT_FOUND_GATEWAY(404, "존재하지 않는 경로입니다."),
@@ -33,6 +34,7 @@ public enum ErrorCode {
 
 	//409 : 중복된 리소스
 	ALREADY_EXIST_USER(409, "이미 존재하는 사용자입니다."),
+	WINNING_BID_ALREADY_EXIST(409, "이미 낙찰된 상품입니다."),
 
 	//500 : INTERNAL SERVER ERROR
 	INTERNAL_SERVER_ERROR(500, "서버 내부 에러입니다.");

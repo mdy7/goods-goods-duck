@@ -9,8 +9,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import spharos.nu.goods.domain.goods.dto.CloseEventDto;
-import spharos.nu.goods.domain.goods.dto.OpenEventDto;
+import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
+import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 
 @Configuration
 public class GoodsProducerConfig {

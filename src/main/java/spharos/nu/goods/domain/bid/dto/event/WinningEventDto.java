@@ -1,8 +1,4 @@
-package spharos.nu.goods.domain.goods.dto;
-
-import java.time.LocalDateTime;
-
-import org.springframework.cglib.core.Local;
+package spharos.nu.goods.domain.bid.dto.event;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
@@ -12,11 +8,11 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class CloseEventDto {
+public class WinningEventDto {
 	@Schema(description = "상품코드")
 	private String goodsCode;
-	@Schema(description = "경매종료시간")
-	private LocalDateTime closedAt;
 	@Schema(description = "판매자uuid")
 	private String sellerUuid;
+	@Schema(description = "낙찰자uuid")
+	private String bidderUuid;
 }

@@ -18,9 +18,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
-import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.GoodsSellResponseDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.mypage.dto.response.GoodsSellResponseDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
+import spharos.nu.goods.domain.mypage.service.MyPageService;
 
 @ExtendWith(MockitoExtension.class)
 class MyPageServiceTest {

@@ -1,4 +1,4 @@
-package spharos.nu.goods.domain.goods.dto;
+package spharos.nu.goods.domain.goods.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;

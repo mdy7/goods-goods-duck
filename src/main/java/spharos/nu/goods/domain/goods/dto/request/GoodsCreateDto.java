@@ -1,4 +1,4 @@
-package spharos.nu.goods.domain.goods.dto;
+package spharos.nu.goods.domain.goods.dto.request;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,13 +28,7 @@ public class GoodsCreateDto {
 	private byte wishTradeType;
 	@Schema(description = "태그리스트")
 	private List<TagDto> tags;
-	@Schema(description = "이미지url리스트")
-	private List<String> imageUrls;
-
-	@Getter
-	public static class TagDto {
-		private Long id;
-		private String name;
-	}
+	@Schema(description = "이미지리스트")
+	private List<ImageDto> images;
 
 }

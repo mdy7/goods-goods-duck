@@ -17,8 +17,8 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
-import spharos.nu.goods.domain.goods.dto.GoodsCodeDto;
-import spharos.nu.goods.domain.goods.dto.QGoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.QGoodsCodeDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.QGoods;
 import spharos.nu.goods.domain.goods.repository.GoodsRepositoryCustom;
@@ -36,7 +36,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		BooleanBuilder whereClause = new BooleanBuilder();
 		whereClause
 			.and(goods.categoryId.eq(categoryPk))
-			.and(goods.isDelete.eq(false));
+			.and(goods.isDisable.eq(false));
 
 		if (isTradingOnly) {
 			// true 일 때 tradingStatus 가 0
