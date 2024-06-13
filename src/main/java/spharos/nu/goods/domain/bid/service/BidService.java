@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.domain.bid.dto.event.CloseEventDto;
 import spharos.nu.goods.domain.bid.dto.event.WinningEventDto;
 import spharos.nu.goods.domain.bid.dto.request.BidAddRequestDto;
 import spharos.nu.goods.domain.bid.dto.response.BidListResponseDto;
@@ -83,6 +82,10 @@ public class BidService {
 			.ifPresent(winningBid -> {
 				throw new CustomException(WINNING_BID_ALREADY_EXIST);
 			});
+		log.info("물건번호는 {}",goodsCode);
+		log.info("파는사람 {}",sellerUuid);
+		log.info("사는사람 {}",bid.get(0).getBidderUuid());
+		log.info("낙찰가 {}",bid.get(0).getPrice());
 
 		winningBidRepository.save(WinningBid.builder()
 			.goodsCode(goodsCode)
