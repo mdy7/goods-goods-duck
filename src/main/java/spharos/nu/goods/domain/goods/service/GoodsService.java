@@ -213,7 +213,6 @@ public class GoodsService {
 	// 거래 완료 카프카 통신
 	public void updateTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
 
-		log.info("거래상태 변경");
 		Goods goods = goodsRepository.findOneByGoodsCode(tradingCompleteEventDto.getGoodsCode()).orElseThrow();
 
 		goodsRepository.save(Goods.builder()
@@ -232,6 +231,7 @@ public class GoodsService {
 			.isDisable(goods.isDisable())
 			.build());
 
+		// 서비스 배포시 로그 지우기
 		log.info("굿즈코드 {} : 거래 상태 변경 완료", tradingCompleteEventDto.getGoodsCode());
 		log.info("상태코드 {} : 확인 완료", goods.getTradingStatus());
 
