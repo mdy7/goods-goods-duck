@@ -13,6 +13,7 @@ import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewResponseDto;
 import spharos.nu.etc.domain.review.entity.Review;
+import spharos.nu.etc.domain.review.kafka.KafkaProducer;
 import spharos.nu.etc.domain.review.repository.ReviewRepository;
 import spharos.nu.etc.global.exception.CustomException;
 import spharos.nu.etc.global.exception.errorcode.ErrorCode;
@@ -23,7 +24,7 @@ import spharos.nu.etc.global.exception.errorcode.ErrorCode;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
-	private final KafkaTemplate<String, MemberScoreEventDto> scoreKafkaTemplate;
+	private final KafkaProducer kafkaProducer;
 
 	public ReviewResponseDto reviewsGet(String receiverUuid, Integer index) {
 
@@ -62,15 +63,16 @@ public class ReviewService {
 			.build());
 
 		// 점수 반영 카프카 통신
-		// 개발 확인용 로그
-		log.info("(수신자: {}) 수신완료 ", receiverUuid);
-		log.info("(점수: {}) 점수확인 ", score);
 		MemberScoreEventDto memberScoreEventDto = MemberScoreEventDto.builder()
 			.receiverUuid(receiverUuid)
 			.score(score)
 			.build();
 
-		scoreKafkaTemplate.send("member-score-topic", memberScoreEventDto);
+		kafkaProducer.sendMemberScore(memberScoreEventDto);
+
+		// 개발 확인용 로그
+		log.info("(수신자: {}) 수신완료 ", receiverUuid);
+		log.info("(점수: {}) 점수확인 ", score);
 
 		// 판매자, 입찰자 모두 후기 작성 완료시 상태 거래 완료로 바꾸는 카프카 통신
 
