@@ -17,11 +17,14 @@ import spharos.nu.auth.domain.auth.dto.request.JoinDto;
 import spharos.nu.auth.domain.auth.dto.request.LoginDto;
 import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
 import spharos.nu.auth.domain.auth.dto.request.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.request.WithdrawDto;
 import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.entity.Member;
 import spharos.nu.auth.domain.auth.entity.SocialMember;
+import spharos.nu.auth.domain.auth.entity.WithdrawMember;
 import spharos.nu.auth.domain.auth.repository.SocialRepository;
 import spharos.nu.auth.domain.auth.repository.UserRepository;
+import spharos.nu.auth.domain.auth.repository.WithdrawRepository;
 import spharos.nu.auth.global.exception.CustomException;
 import spharos.nu.auth.global.exception.errorcode.ErrorCode;
 import spharos.nu.auth.utils.jwt.JwtProvider;
@@ -34,6 +37,7 @@ import spharos.nu.auth.utils.jwt.JwtToken;
 public class UserService {
 	private final UserRepository userRepository;
 	private final SocialRepository socialRepository;
+	private final WithdrawRepository withdrawRepository;
 	private final BCryptPasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 	private final KafkaTemplate<String, JoinEventDto> kafkaTemplate;
@@ -133,10 +137,36 @@ public class UserService {
 		userRepository.save(member);
 	}
 
-	public void withdraw(String uuid) {
+	public void withdraw(WithdrawDto withdrawDto, String uuid) {
 		Member member = userRepository.findByUuid(uuid)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
-		member.changeWithdraw(true, LocalDateTime.now());
+		member.changeWithdraw(true);
 		userRepository.save(member);
+
+		WithdrawMember withdrawMember = WithdrawMember.builder()
+			.uuid(uuid)
+			.reason(withdrawDto.getReason())
+			.build();
+	}
+
+	public LoginResponseDto cancelWithdraw(LoginDto loginDto) {
+		Member member = userRepository.findByUserId(loginDto.getUserId())
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		WithdrawMember withdrawMember = withdrawRepository.findByUuid(member.getUuid())
+			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
+
+		member.changeWithdraw(false);
+		userRepository.save(member);
+
+		withdrawRepository.delete(withdrawMember);
+
+		return LoginResponseDto.builder()
+			.uuid(member.getUuid())
+			.accessToken(jwtToken.getAccessToken())
+			.refreshToken(jwtToken.getRefreshToken())
+			.build();
 	}
 }

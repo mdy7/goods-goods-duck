@@ -1,6 +1,8 @@
 package spharos.nu.auth.domain.auth.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -10,7 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import spharos.nu.auth.domain.auth.dto.request.LoginDto;
 import spharos.nu.auth.domain.auth.dto.request.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.request.WithdrawDto;
+import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
 import spharos.nu.auth.utils.jwt.JwtProvider;
@@ -23,11 +28,12 @@ public class UserController {
 	private final UserService userService;
 	private final JwtProvider jwtProvider;
 
-	@PutMapping()
+	@PostMapping("/withdraw")
 	@Operation(summary = "회원 탈퇴", description = "해당 회원의 isWithdraw 를 true 로 변경")
-	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token) {
+	public ResponseEntity<ApiResponse<Void>> withdrawUser(@RequestHeader("Authorization") String token, @RequestBody
+		WithdrawDto withdrawDto) {
 		String uuid = jwtProvider.getUuid(token);
-		userService.withdraw(uuid);
+		userService.withdraw(withdrawDto, uuid);
 		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 
