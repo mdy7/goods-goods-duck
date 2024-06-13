@@ -9,7 +9,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.bid.dto.response.BidGoodsCodeDto;
 
 @Getter
 @Builder
@@ -31,5 +31,5 @@ public class BidGoodsResponseDto {
 	private boolean isLast;
 
 	@Schema(description = "굿즈 코드 목록")
-	private List<GoodsCodeDto> goodsList;
+	private List<BidGoodsCodeDto> goodsList;
 }
