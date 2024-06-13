@@ -1,4 +1,4 @@
-package spharos.nu.goods.domain.goods.kafka;
+package spharos.nu.goods.domain.goods.kafka.config;
 
 import java.util.Map;
 
@@ -19,7 +19,7 @@ public class GoodsProducerConfig {
 	private String bootstrapServer;
 
 	@Bean
-	public Map<String,Object> goodsProducerConfigs() {
+	public Map<String, Object> goodsProducerConfigs() {
 		return CommonJsonSerializer.getStringObjectMap(bootstrapServer);
 	}
 
