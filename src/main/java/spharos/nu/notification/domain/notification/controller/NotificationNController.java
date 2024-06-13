@@ -17,12 +17,12 @@ import spharos.nu.notification.global.apiresponse.ApiResponse;
 public class NotificationNController {
 
     private final NotificationService notificationService;
-
-    @PostMapping("/fcm/send")
-    public ResponseEntity<ApiResponse<Void>> sendFcm(@RequestBody NotificationSaveDto notificationSaveDto) {
-        notificationService.addNotification(notificationSaveDto);
-        return ApiResponse.success(null, "알림 저장 완료");
-    }
+//
+//    @PostMapping("/fcm/send")
+//    public ResponseEntity<ApiResponse<Void>> sendFcm(@RequestBody NotificationSaveDto notificationSaveDto) {
+//        notificationService.addNotification(notificationSaveDto);
+//        return ApiResponse.success(null, "알림 저장 완료");
+//    }
 
 
 
