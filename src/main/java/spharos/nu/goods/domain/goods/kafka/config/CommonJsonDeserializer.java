@@ -21,7 +21,7 @@ public class CommonJsonDeserializer {
 		props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
 		props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
 		props.put(org.springframework.kafka.support.serializer.JsonDeserializer.TYPE_MAPPINGS,
-			"spharos.nu.goods.domain.goods.dto.event.TradingCompleteEventDto");
+			"TradingCompleteEventDto:spharos.nu.goods.domain.goods.dto.event.TradingCompleteEventDto");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");  //메시지 오프셋 설정
 		props.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, 5000); // 재연결 시도 간격 5초
 		props.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, 60000); // 최대 재연결 시도 간격 1분
