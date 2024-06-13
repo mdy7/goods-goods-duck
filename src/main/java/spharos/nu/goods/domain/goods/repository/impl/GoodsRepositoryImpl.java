@@ -58,7 +58,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		List<GoodsCodeDto> goodsList = queryFactory
 			.select(new QGoodsCodeDto(goods.goodsCode))
 			.from(goods)
-			.where(tradingStatusEq(status))
+			.where(goods.sellerUuid.eq(uuid), tradingStatusEq(status))
 			.orderBy(goods.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -67,7 +67,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		Long total = queryFactory
 			.select(goods.count())
 			.from(goods)
-			.where(tradingStatusEq(status))
+			.where(goods.sellerUuid.eq(uuid), tradingStatusEq(status))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
