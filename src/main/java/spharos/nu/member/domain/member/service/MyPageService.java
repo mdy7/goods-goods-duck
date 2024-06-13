@@ -51,7 +51,6 @@ public class MyPageService {
 			.nickname(joinEventDto.getNickname())
 			.profileImage(joinEventDto.getProfileImage())
 			.favoriteCategory(joinEventDto.getFavoriteCategory())
-			.isNotify(true)
 			.build();
 		memberInfoRepository.save(memberInfo);
 
@@ -97,7 +96,6 @@ public class MyPageService {
 			.nickname(member.getNickname())
 			.profileImage(imgUrl)
 			.favoriteCategory(member.getFavoriteCategory())
-			.isNotify(member.isNotify())
 			.build());
 
 		return imgUrl;
