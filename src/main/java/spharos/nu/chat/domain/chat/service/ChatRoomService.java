@@ -9,13 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import spharos.nu.chat.domain.chat.dto.event.WinningEventDto;
+import spharos.nu.chat.domain.chat.dto.response.ChatRoomInfo;
 import spharos.nu.chat.domain.chat.entity.ChatRoom;
 import spharos.nu.chat.domain.chat.entity.ChatRoom.ChatMember;
 import spharos.nu.chat.domain.chat.repository.ChatRoomRepository;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class ChatRoomService {
 
 	private final ChatRoomRepository chatRoomRepository;
@@ -23,7 +26,9 @@ public class ChatRoomService {
 	@Transactional
 	@KafkaListener(topics = "winning-bid-topic", containerFactory = "winningEventListener")
 	public void createChatRoom(WinningEventDto winningEventDto) {
-
+        log.info("낙찰 완료 & 채팅방을 생성합니다");
+		log.info("거래자1 {}",winningEventDto.getBidderUuid());
+		log.info("거래자2 {}",winningEventDto.getSellerUuid());
 		List<ChatMember> members = new ArrayList<>();
 		members.add(ChatMember.builder()
 			.userUuid(winningEventDto.getSellerUuid())
@@ -40,5 +45,22 @@ public class ChatRoomService {
 			.createdAt(LocalDateTime.now())
 			.updatedAt(null)
 			.build());
+	}
+
+	@Transactional
+	public List<ChatRoomInfo> getChatRoomsByMemberId(String userUuid) {
+        log.info("채팅방 목록 찾는 메서드 발동");
+		List<ChatRoom> chatRooms = chatRoomRepository.getChatRoomsByUserUuid(userUuid);
+		List<ChatRoomInfo> chatRoomResList = new ArrayList<>();
+		log.info("채팅방 목록을 생성합니다");
+		chatRooms.forEach(chatRoom -> {
+			chatRoomResList.add(ChatRoomInfo.builder()
+				.chatRoomId(chatRoom.getId())
+				.members(chatRoom.getMembers())
+				.goodsCode(chatRoom.getGoodsCode())
+				.updatedAt(chatRoom.getUpdatedAt())
+				.build());
+		});
+		return chatRoomResList;
 	}
 }

@@ -5,6 +5,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -42,9 +43,14 @@ public class ChatService {
 
 	@Transactional
 	public Mono<ChatMessage> createMessage(String senderUuid, ChatRequestDto chatRequestDto) {
-		ChatRoom chatRoom = chatRoomRepository.findById(chatRequestDto.getChatRoomId()).orElseThrow(
+		log.info("채팅방 아이디" + chatRequestDto.getChatRoomId());
+		String goodsCode = "010";
+		ChatRoom chatRoom = chatRoomRepository.findByGoodsCode(goodsCode).orElseThrow(
 			() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM)
 		);
+		// ChatRoom chatRoom = chatRoomRepository.findById(chatRequestDto.getChatRoomId()).orElseThrow(
+		// 	() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM)
+		// );
 
 		List<ChatMember> members = chatRoom.getMembers();
 		members.stream().peek(
@@ -54,7 +60,7 @@ public class ChatService {
 				}
 			}
 		).forEach(member -> log.info("member: {}", member));
-
+        log.info("chat메시지 생성 직전");
 		chatRoomRepository.save(ChatRoom.builder()
 			.id(chatRoom.getId())
 			.goodsCode(chatRoom.getGoodsCode())
@@ -70,9 +76,9 @@ public class ChatService {
 				.isRead(false)
 				.chatRoomId(chatRequestDto.getChatRoomId())
 				.createdAt(LocalDateTime.now())
-				.isImage(chatRequestDto.isImage())
-				.imageUrl(chatRequestDto.isImage() ? chatRequestDto.getImageUrl() : null)
-				.message(chatRequestDto.isImage() ? null : chatRequestDto.getMessage())
+				.isImage(chatRequestDto.getIsImage())
+				.imageUrl(chatRequestDto.getIsImage() ? chatRequestDto.getImageUrl() : null)
+				.message(chatRequestDto.getIsImage() ? null : chatRequestDto.getMessage())
 				.build()
 		);
 	}
@@ -84,7 +90,7 @@ public class ChatService {
 				.chatRoomId(chatMessage.getChatRoomId())
 				.senderUuid(chatMessage.getSenderUuid())
 				.receiverUuid(chatMessage.getReceiverUuid())
-				.isImage(chatMessage.isImage())
+				.isImage(chatMessage.getIsImage())
 				.message(chatMessage.getMessage())
 				.imageUrl(chatMessage.getImageUrl())
 				.createdAt(chatMessage.getCreatedAt())
@@ -99,7 +105,7 @@ public class ChatService {
 			.chatRoomId(chatMessage.getChatRoomId())
 			.senderUuid(chatMessage.getSenderUuid())
 			.receiverUuid(chatMessage.getReceiverUuid())
-			.isImage(chatMessage.isImage())
+			.isImage(chatMessage.getIsImage())
 			.message(chatMessage.getMessage())
 			.imageUrl(chatMessage.getImageUrl())
 			.createdAt(chatMessage.getCreatedAt())

@@ -23,7 +23,7 @@ import lombok.Setter;
 public class ChatRoom {
 
 	@Id
-	@Field("chat_room_id")
+	@Field("id")
 	private String id;
 	private List<ChatMember> members;
 	@Field("goods_code")

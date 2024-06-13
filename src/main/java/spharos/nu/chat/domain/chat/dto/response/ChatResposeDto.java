@@ -19,7 +19,7 @@ public class ChatResposeDto {
 	@JsonProperty("isImage")
 	@Getter(AccessLevel.NONE)
 	@Schema(description = "이미지여부")
-	private boolean isImage;
+	private Boolean isImage;
 	@Schema(description = "메시지")
 	private String message;
 	@Schema(description = "이미지 url")

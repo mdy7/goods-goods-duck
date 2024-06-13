@@ -23,7 +23,7 @@ public class CommonJsonDeserializer {
 		props.put(org.springframework.kafka.support.serializer.JsonDeserializer.TYPE_MAPPINGS,
 			"WinningEventDto:spharos.nu.chat.domain.chat.dto.event.WinningEventDto");
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");  //메시지 오프셋 설정
-		props.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, 5000); // 재연결 시도 간격 5초
+		props.put(ConsumerConfig.RECONNECT_BACKOFF_MS_CONFIG, 50); // 재연결 시도 간격 5초
 		props.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, 60000); // 최대 재연결 시도 간격 1분
 		return props;
 	}

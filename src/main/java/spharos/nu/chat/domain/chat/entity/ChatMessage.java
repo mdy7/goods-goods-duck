@@ -25,7 +25,7 @@ public class ChatMessage {
 	@Field("chat_id")
 	private String id;
 	@Field("has_image")
-	private boolean isImage;
+	private Boolean isImage;
 	private String message;
 	@Field("image_url")
 	private String imageUrl;
