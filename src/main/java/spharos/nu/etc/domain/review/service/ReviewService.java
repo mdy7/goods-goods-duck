@@ -76,12 +76,13 @@ public class ReviewService {
 		// 		tradingKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
 		// 	});
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
-
+			log.info("여기 오시나요?");
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
 						.goodsCode(goodsCode)
 						.build();
-
+			log.info("여기는요?");
 			kafkaProducer.sendTradingStatus(tradingCompleteEventDto);
+			log.info("뭐가 문제일까요");
 		}
 
 		// 개발 확인용 로그
