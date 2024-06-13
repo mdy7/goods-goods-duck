@@ -19,12 +19,9 @@ public class MemberConsumerConfig {
 	@Value("${spring.kafka.bootstrap-server}")
 	private String bootstrapServer;
 
-	@Value("${spring.kafka.consumer.group-id}")
-	private String groupId;
-
 	@Bean
 	public Map<String, Object> memberConsumerConfigs() {
-		return MemberJsonDeserializer.getStringObjectMap(bootstrapServer, groupId);
+		return MemberJsonDeserializer.getStringObjectMap(bootstrapServer);
 	}
 
 	@Bean
