@@ -106,13 +106,43 @@ spring:
             - Path=/api/v1/aggregation-n/**
           filters:
 
-        # aggregation no auth routing
-        - id: aggregation-service
-          uri: lb://AGGREGATION-SERVICE
+        # aggregation auth routing
+        - id: etc-service
+          uri: lb://ETC-SERVICE
           predicates:
             - Path=/api/v1/aggregation/**
           filters:
             - JwtAuthenticationFilter
+
+        # etc no auth routing
+        - id: etc-service
+          uri: lb://ETC-SERVICE
+          predicates:
+            - Path=/api/v1/etc-n/**
+          filters:
+
+        # etc auth routing
+        - id: aggregation-service
+          uri: lb://AGGREGATION-SERVICE
+          predicates:
+            - Path=/api/v1/etc/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # notification auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # notification no auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification-n/**
+          filters:
 
 
 eureka:
@@ -147,3 +177,9 @@ springdoc:
     urls[4]:
       name: 집계 서비스
       url: http://3.35.70.208:8000/api/v1/aggregation-n/swagger/api-docs
+    urls[5]:
+      name: 기타 등등 서비스
+      url: http://3.35.70.208:8000/api/v1/etc-n/swagger/api-docs
+    urls[6]:
+      name: 알림 서비스
+      url: http://3.35.70.208:8000/api/v1/notification-n/swagger/api-docs
