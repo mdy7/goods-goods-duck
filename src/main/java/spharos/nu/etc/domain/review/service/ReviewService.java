@@ -66,7 +66,7 @@ public class ReviewService {
 		log.info("Receiver UUID: {}, Goods Code: {}", receiverUuid, goodsCode);
 
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
-			log.info("여기 오시나요?");
+
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
 						.goodsCode(goodsCode)
 						.build();
