@@ -55,19 +55,19 @@ spring:
 
 
         # bid auth routing
-        - id: bid-service
-          uri: lb://BID-SERVICE
-          predicates:
-            - Path=/api/v1/bids/**
-          filters:
-            - JwtAuthenticationFilter
+#        - id: bid-service
+#          uri: lb://BID-SERVICE
+#          predicates:
+#            - Path=/api/v1/bids/**
+#          filters:
+#            - JwtAuthenticationFilter
 
         # bid no auth routing
-        - id: bid-service
-          uri: lb://BID-SERVICE
-          predicates:
-            - Path=/api/v1/bids-n/**
-          filters:
+#        - id: bid-service
+#          uri: lb://BID-SERVICE
+#          predicates:
+#            - Path=/api/v1/bids-n/**
+#          filters:
 
         # member auth routing
         - id: member-service
@@ -171,15 +171,15 @@ springdoc:
     urls[2]:
       name: 굿즈 서비스
       url: http://3.35.70.208:8000/api/v1/goods-n/swagger/api-docs
+#    urls[3]:
+#      name: 경매 서비스
+#      url: http://3.35.70.208:8000/api/v1/bids-n/swagger/api-docs
     urls[3]:
-      name: 경매 서비스
-      url: http://3.35.70.208:8000/api/v1/bids-n/swagger/api-docs
-    urls[4]:
       name: 집계 서비스
       url: http://3.35.70.208:8000/api/v1/aggregation-n/swagger/api-docs
-    urls[5]:
+    urls[4]:
       name: 기타 등등 서비스
       url: http://3.35.70.208:8000/api/v1/etc-n/swagger/api-docs
-    urls[6]:
+    urls[5]:
       name: 알림 서비스
       url: http://3.35.70.208:8000/api/v1/notification-n/swagger/api-docs
