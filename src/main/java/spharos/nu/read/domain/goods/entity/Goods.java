@@ -32,8 +32,6 @@ public class Goods {
 	private String name;
 	@Field("min_price")
 	private Long minPrice;
-	@Field("deposit")
-	private Long deposit;
 	@Field("description")
 	private String description;
 	@Field("opened_at")
