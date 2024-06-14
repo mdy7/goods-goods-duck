@@ -3,9 +3,6 @@ package spharos.nu.goods.domain.goods.service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +12,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.bid.service.BidService;
-import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
+import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
+import spharos.nu.goods.domain.goods.dto.event.TradingCompleteEventDto;
+import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.request.ImageDto;
 import spharos.nu.goods.domain.goods.dto.request.TagDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsAllListDto;
-import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
-import spharos.nu.goods.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsSummaryDto;
-import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
@@ -210,5 +208,32 @@ public class GoodsService {
 		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 
 		return goods.getTradingStatus();
+	}
+
+	// 거래 완료 카프카 통신
+	public void updateTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
+
+		Goods goods = goodsRepository.findOneByGoodsCode(tradingCompleteEventDto.getGoodsCode()).orElseThrow();
+
+		goodsRepository.save(Goods.builder()
+			.id(goods.getId())
+			.categoryId(goods.getCategoryId())
+			.sellerUuid(goods.getSellerUuid())
+			.goodsCode(goods.getGoodsCode())
+			.name(goods.getName())
+			.minPrice(goods.getMinPrice())
+			.deposit(goods.getDeposit())
+			.description(goods.getDescription())
+			.openedAt(goods.getOpenedAt())
+			.closedAt(goods.getClosedAt())
+			.wishTradeType(goods.getWishTradeType())
+			.tradingStatus((byte) 4)  // 거래완료
+			.isDisable(goods.isDisable())
+			.build());
+
+		// 서비스 배포시 로그 지우기
+		log.info("굿즈코드 {} : 거래 상태 변경 완료", tradingCompleteEventDto.getGoodsCode());
+		log.info("상태코드 {} : 확인 완료", goods.getTradingStatus());
+
 	}
 }
