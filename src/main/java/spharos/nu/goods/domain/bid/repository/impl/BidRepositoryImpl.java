@@ -40,6 +40,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 		Long total = queryFactory
 			.select(bid.count())
 			.from(bid)
+			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
 			.where(bid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.fetchOne();
 
@@ -49,6 +50,18 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 	}
 
 	private BooleanExpression tradingStatusEq(Byte status) {
-		return status == null ? null : QGoods.goods.tradingStatus.eq(status);
+
+		QGoods goods = QGoods.goods;
+
+		if (status == null) {
+			return null; // status가 null인 경우 조건을 추가하지 않음
+		}
+
+		// 경매완료탭은 status가 2 또는 3인 상품을 보여줌
+		if (status == 2 || status == 3) {
+			return goods.tradingStatus.eq((byte)2).or(goods.tradingStatus.eq((byte)3));
+		}
+
+		return goods.tradingStatus.eq(status);
 	}
 }
