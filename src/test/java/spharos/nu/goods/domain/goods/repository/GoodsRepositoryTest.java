@@ -52,7 +52,6 @@ class GoodsRepositoryTest {
 			.wishTradeType((byte) 0)
 			.tradingStatus((byte) 1)
 			.categoryId(0L)
-			.isDelete(false)
 			.build());
 		imageRepository.save(Image.builder()
 			.goodsCode("20240522")
@@ -73,7 +72,6 @@ class GoodsRepositoryTest {
 			.wishTradeType((byte) 0)
 			.tradingStatus((byte) 1)
 			.categoryId(0L)
-			.isDelete(false)
 			.build());
 		imageRepository.save(Image.builder()
 			.goodsCode("20240523")
