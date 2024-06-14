@@ -1,20 +1,19 @@
 package spharos.nu.notification.domain.notification.entity;
 
 
-import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "user_notification_info")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserNotificationInfo {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_notification_info_id")
-    private Long id;
-
+    @Id
+    private String id;
     private String deviceToken;
     private boolean isNotify;
     private String uuid;
