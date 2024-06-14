@@ -3,14 +3,17 @@ package spharos.nu.notification.domain.notification.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -19,22 +22,29 @@ public class FCMInitializer {
     @Value("${fcm.certification}")
     private String googleApplicationCredentials;
 
-    @PostConstruct
-    public void initialize() throws IOException {
+    @Bean
+    FirebaseMessaging firebaseMessaging() throws IOException {
         ClassPathResource resource = new ClassPathResource(googleApplicationCredentials);
 
+        InputStream refreshToken = resource.getInputStream();
 
-        try (InputStream is = resource.getInputStream()) {
+        FirebaseApp firebaseApp = null;
+        List<FirebaseApp> firebaseAppList = FirebaseApp.getApps();
+
+        if (firebaseAppList != null && !firebaseAppList.isEmpty()) {
+            for (FirebaseApp app : firebaseAppList) {
+                if (app.getName().equals(FirebaseApp.DEFAULT_APP_NAME)) {
+                    firebaseApp = app;
+                }
+            }
+        } else {
             FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(is))
+                    .setCredentials(GoogleCredentials.fromStream(refreshToken))
                     .build();
 
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-                log.info("FirebaseApp 초기화");
-            }
-        } catch (Exception e) {
-            log.error("FirebaseApp 초기화 실패", e);
+            firebaseApp = FirebaseApp.initializeApp(options);
         }
+
+        return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

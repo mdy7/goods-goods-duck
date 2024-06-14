@@ -13,10 +13,16 @@ import spharos.nu.notification.domain.notification.dto.response.NotificationList
 import spharos.nu.notification.domain.notification.dto.response.NotificationInfoDto;
 import spharos.nu.notification.domain.notification.entity.Notification;
 import spharos.nu.notification.domain.notification.entity.UserNotificationInfo;
+import spharos.nu.notification.domain.notification.kafka.dto.NotificationEventDto;
 import spharos.nu.notification.domain.notification.repository.NotificationRepository;
 import spharos.nu.notification.domain.notification.repository.UserNotificationInfoRepository;
 import spharos.nu.notification.global.exception.CustomException;
 
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_NOTIFICATION;
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_USER_NOTIFICATION_INFO;
@@ -30,40 +36,39 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final FcmService fcmService;
     private final UserNotificationInfoRepository userNotificationInfoRepository;
+
     /**
-     * 알림 저장 후 푸시알림 보냄
+     * 알림 저장
      */
     @Transactional
-    public void addNotification(NotificationSaveDto notificationSaveDto) {
-        Notification notification = Notification.builder()
-                .title(notificationSaveDto.getTitle())
-                .content(notificationSaveDto.getContent())
-                .uuid(notificationSaveDto.getUuid())
-                .isRead(false)
-                .notificationType(notificationSaveDto.getNotificationType())
-                .build();
-
-        notificationRepository.save(notification);
-
-        // 푸시알림 전송
-        try {
-            sendPushAlarm(notificationSaveDto);
-        } catch (Exception e) {
-            log.error("푸시알림 전송 실패 : {}", e.getMessage());
+    public void addNotification(NotificationEventDto notificationEventDto) {
+        List<Notification> notifications = new ArrayList<>();
+        for (String uuid : notificationEventDto.getUuid()) {
+            Notification notification = Notification.builder()
+                    .title(notificationEventDto.getTitle())
+                    .content(notificationEventDto.getContent())
+                    .uuid(uuid)
+                    .build();
+            notifications.add(notification);
         }
 
+        notificationRepository.saveAll(notifications);
     }
 
-    private void sendPushAlarm(NotificationSaveDto notificationSaveDto) {
-        UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(notificationSaveDto.getUuid())
-                .orElseThrow(() -> new CustomException(NOT_FOUND_USER_NOTIFICATION_INFO));
+    /**
+     * 푸시 알림 전송
+     */
+    public void sendPushAlarm(NotificationEventDto notificationEventDto) {
+        for (String uuid : notificationEventDto.getUuid()) {
+            UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(uuid).orElseThrow(()
+                    -> new CustomException(NOT_FOUND_USER_NOTIFICATION_INFO));
 
-        if (userNotificationInfo.isNotify()) {
             FcmSendDto fcmSendDto = FcmSendDto.builder()
-                    .token(userNotificationInfo.getDeviceToken())
-                    .title(notificationSaveDto.getTitle())
-                    .content(notificationSaveDto.getContent())
+                    .tokens(Collections.singletonList(userNotificationInfo.getDeviceToken()))
+                    .title(notificationEventDto.getTitle())
+                    .content(notificationEventDto.getContent())
                     .build();
+
             fcmService.sendMessageTo(fcmSendDto);
         }
     }
