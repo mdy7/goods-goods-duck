@@ -1,8 +1,8 @@
 package spharos.nu.aggregation.domain.aggregation.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +18,21 @@ public class AggregationNController {
 
 	private final AggregationService aggregationService;
 
-	@GetMapping("/{goodsCode}/wish-count")
-	@Operation(summary = "좋아요수 조회", description = "상품코드로 좋아요수를 조회합니다")
-	public ResponseEntity<ApiResponse<Long>> getWishCount(
+	@PostMapping("/views/{goodsCode}")
+	@Operation(summary = "조회수 카운팅", description = "조회수를 +1 합니다")
+	public ResponseEntity<ApiResponse<Void>> addViewsCount(
 		@PathVariable(value = "goodsCode") String goodsCode
 	) {
-		return ApiResponse.success(aggregationService.getWishCount(goodsCode),"좋아요수 조회 성공");
+		aggregationService.addViewsCount(goodsCode);
+		return ApiResponse.success(null,"조회수 추가 성공");
+	}
+
+	@PostMapping("/bid/{goodsCode}")
+	@Operation(summary = "입찰수 카운팅", description = "입찰수를 +1 합니다")
+	public ResponseEntity<ApiResponse<Void>> addBidCount(
+		@PathVariable(value = "goodsCode") String goodsCode
+	) {
+		aggregationService.addBidCount(goodsCode);
+		return ApiResponse.success(null,"입찰수 추가 성공");
 	}
 }

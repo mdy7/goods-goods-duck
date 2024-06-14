@@ -21,12 +21,12 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-@Table(name = "bidding_count")
-public class BiddingCount {
+@Table(name = "bid_count")
+public class BidCount {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "bidding_count_id")
+	@Column(name = "bid_count_id")
 	private Long id;
 
 	@NotBlank
@@ -35,4 +35,8 @@ public class BiddingCount {
 
 	@NotNull
 	private Long count;
+
+	public void increaseBidCount() {
+		this.count++;
+	}
 }
