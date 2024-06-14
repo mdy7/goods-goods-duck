@@ -2,7 +2,6 @@ package spharos.nu.etc.domain.review.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -80,8 +79,8 @@ public class ReviewService {
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
 
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
-						.goodsCode(goodsCode)
-						.build();
+				.goodsCode(goodsCode)
+				.build();
 			kafkaProducer.sendTradingStatus(tradingCompleteEventDto);
 
 			// 개발 확인용 로그

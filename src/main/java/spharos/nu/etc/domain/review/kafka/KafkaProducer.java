@@ -16,11 +16,13 @@ public class KafkaProducer {
 	private final KafkaTemplate<String, MemberScoreEventDto> memberKafkaTemplate;
 	private final KafkaTemplate<String, TradingCompleteEventDto> statusKafkaTemplate;
 
+	// 회원 점수 카프카
 	public void sendMemberScore(MemberScoreEventDto memberScoreEventDto) {
 
 		memberKafkaTemplate.send("member-score-topic", memberScoreEventDto);
 	}
 
+	// 거래 상태 카프카
 	public void sendTradingStatus(TradingCompleteEventDto tradingCompleteEventDto) {
 
 		statusKafkaTemplate.send("trading-complete-topic", tradingCompleteEventDto);
