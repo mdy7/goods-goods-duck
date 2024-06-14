@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.etc.domain.review.dto.event.MemberScoreEventDto;
+import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
@@ -52,7 +52,7 @@ public class ReviewService {
 			});
 
 		// 후기 저장
-		reviewRepository.save(Review.builder()
+		Review review = reviewRepository.save(Review.builder()
 			.writerUuid(writerUuid)
 			.receiverUuid(receiverUuid)
 			.goodsCode(goodsCode)
@@ -61,12 +61,13 @@ public class ReviewService {
 			.build());
 
 		// 점수 반영 카프카 통신
-		MemberScoreEventDto memberScoreEventDto = MemberScoreEventDto.builder()
+		MemberReviewEventDto memberReviewEventDto = MemberReviewEventDto.builder()
+			.reviewId(review.getId())
 			.receiverUuid(receiverUuid)
 			.score(score)
 			.build();
 
-		kafkaProducer.sendMemberScore(memberScoreEventDto);
+		kafkaProducer.sendMemberScore(memberReviewEventDto);
 
 		// 개발 확인용 로그
 		log.info("(수신자: {}) 수신완료 ", receiverUuid);

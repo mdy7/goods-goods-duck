@@ -18,7 +18,7 @@ public class CommonJsonSerializer {
 		props.put(org.springframework.kafka.support.serializer.JsonSerializer.TYPE_MAPPINGS,
 
 		"TradingCompleteEventDto:spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto,"
-				+ "MemberScoreEventDto:spharos.nu.etc.domain.review.dto.event.MemberScoreEventDto");
+				+ "MemberReviewEventDto:spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto");
 
 		return props;
 	}

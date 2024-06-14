@@ -8,7 +8,10 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class MemberScoreEventDto {
+public class MemberReviewEventDto {
+
+	@Schema(description = "후기pk")
+	private Long reviewId;
 
 	@Schema(description = "후기 수신자 uuid")
 	private String receiverUuid;
