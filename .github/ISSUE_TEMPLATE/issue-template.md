@@ -1,7 +1,7 @@
 ---
 name: Issue Template
 about: 이슈 공통 템플릿
-title: "[TYPE] 이슈 제목"
+title: "[FEATURE] "
 labels: ''
 assignees: ''
 
