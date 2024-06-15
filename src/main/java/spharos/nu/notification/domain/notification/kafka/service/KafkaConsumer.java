@@ -18,11 +18,10 @@ public class KafkaConsumer {
     private final NotificationService notificationService;
 
 
-    @KafkaListener(topics = "notification-send-topic", containerFactory = "notificationListenerContainerEventFactory")
+    @KafkaListener(topics = "notification-topic", containerFactory = "notificationListenerContainerEventFactory")
     public void notificationEvent(NotificationEventDto notificationEventDto) {
         log.info("Notification Event : {}", notificationEventDto);
         notificationService.addNotification(notificationEventDto);
-        notificationService.sendPushAlarm(notificationEventDto);
     }
 
 }
