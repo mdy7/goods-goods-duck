@@ -1,6 +1,7 @@
 package spharos.nu.auth.domain.auth.service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,6 +49,23 @@ public class UserService {
 
 		if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
 			throw new CustomException(ErrorCode.PASSWORD_ERROR);
+		}
+
+		Optional<WithdrawMember> withdrawMember = withdrawRepository.findByUuid(member.getUuid());
+
+		if (withdrawMember.isPresent() && member.isWithdraw()) {
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime withdrawTime = withdrawMember.get().getCreatedAt();
+
+			long daysBetween = ChronoUnit.DAYS.between(now.toLocalDate(), withdrawTime.toLocalDate());
+
+			if (daysBetween <= 15) {
+				member.changeWithdraw(false);
+				withdrawRepository.delete(withdrawMember.get());
+			}
+			else {
+				userRepository.delete(member);
+			}
 		}
 
 		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
