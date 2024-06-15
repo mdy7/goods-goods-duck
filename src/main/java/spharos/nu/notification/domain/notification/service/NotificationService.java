@@ -45,11 +45,11 @@ public class NotificationService {
             Notification notification = Notification.builder()
                     .title(notificationEventDto.getTitle())
                     .content(notificationEventDto.getContent())
+                    .link(notificationEventDto.getLink())
                     .uuid(uuid)
                     .build();
             notifications.add(notification);
         }
-
         notificationRepository.saveAll(notifications);
 
         sendPushAlarm(notificationEventDto);
@@ -67,6 +67,7 @@ public class NotificationService {
                     .tokens(Collections.singletonList(userNotificationInfo.getDeviceToken()))
                     .title(notificationEventDto.getTitle())
                     .content(notificationEventDto.getContent())
+                    .link(notificationEventDto.getLink())
                     .build();
 
             fcmService.sendMessageTo(fcmSendDto);
@@ -111,6 +112,7 @@ public class NotificationService {
                 .id(notification.getId())
                 .title(notification.getTitle())
                 .content(notification.getContent())
+                .link(notification.getLink())
                 .uuid(notification.getUuid())
                 .isRead(true)
                 .notificationType(notification.getNotificationType())

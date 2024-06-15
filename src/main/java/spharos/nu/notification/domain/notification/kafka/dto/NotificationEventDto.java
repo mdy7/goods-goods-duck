@@ -11,5 +11,5 @@ public class NotificationEventDto {
     private String title;
     private String content;
     private List<String> uuid;
-
+    private String link;
 }

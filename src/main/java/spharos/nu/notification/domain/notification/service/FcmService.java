@@ -20,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FcmService {
 
-    @Value("${fcm.certification}")
-    String firebaseConfigPath;
+    @Value("${fcm.front-url}")
+    String FRONT_URL;
 
     private final FirebaseMessaging firebaseMessaging;
 
@@ -33,8 +33,11 @@ public class FcmService {
                     .build();
 
             MulticastMessage message = MulticastMessage.builder()
-                    .addAllTokens(fcmSendDto.getTokens()) // 여기서 여러 개의 토큰을 추가
+                    .addAllTokens(fcmSendDto.getTokens())
                     .setNotification(notification)
+                    .putData("title", fcmSendDto.getTitle())
+                    .putData("body", fcmSendDto.getContent())
+                    .putData("link", FRONT_URL + fcmSendDto.getLink())
                     .build();
 
             BatchResponse response = firebaseMessaging.sendMulticast(message);

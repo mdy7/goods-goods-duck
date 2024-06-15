@@ -16,9 +16,7 @@ public class Notification {
     private String title;
     private String content;
     private String uuid;
+    private String link;
     private boolean isRead;
     private byte notificationType;
-
-
-
 }
