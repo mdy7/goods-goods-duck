@@ -1,8 +1,11 @@
 package spharos.nu.notification.domain.notification.entity;
 
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
 
 @Document(collection = "notification")
 @Getter
@@ -19,4 +22,7 @@ public class Notification {
     private String link;
     private boolean isRead;
     private byte notificationType;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
 }
