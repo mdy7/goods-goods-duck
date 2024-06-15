@@ -29,6 +29,7 @@ spring:
               - GET
               - POST
               - DELETE
+              - OPTIONS
       routes:
         # goods auth routing
         - id: goods-service
