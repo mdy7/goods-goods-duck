@@ -15,7 +15,7 @@ public class MemberJsonDeserializer {
 		Map<String, Object> props = new HashMap<>();
 
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "join-group");
+		props.put(ConsumerConfig.GROUP_ID_CONFIG, "member-group");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
 		props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
