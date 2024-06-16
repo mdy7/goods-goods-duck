@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.member.domain.member.dto.event.JoinEventDto;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
@@ -41,6 +43,29 @@ public class MyPageService {
 		if (isMember.isPresent()) {
 			throw new CustomException(ErrorCode.ALREADY_EXIST_USER);
 		}
+	}
+
+	@Transactional
+	public void join(JoinEventDto joinEventDto) {
+		MemberInfo memberInfo = MemberInfo.builder()
+			.uuid(joinEventDto.getUuid())
+			.nickname(joinEventDto.getNickname())
+			.profileImage(joinEventDto.getProfileImage())
+			.favoriteCategory(joinEventDto.getFavoriteCategory())
+			.build();
+		memberInfoRepository.save(memberInfo);
+
+		DuckPoint duckPoint = DuckPoint.builder()
+			.uuid(joinEventDto.getUuid())
+			.nowPoint(0L)
+			.build();
+		duckPointRepository.save(duckPoint);
+
+		MemberScore memberScore = MemberScore.builder()
+			.uuid(joinEventDto.getUuid())
+			.score(50)
+			.build();
+		scoreRepository.save(memberScore);
 	}
 
 	public ProfileResponseDto profileGet(String uuid) {
@@ -97,7 +122,6 @@ public class MyPageService {
 			.nickname(member.getNickname())
 			.profileImage(imgUrl)
 			.favoriteCategory(member.getFavoriteCategory())
-			.isNotify(member.isNotify())
 			.build());
 
 		return imgUrl;

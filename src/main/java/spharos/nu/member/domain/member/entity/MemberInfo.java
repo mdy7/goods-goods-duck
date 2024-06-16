@@ -38,7 +38,4 @@ public class MemberInfo {
 
 	@Column(name = "favorite_category", nullable = false)
 	private String favoriteCategory;
-
-	@Column(name = "is_notify", nullable = false)
-	private boolean isNotify;
 }
