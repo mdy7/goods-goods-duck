@@ -32,10 +32,10 @@ public class MyPageController {
 	@Operation(summary = "회원이 등록한 상품 조회", description = "상품코드, 상품썸네일, 상품명, 시작가격, 상태 데이터")
 	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@RequestParam(value = "page", defaultValue = "0") Integer index,
-		@RequestParam(value = "status", required = false) byte statusNum) {
+		@PageableDefault(size = 10, page = 0) Pageable pageable,
+		@RequestParam(value = "status", required = false) byte status) {
 
-		return ApiResponse.success(myPageService.sellGoodsGet(uuid, index, statusNum), "등록한 상품 조회 성공");
+		return ApiResponse.success(myPageService.sellGoodsGet(uuid, pageable, status), "등록한 상품 조회 성공");
 	}
 
 	@GetMapping("/bids")

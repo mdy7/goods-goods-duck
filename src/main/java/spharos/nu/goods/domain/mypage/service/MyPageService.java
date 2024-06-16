@@ -24,11 +24,9 @@ public class MyPageService {
 	private final BidRepository bidRepository;
 	private final WinningBidRepository winningBidRepository;
 
-	// 등록한 상품 조회
-	public GoodsSellResponseDto sellGoodsGet(String uuid, Integer index, byte statusNum) {
+	public GoodsSellResponseDto sellGoodsGet(String uuid, Pageable pageable, byte status) {
 
-		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
+		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, status, pageable);
 
 		return GoodsSellResponseDto.builder()
 			.totalCount(goodsCodePage.getTotalElements())

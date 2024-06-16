@@ -62,7 +62,7 @@ class MyPageServiceTest {
 			.thenReturn(goodsCodePage);
 
 		// when
-		GoodsSellResponseDto response = myPageService.sellGoodsGet(uuid, index, statusNum);
+		GoodsSellResponseDto response = myPageService.sellGoodsGet(uuid, pageable, statusNum);
 
 		// then
 		Assertions.assertThat(response).isNotNull();

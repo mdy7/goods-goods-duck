@@ -51,14 +51,14 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 	}
 
 	@Override
-	public Page<GoodsCodeDto> findAllGoods(String uuid, byte statusNum, Pageable pageable) {
+	public Page<GoodsCodeDto> findAllGoods(String uuid, byte status, Pageable pageable) {
 
 		QGoods goods = QGoods.goods;
 
 		List<GoodsCodeDto> goodsList = queryFactory
 			.select(new QGoodsCodeDto(goods.goodsCode))
 			.from(goods)
-			.where(tradingStatusEq(statusNum))
+			.where(goods.sellerUuid.eq(uuid), tradingStatusEq(status))
 			.orderBy(goods.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -67,7 +67,7 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		Long total = queryFactory
 			.select(goods.count())
 			.from(goods)
-			.where(tradingStatusEq(statusNum))
+			.where(goods.sellerUuid.eq(uuid), tradingStatusEq(status))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
@@ -110,7 +110,18 @@ public class GoodsRepositoryImpl implements GoodsRepositoryCustom {
 		return query.fetch();
 	}
 
-	private BooleanExpression tradingStatusEq(Byte statusNum) {
-		return statusNum == null ? null : QGoods.goods.tradingStatus.eq(statusNum);
+	private BooleanExpression tradingStatusEq(Byte status) {
+		QGoods goods = QGoods.goods;
+
+		if (status == null) {
+			return null; // status가 null인 경우 조건을 추가하지 않음
+		}
+
+		// 경매완료탭은 status가 2 또는 3인 상품을 보여줌
+		if (status == 2 || status == 3) {
+			return goods.tradingStatus.eq((byte)2).or(goods.tradingStatus.eq((byte)3));
+		}
+
+		return goods.tradingStatus.eq(status);
 	}
 }
