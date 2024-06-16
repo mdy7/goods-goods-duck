@@ -62,9 +62,9 @@ public class UserService {
 			if (daysBetween <= 15) {
 				member.changeWithdraw(false);
 				withdrawRepository.delete(withdrawMember.get());
-			}
-			else {
+			} else {
 				userRepository.delete(member);
+				throw new CustomException(ErrorCode.NOT_FOUND_USER);
 			}
 		}
 
@@ -83,6 +83,23 @@ public class UserService {
 
 		Member member = userRepository.findByUuid(social.getUuid())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
+
+		Optional<WithdrawMember> withdrawMember = withdrawRepository.findByUuid(member.getUuid());
+
+		if (withdrawMember.isPresent() && member.isWithdraw()) {
+			LocalDateTime now = LocalDateTime.now();
+			LocalDateTime withdrawTime = withdrawMember.get().getCreatedAt();
+
+			long daysBetween = ChronoUnit.DAYS.between(now.toLocalDate(), withdrawTime.toLocalDate());
+
+			if (daysBetween <= 15) {
+				member.changeWithdraw(false);
+				withdrawRepository.delete(withdrawMember.get());
+			} else {
+				userRepository.delete(member);
+				throw new CustomException(ErrorCode.NOT_FOUND_USER);
+			}
+		}
 
 		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
 
