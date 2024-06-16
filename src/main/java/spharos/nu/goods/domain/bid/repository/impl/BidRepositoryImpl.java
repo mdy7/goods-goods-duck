@@ -28,7 +28,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 		QGoods goods = QGoods.goods;
 
 		List<BidGoodsCodeDto> goodsList = queryFactory
-			.select(new QBidGoodsCodeDto(bid.goodsCode))
+			.selectDistinct(new QBidGoodsCodeDto(bid.goodsCode))
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
 			.where(bid.bidderUuid.eq(uuid), tradingStatusEq(status))
@@ -38,7 +38,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 			.fetch();
 
 		Long total = queryFactory
-			.select(bid.count())
+			.selectDistinct(bid.goodsCode.count())
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
 			.where(bid.bidderUuid.eq(uuid), tradingStatusEq(status))

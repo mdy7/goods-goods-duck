@@ -3,9 +3,6 @@ package spharos.nu.goods.domain.goods.service;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.IntStream;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.bid.service.BidService;
-import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
+import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
+import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.request.ImageDto;
 import spharos.nu.goods.domain.goods.dto.request.TagDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsAllListDto;
-import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
-import spharos.nu.goods.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.goods.domain.goods.dto.response.GoodsSummaryDto;
-import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
