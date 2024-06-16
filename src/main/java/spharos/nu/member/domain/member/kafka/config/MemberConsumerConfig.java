@@ -19,9 +19,15 @@ public class MemberConsumerConfig {
 	@Value("${spring.kafka.bootstrap-server}")
 	private String bootstrapServer;
 
+	@Value("${spring.kafka.api-key}")
+	private String apiKey;
+
+	@Value("${spring.kafka.api-secret}")
+	private String apiSecret;
+
 	@Bean
 	public Map<String, Object> memberConsumerConfigs() {
-		return MemberJsonDeserializer.getStringObjectMap(bootstrapServer);
+		return MemberJsonDeserializer.getStringObjectMap(bootstrapServer, apiKey, apiSecret);
 	}
 
 	@Bean
