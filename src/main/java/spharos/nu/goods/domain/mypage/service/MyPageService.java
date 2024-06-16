@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
-import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.goods.repository.GoodsRepository;
+import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
 import spharos.nu.goods.domain.mypage.dto.response.GoodsSellResponseDto;
 
 @Service
@@ -23,10 +23,9 @@ public class MyPageService {
 	private final BidRepository bidRepository;
 	private final WinningBidRepository winningBidRepository;
 
-	public GoodsSellResponseDto sellGoodsGet(String uuid, Integer index, byte statusNum) {
+	public GoodsSellResponseDto sellGoodsGet(String uuid, Pageable pageable, byte status) {
 
-		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, statusNum, pageable);
+		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, status, pageable);
 
 		return GoodsSellResponseDto.builder()
 			.totalCount(goodsCodePage.getTotalElements())
