@@ -10,6 +10,7 @@ import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
+import spharos.nu.etc.domain.review.dto.response.ReviewOneResponseDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewResponseDto;
 import spharos.nu.etc.domain.review.entity.Review;
 import spharos.nu.etc.domain.review.kafka.KafkaProducer;
@@ -25,6 +26,17 @@ public class ReviewService {
 	private final ReviewRepository reviewRepository;
 	private final KafkaProducer kafkaProducer;
 
+	public ReviewOneResponseDto oneReviewGet(Long reviewId) {
+
+		Review review = reviewRepository.findById(reviewId).orElseThrow();
+
+		return ReviewOneResponseDto.builder()
+			.writerUuid(review.getWriterUuid())
+			.goodsCode(review.getGoodsCode())
+			.content(review.getContent())
+			.build();
+	}
+
 	public ReviewResponseDto reviewsGet(String receiverUuid, Pageable pageable) {
 
 		Page<ReviewListDto> reviewPage = reviewRepository.findByReceiverUuidOrderByCreatedAtDesc(receiverUuid,
@@ -37,7 +49,6 @@ public class ReviewService {
 			.isLast(reviewPage.isLast())
 			.reviewList(reviewPage.getContent())
 			.build();
-
 	}
 
 	public Void reviewCreate(String writerUuid, String receiverUuid, ReviewRequestDto reviewRequestDto) {
