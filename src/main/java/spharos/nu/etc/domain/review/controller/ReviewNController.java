@@ -21,7 +21,7 @@ import spharos.nu.etc.global.apiresponse.ApiResponse;
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/v1/etc-n/reviews")
-@Tag(name = "Review", description = "etc-service에서 리뷰 관련 API document")
+@Tag(name = "ReviewN", description = "etc-service에서 토큰 검증 필요없는 리뷰 관련 API document")
 public class ReviewNController {
 
 	private final ReviewService reviewService;
