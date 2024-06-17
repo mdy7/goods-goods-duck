@@ -16,5 +16,7 @@ public class FcmSendDto {
 
     private String content;
 
+    private String link;
+
 
 }

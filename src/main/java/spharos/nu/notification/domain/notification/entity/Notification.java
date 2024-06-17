@@ -1,27 +1,28 @@
 package spharos.nu.notification.domain.notification.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import spharos.nu.notification.global.entity.CreatedAtBaseEntity;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+import java.time.LocalDateTime;
+
+@Document(collection = "notification")
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Notification extends CreatedAtBaseEntity {
+public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "notification_id")
-    private Long id;
-
+    private String id;
     private String title;
     private String content;
     private String uuid;
+    private String link;
     private boolean isRead;
     private byte notificationType;
 
-
-
+    @CreatedDate
+    private LocalDateTime createdAt;
 }

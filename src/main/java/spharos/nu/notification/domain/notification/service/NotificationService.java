@@ -8,9 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spharos.nu.notification.domain.notification.dto.request.FcmSendDto;
-import spharos.nu.notification.domain.notification.dto.request.NotificationSaveDto;
-import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
 import spharos.nu.notification.domain.notification.dto.response.NotificationInfoDto;
+import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
 import spharos.nu.notification.domain.notification.entity.Notification;
 import spharos.nu.notification.domain.notification.entity.UserNotificationInfo;
 import spharos.nu.notification.domain.notification.kafka.dto.NotificationEventDto;
@@ -22,7 +21,6 @@ import spharos.nu.notification.global.exception.CustomException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_NOTIFICATION;
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_USER_NOTIFICATION_INFO;
@@ -47,12 +45,14 @@ public class NotificationService {
             Notification notification = Notification.builder()
                     .title(notificationEventDto.getTitle())
                     .content(notificationEventDto.getContent())
+                    .link(notificationEventDto.getLink())
                     .uuid(uuid)
                     .build();
             notifications.add(notification);
         }
-
         notificationRepository.saveAll(notifications);
+
+        sendPushAlarm(notificationEventDto);
     }
 
     /**
@@ -67,6 +67,7 @@ public class NotificationService {
                     .tokens(Collections.singletonList(userNotificationInfo.getDeviceToken()))
                     .title(notificationEventDto.getTitle())
                     .content(notificationEventDto.getContent())
+                    .link(notificationEventDto.getLink())
                     .build();
 
             fcmService.sendMessageTo(fcmSendDto);
@@ -77,7 +78,7 @@ public class NotificationService {
      * 알림 삭제
      */
     @Transactional
-    public void deleteNotification(Long notificationId) {
+    public void deleteNotification(String notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(()
                 -> new CustomException(NOT_FOUND_NOTIFICATION));
 
@@ -103,7 +104,7 @@ public class NotificationService {
      * 알림 읽음 처리
      */
     @Transactional
-    public void readNotification(Long notificationId) {
+    public void readNotification(String notificationId) {
         Notification notification = notificationRepository.findById(notificationId).orElseThrow(()
                 -> new CustomException(NOT_FOUND_NOTIFICATION));
 
@@ -111,6 +112,7 @@ public class NotificationService {
                 .id(notification.getId())
                 .title(notification.getTitle())
                 .content(notification.getContent())
+                .link(notification.getLink())
                 .uuid(notification.getUuid())
                 .isRead(true)
                 .notificationType(notification.getNotificationType())
