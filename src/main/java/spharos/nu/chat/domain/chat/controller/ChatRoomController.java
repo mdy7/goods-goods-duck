@@ -23,14 +23,14 @@ import spharos.nu.chat.global.apiresponse.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/chat-room")
+@RequestMapping("/api/v1/cha")
 @Tag(name = "ChatRoom", description = "채팅방 컨트롤러")
 public class ChatRoomController {
 
 	private final ChatRoomService chatRoomService;
 
 	@Operation(summary = "채팅방 목록 조회", description = "채팅방 목록을 조회합니다")
-	@GetMapping(value = "/{userUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(value = "/rooms/{userUuid}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<ApiResponse<List<ChatRoomInfo>>> getChatRoomsByMemberId(
 		@PathVariable(value = "userUuid") String userUuid) {
 		log.info("getChatRoomsByMemberId : {}", userUuid);
@@ -38,7 +38,7 @@ public class ChatRoomController {
 	}
 
 	@Operation(summary = "채팅방 생성", description = "개발 편의용으로 채팅방 생성 시 사용합니다.(원래는 카프카로 서비스단 바로 호출)")
-	@PostMapping(value = "/{userUuid}/for-dev")
+	@PostMapping(value = "/room/{userUuid}/for-dev")
 	public ResponseEntity<ApiResponse<Void>> createChatRoom(@RequestBody WinningEventDto winningEventDto) {
 		log.info("createChatRoom : {}", winningEventDto);
 		chatRoomService.createChatRoom(winningEventDto);
