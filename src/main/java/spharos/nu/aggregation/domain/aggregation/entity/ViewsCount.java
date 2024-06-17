@@ -21,7 +21,7 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-@Table(name = "view_count")
+@Table(name = "views_count")
 public class ViewsCount {
 
 	@Id
@@ -35,4 +35,9 @@ public class ViewsCount {
 
 	@NotNull
 	private Long count;
+
+	public void increaseViewsCount() {
+		this.count++;
+	}
+
 }

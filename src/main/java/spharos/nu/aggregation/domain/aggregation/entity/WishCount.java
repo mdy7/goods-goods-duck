@@ -31,12 +31,9 @@ public class WishCount {
 	@NotNull
 	private Long count;
 
-
 	public void increaseWishCount() {
 		this.count++;
 	}
 
-	public void decreaseWishCount() {
-		this.count--;
-	}
+	public void decreaseWishCount() { this.count--; }
 }
