@@ -1,20 +1,16 @@
 package spharos.nu.goods.domain.goods.service;
 
-import java.sql.Timestamp;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.domain.bid.service.BidService;
-import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 import spharos.nu.goods.domain.goods.dto.event.TradingCompleteEventDto;
 import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.request.ImageDto;
@@ -40,9 +36,7 @@ public class GoodsService {
 	private final GoodsRepository goodsRepository;
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
-	private final BidService bidService;
-	private final TaskScheduler taskScheduler;
-	private final KafkaTemplate<String, OpenEventDto> openEventDtoKafkaTemplate;
+
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
 		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk, isTradingOnly, pageable);
@@ -89,12 +83,6 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
-
-		// 경매 시작시간에 스케줄링 걸기
-		scheduleOpenGoods(savedGoods);
-
-		// 경매 종료시간에 스케줄링 걸기
-		scheduleCloseGoods(savedGoods);
 
 		return savedGoods.getGoodsCode();
 	}
@@ -182,27 +170,6 @@ public class GoodsService {
 		return null;
 	}
 
-	// 경매 시작시간에 스케줄링
-	private void scheduleOpenGoods(Goods goods) {
-		taskScheduler.schedule(() -> OpenGoods(goods), Timestamp.valueOf(goods.getOpenedAt()));
-	}
-
-	@Transactional
-	public void OpenGoods(Goods goods) {
-		log.info("(상품 코드: {}) 경매 시작 ", goods.getGoodsCode());
-
-		OpenEventDto openEventDto = OpenEventDto.builder()
-			.goodsCode(goods.getGoodsCode())
-			.openedAt(goods.getOpenedAt())
-			.build();
-
-		openEventDtoKafkaTemplate.send("goods-open-topic", openEventDto);
-	}
-
-	// 경매 종료시간에 스케줄링
-	private void scheduleCloseGoods(Goods goods) {
-		taskScheduler.schedule(() -> bidService.addWinningBid(goods), Timestamp.valueOf(goods.getClosedAt()));
-	}
 
 	public byte getGoodsTradingStatus(String goodsCode) {
 		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
