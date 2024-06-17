@@ -24,11 +24,10 @@ public class ChatRoomService {
 	private final ChatRoomRepository chatRoomRepository;
 
 	@Transactional
-	@KafkaListener(topics = "winning-bid-topic", containerFactory = "winningEventListener")
 	public void createChatRoom(WinningEventDto winningEventDto) {
         log.info("낙찰 완료 & 채팅방을 생성합니다");
-		log.info("거래자1 {}",winningEventDto.getBidderUuid());
-		log.info("거래자2 {}",winningEventDto.getSellerUuid());
+		log.info("입찰자 {}",winningEventDto.getBidderUuid());
+		log.info("판매자 {}",winningEventDto.getSellerUuid());
 		List<ChatMember> members = new ArrayList<>();
 		members.add(ChatMember.builder()
 			.userUuid(winningEventDto.getSellerUuid())

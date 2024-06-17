@@ -16,8 +16,6 @@ public class ChatResposeDto {
 	private String chatMessageId;
 	@Schema(description = "채팅방 id")
 	private String chatRoomId;
-	@JsonProperty("isImage")
-	@Getter(AccessLevel.NONE)
 	@Schema(description = "이미지여부")
 	private Boolean isImage;
 	@Schema(description = "메시지")

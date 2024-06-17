@@ -23,7 +23,7 @@ public class ChatMessage {
 
 	@Id
 	private String id;
-	@Field("has_image")
+	@Field("is_image")
 	private Boolean isImage;
 	private String message;
 	@Field("image_url")

@@ -11,8 +11,6 @@ import lombok.Getter;
 @Builder
 public class ChatRequestDto {
 
-	@JsonProperty("isImage")
-	// @Getter(AccessLevel.NONE)
 	@Schema(description = "이미지여부")
 	private Boolean isImage;
 	@Schema(description = "메시지")

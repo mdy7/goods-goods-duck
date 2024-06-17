@@ -1,4 +1,4 @@
-package spharos.nu.chat.domain.chat.kafka;
+package spharos.nu.chat.domain.chat.kafka.config;
 
 import java.util.HashMap;
 import java.util.Map;
