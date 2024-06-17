@@ -10,6 +10,9 @@ import lombok.ToString;
 @ToString
 public class ReviewListDto {
 
+	@Schema(description = "거래id")
+	private Long reviewId;
+
 	@Schema(description = "굿즈 코드")
 	private String goodsCode;
 
