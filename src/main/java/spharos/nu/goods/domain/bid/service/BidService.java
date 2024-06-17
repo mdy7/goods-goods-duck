@@ -15,7 +15,7 @@ import spharos.nu.goods.domain.bid.dto.request.BidAddRequestDto;
 import spharos.nu.goods.domain.bid.dto.response.BidListResponseDto;
 import spharos.nu.goods.domain.bid.entity.Bid;
 import spharos.nu.goods.domain.bid.entity.WinningBid;
-import spharos.nu.goods.domain.bid.kafka.KafkaProducer;
+import spharos.nu.goods.domain.bid.kafka.BidKafkaProducer;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
 import spharos.nu.goods.domain.goods.entity.Goods;
@@ -29,7 +29,7 @@ public class BidService {
 
 	private final BidRepository bidRepository;
 	private final WinningBidRepository winningBidRepository;
-	private final KafkaProducer kafkaProducer;
+	private final BidKafkaProducer kafkaProducer;
 
 	/*
 	 * 입찰 등록

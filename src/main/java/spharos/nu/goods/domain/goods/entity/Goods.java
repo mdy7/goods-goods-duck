@@ -38,8 +38,6 @@ public class Goods extends AuditBaseEntity {
 	private String name;
 	@NotNull
 	private Long minPrice;
-	@NotNull
-	private Long deposit;
 	@NotBlank
 	private String description;
 	@NotNull
@@ -54,6 +52,6 @@ public class Goods extends AuditBaseEntity {
 	private byte tradingStatus;
 	@NotNull
 	@Column(columnDefinition = "BOOLEAN DEFAULT FALSE")
-	private boolean isDisable;
+	private Boolean isDisable;
 
 }

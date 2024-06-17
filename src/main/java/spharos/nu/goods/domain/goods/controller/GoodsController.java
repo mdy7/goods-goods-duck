@@ -44,7 +44,8 @@ public class GoodsController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PathVariable("goodsCode") String goodsCode
 	) {
-		return ApiResponse.success(goodsService.goodsDelete(goodsCode), "굿즈 Hard Delete 성공");
+		goodsService.goodsDelete(goodsCode);
+		return ApiResponse.success(null, "굿즈 Hard Delete 성공");
 	}
 
 	/*
@@ -56,7 +57,8 @@ public class GoodsController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PathVariable("goodsCode") String goodsCode
 	) {
-		return ApiResponse.success(goodsService.goodsDisable(uuid, goodsCode), "굿즈 Soft Delete 성공");
+		goodsService.goodsDisable(uuid, goodsCode);
+		return ApiResponse.success(null, "굿즈 Soft Delete 성공");
 	}
 
 }

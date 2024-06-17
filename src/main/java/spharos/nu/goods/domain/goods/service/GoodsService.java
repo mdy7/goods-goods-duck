@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.bid.service.BidService;
-import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
+import spharos.nu.goods.domain.goods.dto.event.GoodsCreateEventDto;
+import spharos.nu.goods.domain.goods.dto.event.GoodsDeleteEventDto;
+import spharos.nu.goods.domain.goods.dto.event.GoodsDisableEventDto;
+import spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto;
 import spharos.nu.goods.domain.goods.dto.event.TradingCompleteEventDto;
 import spharos.nu.goods.domain.goods.dto.request.GoodsCreateDto;
 import spharos.nu.goods.domain.goods.dto.request.ImageDto;
@@ -26,6 +28,7 @@ import spharos.nu.goods.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
 import spharos.nu.goods.domain.goods.entity.Image;
 import spharos.nu.goods.domain.goods.entity.Tag;
+import spharos.nu.goods.domain.goods.kafka.GoodsKafkaProducer;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.repository.ImageRepository;
 import spharos.nu.goods.domain.goods.repository.TagRepository;
@@ -42,7 +45,7 @@ public class GoodsService {
 	private final ImageRepository imageRepository;
 	private final BidService bidService;
 	private final TaskScheduler taskScheduler;
-	private final KafkaTemplate<String, OpenEventDto> openEventDtoKafkaTemplate;
+	private final GoodsKafkaProducer kafkaProducer;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
 		Page<GoodsCodeDto> goodsPage = goodsRepository.findAllGoods(categoryPk, isTradingOnly, pageable);
@@ -67,6 +70,8 @@ public class GoodsService {
 			.openedAt(goodsCreateDto.getOpenedAt())
 			.closedAt(goodsCreateDto.getClosedAt())
 			.wishTradeType(goodsCreateDto.getWishTradeType())
+			.tradingStatus((byte)0)
+			.isDisable(false)
 			.sellerUuid(uuid)
 			.goodsCode(goodsCode)
 			.build();
@@ -81,6 +86,7 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
+
 		//이미지 저장
 		goodsCreateDto.getImages().forEach((image) ->
 			imageRepository.save(Image.builder()
@@ -89,6 +95,25 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
+
+		kafkaProducer.sendGoodsCreateEvent(GoodsCreateEventDto.builder()
+			.name(savedGoods.getName())
+			.description(savedGoods.getDescription())
+			.categoryId(savedGoods.getCategoryId())
+			.minPrice(savedGoods.getMinPrice())
+			.openedAt(savedGoods.getOpenedAt())
+			.closedAt(savedGoods.getClosedAt())
+			.wishTradeType(savedGoods.getWishTradeType())
+			.tradingStatus(savedGoods.getTradingStatus())
+			.isDisable(savedGoods.getIsDisable())
+			.createdAt(savedGoods.getCreatedAt())
+			.updatedAt(savedGoods.getUpdatedAt())
+			.sellerUuid(savedGoods.getSellerUuid())
+			.goodsCode(savedGoods.getGoodsCode())
+			.tagList(goodsCreateDto.getTags().stream().map(TagDto::getName).toList())
+			.build());
+
+		log.info("(상품 코드: {}) 굿즈 생성 이벤트 발행 완료",savedGoods.getGoodsCode());
 
 		// 경매 시작시간에 스케줄링 걸기
 		scheduleOpenGoods(savedGoods);
@@ -104,7 +129,7 @@ public class GoodsService {
 		임시로 '카테고리 pk + (굿즈테이블 마지막 pk + 1)'로 가정함
 		*/
 		Optional<Goods> optionalGoods = goodsRepository.findFirstByOrderByIdDesc();
-		Long lastGoodsId = optionalGoods.map(Goods::getId).orElse(1L);
+		Long lastGoodsId = optionalGoods.map(Goods::getId).orElse(1L) + 1;
 
 		return goodsCreateDto.getCategoryId() + String.valueOf(lastGoodsId);
 	}
@@ -145,7 +170,7 @@ public class GoodsService {
 	}
 
 	@Transactional
-	public Void goodsDelete(String goodsCode) {
+	public void goodsDelete(String goodsCode) {
 		/*상태가 0이 아닌 경우 삭제 불가능*/
 		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 		if (goods.getTradingStatus() != 0) {
@@ -156,11 +181,15 @@ public class GoodsService {
 		tagRepository.deleteAllByGoodsCode(goodsCode);
 		imageRepository.deleteAllByGoodsCode(goodsCode);
 
-		return null;
+		kafkaProducer.sendGoodsDeleteEvent(GoodsDeleteEventDto.builder()
+			.goodsCode(goodsCode)
+			.build());
+
+		log.info("(상품 코드: {}) 굿즈 삭제 이벤트 발행 완료",goodsCode);
 	}
 
 	@Transactional
-	public Void goodsDisable(String uuid, String goodsCode) {
+	public void goodsDisable(String uuid, String goodsCode) {
 		Goods goods = goodsRepository.findOneByGoodsCode(goodsCode).orElseThrow();
 
 		Goods updatedGoods = Goods.builder()
@@ -175,11 +204,17 @@ public class GoodsService {
 			.goodsCode(goods.getGoodsCode())
 			.closedAt(goods.getClosedAt())
 			.tradingStatus(goods.getTradingStatus())
-			.isDisable(true) //숨김 여부 true 로 변경
+			.isDisable(true) //숨김 여부 true
 			.build();
 
 		goodsRepository.save(updatedGoods);
-		return null;
+
+		kafkaProducer.sendGoodsDisableEvent(GoodsDisableEventDto.builder()
+			.goodsCode(updatedGoods.getGoodsCode())
+			.isDisable(updatedGoods.getIsDisable())
+			.build());
+
+		log.info("(상품 코드: {}) 굿즈 숨김 이벤트 발행 완료",updatedGoods.getGoodsCode());
 	}
 
 	// 경매 시작시간에 스케줄링
@@ -191,12 +226,28 @@ public class GoodsService {
 	public void OpenGoods(Goods goods) {
 		log.info("(상품 코드: {}) 경매 시작 ", goods.getGoodsCode());
 
-		OpenEventDto openEventDto = OpenEventDto.builder()
+		/* status 경매중으로 변경 */
+		Goods updatedGoods = goodsRepository.save(Goods.builder()
+			.id(goods.getId())
+			.categoryId(goods.getCategoryId())
+			.sellerUuid(goods.getSellerUuid())
 			.goodsCode(goods.getGoodsCode())
+			.name(goods.getName())
+			.minPrice(goods.getMinPrice())
+			.description(goods.getDescription())
 			.openedAt(goods.getOpenedAt())
-			.build();
+			.closedAt(goods.getClosedAt())
+			.wishTradeType(goods.getWishTradeType())
+			.tradingStatus((byte)2)  // 거래중
+			.isDisable(goods.getIsDisable())
+			.build());
 
-		openEventDtoKafkaTemplate.send("goods-open-topic", openEventDto);
+		kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+			.goodsCode(updatedGoods.getGoodsCode())
+			.tradingStatus(updatedGoods.getTradingStatus())
+			.build());
+
+		log.info("(상품 코드: {}) 거래상태변경 이벤트 발행 완료",updatedGoods.getGoodsCode());
 	}
 
 	// 경매 종료시간에 스케줄링
@@ -215,25 +266,31 @@ public class GoodsService {
 
 		Goods goods = goodsRepository.findOneByGoodsCode(tradingCompleteEventDto.getGoodsCode()).orElseThrow();
 
-		goodsRepository.save(Goods.builder()
+		Goods updatedGoods = goodsRepository.save(Goods.builder()
 			.id(goods.getId())
 			.categoryId(goods.getCategoryId())
 			.sellerUuid(goods.getSellerUuid())
 			.goodsCode(goods.getGoodsCode())
 			.name(goods.getName())
 			.minPrice(goods.getMinPrice())
-			.deposit(goods.getDeposit())
 			.description(goods.getDescription())
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
 			.wishTradeType(goods.getWishTradeType())
 			.tradingStatus((byte)4)  // 거래완료
-			.isDisable(goods.isDisable())
+			.isDisable(goods.getIsDisable())
 			.build());
 
 		// 서비스 배포시 로그 지우기
 		log.info("굿즈코드 {} : 거래 상태 변경 완료", tradingCompleteEventDto.getGoodsCode());
 		log.info("상태코드 {} : 확인 완료", goods.getTradingStatus());
 
+		//리드 서버에 동기화
+		kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+			.goodsCode(updatedGoods.getGoodsCode())
+			.tradingStatus(updatedGoods.getTradingStatus())
+			.build());
+
+		log.info("(상품 코드: {}) 거래상태변경 이벤트 발행 완료",updatedGoods.getGoodsCode());
 	}
 }
