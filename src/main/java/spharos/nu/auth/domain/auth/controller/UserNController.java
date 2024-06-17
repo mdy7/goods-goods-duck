@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import spharos.nu.auth.domain.auth.dto.ResetPwdDto;
-import spharos.nu.auth.domain.auth.dto.JoinDto;
-import spharos.nu.auth.domain.auth.dto.LoginDto;
-import spharos.nu.auth.domain.auth.dto.SocialLoginDto;
+import lombok.extern.slf4j.Slf4j;
+import spharos.nu.auth.domain.auth.dto.request.ResetPwdDto;
+import spharos.nu.auth.domain.auth.dto.request.JoinDto;
+import spharos.nu.auth.domain.auth.dto.request.LoginDto;
+import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
 import spharos.nu.auth.utils.jwt.JwtProvider;
@@ -29,25 +32,22 @@ import spharos.nu.auth.utils.jwt.JwtToken;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth-n")
+@Slf4j
 @Tag(name = "Users", description = "회원가입 및 로그인 등등 유저 관련 인증과 관련하여 기본적으로 필요한 메소드")
 public class UserNController {
 	private final UserService userService;
-	private final JwtProvider jwtProvider;
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인")
-	public ResponseEntity<ApiResponse<JwtToken>> login(@RequestBody LoginDto loginDto) {
-		JwtToken jwtToken = userService.login(loginDto);
-
-		return ApiResponse.success(jwtToken, "로그인에 성공했습니다.");
+	public ResponseEntity<ApiResponse<LoginResponseDto>> login(@RequestBody LoginDto loginDto) {
+		return ApiResponse.success(userService.login(loginDto), "로그인에 성공했습니다.");
 	}
 
 	@PostMapping("/social-login")
 	@Operation(summary = "소셜 로그인", description = "소셜로 가입된 유저라면 토큰 발급, 아니라면 회원가입 페이지로 리다이렉트")
-	public ResponseEntity<ApiResponse<JwtToken>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
-		JwtToken tokens = userService.socialLogin(socialLoginDto);
+	public ResponseEntity<ApiResponse<LoginResponseDto>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
 
-		return ApiResponse.success(tokens, "로그인에 성공했습니다.");
+		return ApiResponse.success(userService.socialLogin(socialLoginDto), "로그인에 성공했습니다.");
 	}
 
 	@PostMapping()
