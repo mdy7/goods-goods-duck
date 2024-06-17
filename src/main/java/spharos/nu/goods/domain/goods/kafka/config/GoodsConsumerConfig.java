@@ -20,9 +20,15 @@ public class GoodsConsumerConfig {
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServer;
 
+	@Value("${spring.kafka.api-key}")
+	private String apiKey;
+
+	@Value("${spring.kafka.api-secret}")
+	private String apiSecret;
+
 	@Bean
 	public Map<String, Object> goodsConsumerConfigs() {
-		return CommonJsonDeserializer.getStringObjectMap(bootstrapServer);
+		return CommonJsonDeserializer.getStringObjectMap(bootstrapServer,apiKey,apiSecret);
 	}
 
 	@Bean
