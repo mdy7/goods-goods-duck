@@ -15,7 +15,8 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:3000"
+              - "*"
+#              - "http://localhost:3000"
             allow-credentials: true
             allowedHeaders:
               - x-requested-with
@@ -47,20 +48,20 @@ spring:
           filters:
 
 
-        # bid auth routing
-#        - id: bid-service
-#          uri: lb://BID-SERVICE
-#          predicates:
-#            - Path=/api/v1/bids/**
-#          filters:
-#            - JwtAuthenticationFilter
+        # read auth routing
+        - id: read-service
+          uri: lb://READ-SERVICE
+          predicates:
+            - Path=/api/v1/read/**
+          filters:
+            - JwtAuthenticationFilter
 
-        # bid no auth routing
-#        - id: bid-service
-#          uri: lb://BID-SERVICE
-#          predicates:
-#            - Path=/api/v1/bids-n/**
-#          filters:
+        # read no auth routing
+        - id: read-service
+          uri: lb://READ-SERVICE
+          predicates:
+            - Path=/api/v1/read-n/**
+          filters:
 
         # member auth routing
         - id: member-service
@@ -137,6 +138,21 @@ spring:
             - Path=/api/v1/notification-n/**
           filters:
 
+        # chat auth routing
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/v1/chat/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # chat no auth routing
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/v1/chat-n/**
+          filters:
+
 
 eureka:
   client:
@@ -164,9 +180,6 @@ springdoc:
     urls[2]:
       name: 굿즈 서비스
       url: http://3.35.70.208:8000/api/v1/goods-n/swagger/api-docs
-#    urls[3]:
-#      name: 경매 서비스
-#      url: http://3.35.70.208:8000/api/v1/bids-n/swagger/api-docs
     urls[3]:
       name: 집계 서비스
       url: http://3.35.70.208:8000/api/v1/aggregation-n/swagger/api-docs
@@ -176,3 +189,9 @@ springdoc:
     urls[5]:
       name: 알림 서비스
       url: http://3.35.70.208:8000/api/v1/notification-n/swagger/api-docs
+    urls[6]:
+      name: 리드 서비스
+      url: http://3.35.70.208:8000/api/v1/read-n/swagger/api-docs
+    urls[7]:
+      name: 채팅 서비스
+      url: http://3.35.70.208:8000/api/v1/chat-n/swagger/api-docs
