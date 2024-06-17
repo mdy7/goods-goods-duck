@@ -1,6 +1,8 @@
 package spharos.nu.member.domain.member.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -144,8 +146,16 @@ public class MyPageService {
 
 	public MannerDuckDto mannerDuckGet(String uuid) {
 
-		MemberScore memberScore = scoreRepository.findByUuid(uuid).orElseThrow();
-		Integer score = memberScore.getScore();
+		List<MemberScore> memberScores = scoreRepository.findAllByUuid(uuid);
+
+		// 점수들의 평균을 계산
+		OptionalDouble average = memberScores.stream()
+			.mapToInt(MemberScore::getScore)
+			.average();
+
+		// 평균을 반올림하여 정수로 반환, 값이 없을 경우 0 반환
+		int score = (int)Math.round(average.orElse(0.0));
+
 		int level;
 		int leftPoint;
 
