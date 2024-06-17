@@ -25,7 +25,6 @@ class GoodsTest {
 			.closedAt(LocalDateTime.now())
 			.wishTradeType((byte)0)
 			.tradingStatus((byte)1)
-			.isDelete(false)
 			.build();
 
 		// when, then

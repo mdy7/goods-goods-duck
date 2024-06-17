@@ -227,7 +227,7 @@ public class GoodsService {
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
 			.wishTradeType(goods.getWishTradeType())
-			.tradingStatus((byte) 4)  // 거래완료
+			.tradingStatus((byte)4)  // 거래완료
 			.isDisable(goods.isDisable())
 			.build());
 

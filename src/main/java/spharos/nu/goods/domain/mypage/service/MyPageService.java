@@ -7,11 +7,12 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.goods.domain.bid.dto.response.BidGoodsCodeDto;
+import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
-import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
-import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
+import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
 import spharos.nu.goods.domain.mypage.dto.response.GoodsSellResponseDto;
 
 @Service
@@ -36,10 +37,10 @@ public class MyPageService {
 			.build();
 	}
 
-	public BidGoodsResponseDto bidGoodsGet(String bidderUuid, Integer index) {
+	// 입찰한 상품 조회
+	public BidGoodsResponseDto bidGoodsGet(String bidderUuid, Pageable pageable, byte status) {
 
-		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsCodeDto> biddingPage = bidRepository.findByBidderUuidOrderByCreatedAtDesc(bidderUuid, pageable);
+		Page<BidGoodsCodeDto> biddingPage = bidRepository.findAllGoods(bidderUuid, pageable, status);
 
 		return BidGoodsResponseDto.builder()
 			.totalCount(biddingPage.getTotalElements())
@@ -50,19 +51,19 @@ public class MyPageService {
 			.build();
 	}
 
-	public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Integer index) {
-
-		Pageable pageable = PageRequest.of(index, 10);
-		Page<GoodsCodeDto> winningPage = winningBidRepository.findByBidderUuidOrderByCreatedAtDesc(bidderUuid,
-			pageable);
-
-		return BidGoodsResponseDto.builder()
-			.totalCount(winningPage.getTotalElements())
-			.nowPage(winningPage.getNumber())
-			.maxPage(winningPage.getTotalPages())
-			.isLast(winningPage.isLast())
-			.goodsList(winningPage.getContent())
-			.build();
-	}
+	// public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Integer index) {
+	//
+	// 	Pageable pageable = PageRequest.of(index, 10);
+	// 	Page<GoodsCodeDto> winningPage = winningBidRepository.findByBidderUuidOrderByCreatedAtDesc(bidderUuid,
+	// 		pageable);
+	//
+	// 	return BidGoodsResponseDto.builder()
+	// 		.totalCount(winningPage.getTotalElements())
+	// 		.nowPage(winningPage.getNumber())
+	// 		.maxPage(winningPage.getTotalPages())
+	// 		.isLast(winningPage.isLast())
+	// 		.goodsList(winningPage.getContent())
+	// 		.build();
+	// }
 
 }
