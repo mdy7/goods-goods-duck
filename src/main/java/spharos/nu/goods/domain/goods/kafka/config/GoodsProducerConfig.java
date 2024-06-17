@@ -14,7 +14,6 @@ import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
 import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 
 @Configuration
-@Getter
 public class GoodsProducerConfig {
 
 	@Value("${spring.kafka.bootstrap-servers}")
