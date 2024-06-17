@@ -1,6 +1,8 @@
 package spharos.nu.member.domain.member.service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +14,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.event.JoinEventDto;
+import spharos.nu.member.domain.member.dto.event.MemberScoreEventDto;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
@@ -93,7 +96,6 @@ public class MyPageService {
 			.profileImage(profileImage)
 			.nickname(nickname)
 			.favoriteCategory(favCategory)
-			.isNotify(member.isNotify())
 			.build());
 
 		return ProfileResponseDto.builder()
@@ -103,7 +105,7 @@ public class MyPageService {
 			.favCategory(favCategory)
 			.build();
 	}
-	
+
 	public String profileImageGet(String uuid) {
 
 		MemberInfo member = getMemberInfo(uuid);
@@ -137,7 +139,6 @@ public class MyPageService {
 			.nickname(member.getNickname())
 			.profileImage(null)
 			.favoriteCategory(member.getFavoriteCategory())
-			.isNotify(member.isNotify())
 			.build());
 
 		return null;
@@ -145,8 +146,16 @@ public class MyPageService {
 
 	public MannerDuckDto mannerDuckGet(String uuid) {
 
-		MemberScore memberScore = scoreRepository.findByUuid(uuid).orElseThrow();
-		Integer score = memberScore.getScore();
+		List<MemberScore> memberScores = scoreRepository.findAllByUuid(uuid);
+
+		// 점수들의 평균을 계산
+		OptionalDouble average = memberScores.stream()
+			.mapToInt(MemberScore::getScore)
+			.average();
+
+		// 평균을 반올림하여 정수로 반환, 값이 없을 경우 0 반환
+		int score = (int)Math.round(average.orElse(0.0));
+
 		int level;
 		int leftPoint;
 
@@ -191,6 +200,15 @@ public class MyPageService {
 			.isLast(duckPointInfoPage.isLast())
 			.historyList(duckPointInfoPage.getContent())
 			.build();
+	}
+
+	public void memberScoreCreate(MemberScoreEventDto memberScoreEventDto) {
+
+		MemberScore memberScore = MemberScore.builder()
+			.uuid(memberScoreEventDto.getReceiverUuid())
+			.score(memberScoreEventDto.getScore())
+			.build();
+		scoreRepository.save(memberScore);
 	}
 
 	private MemberInfo getMemberInfo(String uuid) {

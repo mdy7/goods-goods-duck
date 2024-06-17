@@ -12,6 +12,7 @@ import org.springframework.kafka.support.converter.StringJsonMessageConverter;
 
 import lombok.RequiredArgsConstructor;
 import spharos.nu.member.domain.member.dto.event.JoinEventDto;
+import spharos.nu.member.domain.member.dto.event.MemberScoreEventDto;
 
 @Configuration
 @RequiredArgsConstructor
@@ -39,6 +40,20 @@ public class MemberConsumerConfig {
 	public ConcurrentKafkaListenerContainerFactory<String, JoinEventDto> joinEventListener() {
 		ConcurrentKafkaListenerContainerFactory<String, JoinEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
 		factory.setConsumerFactory(joinEventDtoConsumerFactory());
+
+		return factory;
+	}
+
+	@Bean
+	public ConsumerFactory<String, MemberScoreEventDto> memberScoreEventDtoConsumerFactory() {
+		return new DefaultKafkaConsumerFactory<>(memberConsumerConfigs());
+	}
+
+	@Bean
+	public ConcurrentKafkaListenerContainerFactory<String, MemberScoreEventDto> memberScoreEventListener() {
+
+		ConcurrentKafkaListenerContainerFactory<String, MemberScoreEventDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+		factory.setConsumerFactory(memberScoreEventDtoConsumerFactory());
 
 		return factory;
 	}
