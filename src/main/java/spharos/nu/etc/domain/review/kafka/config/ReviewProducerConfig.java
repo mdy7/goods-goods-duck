@@ -9,6 +9,7 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
+import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 
 @Configuration
@@ -20,6 +21,17 @@ public class ReviewProducerConfig {
 	@Bean
 	public Map<String, Object> reviewProducerConfigs() {
 		return CommonJsonSerializer.getStringObjectMap(bootstrapServer);
+	}
+
+	// 회원 점수 전송
+	@Bean
+	public ProducerFactory<String, MemberReviewEventDto> MemberReviewEventProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(reviewProducerConfigs());
+	}
+
+	@Bean
+	public KafkaTemplate<String, MemberReviewEventDto> MemberReviewEventKafkaTemplate() {
+		return new KafkaTemplate<>(MemberReviewEventProducerFactory());
 	}
 
 	// 거래 상태 전송

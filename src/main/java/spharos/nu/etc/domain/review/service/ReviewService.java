@@ -2,11 +2,11 @@ package spharos.nu.etc.domain.review.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
@@ -43,6 +43,7 @@ public class ReviewService {
 	public Void reviewCreate(String writerUuid, String receiverUuid, ReviewRequestDto reviewRequestDto) {
 
 		String goodsCode = reviewRequestDto.getGoodsCode();
+		Integer score = reviewRequestDto.getScore();
 
 		// 이미 작성한 후기 처리
 		reviewRepository.findByWriterUuidAndGoodsCode(writerUuid, goodsCode)
@@ -51,15 +52,26 @@ public class ReviewService {
 			});
 
 		// 후기 저장
-		reviewRepository.save(Review.builder()
+		Review review = reviewRepository.save(Review.builder()
 			.writerUuid(writerUuid)
 			.receiverUuid(receiverUuid)
 			.goodsCode(goodsCode)
-			.score(reviewRequestDto.getScore())
+			.score(score)
 			.content(reviewRequestDto.getContent())
 			.build());
 
-		// 점수 반영 로직 처리 후 카프카 통신
+		// 점수 반영 카프카 통신
+		MemberReviewEventDto memberReviewEventDto = MemberReviewEventDto.builder()
+			.reviewId(review.getId())
+			.receiverUuid(receiverUuid)
+			.score(score)
+			.build();
+
+		kafkaProducer.sendMemberScore(memberReviewEventDto);
+
+		// 개발 확인용 로그
+		log.info("(수신자: {}) 수신완료 ", receiverUuid);
+		log.info("(점수: {}) 점수확인 ", score);
 
 		// 판매자, 입찰자 모두 후기 작성 완료시 상태 거래 완료로 바꾸는 카프카 통신
 		// 변수 값 확인
@@ -68,8 +80,8 @@ public class ReviewService {
 		if (reviewRepository.findByWriterUuidAndGoodsCode(receiverUuid, goodsCode).isPresent()) {
 
 			TradingCompleteEventDto tradingCompleteEventDto = TradingCompleteEventDto.builder()
-						.goodsCode(goodsCode)
-						.build();
+				.goodsCode(goodsCode)
+				.build();
 			kafkaProducer.sendTradingStatus(tradingCompleteEventDto);
 
 			// 개발 확인용 로그
