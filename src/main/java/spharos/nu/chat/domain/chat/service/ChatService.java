@@ -11,7 +11,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import spharos.nu.chat.domain.chat.dto.ChatMessageDto;
 import spharos.nu.chat.domain.chat.entity.ChatMessage;
-import spharos.nu.chat.domain.chat.entity.Test;
 import spharos.nu.chat.domain.chat.repository.ChatMessageRepository;
 import spharos.nu.chat.domain.chat.repository.ChatRoomRepository;
 
@@ -22,7 +21,6 @@ public class ChatService {
 
 	private final ChatRoomRepository chatRoomRepository;
 	private final ChatMessageRepository chatMessageRepository;
-    private final TestRepository testRepository;
 
 	public void getChatRoomList() {
 
