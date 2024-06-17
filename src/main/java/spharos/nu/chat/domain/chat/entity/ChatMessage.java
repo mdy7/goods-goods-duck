@@ -22,7 +22,6 @@ import lombok.NoArgsConstructor;
 public class ChatMessage {
 
 	@Id
-	@Field("chat_id")
 	private String id;
 	@Field("has_image")
 	private Boolean isImage;

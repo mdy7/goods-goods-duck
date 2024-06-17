@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import java.util.List;
 
 import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ChangeStreamOptions;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
@@ -44,13 +43,9 @@ public class ChatService {
 	@Transactional
 	public Mono<ChatMessage> createMessage(String senderUuid, ChatRequestDto chatRequestDto) {
 		log.info("채팅방 아이디" + chatRequestDto.getChatRoomId());
-		String goodsCode = "010";
-		ChatRoom chatRoom = chatRoomRepository.findByGoodsCode(goodsCode).orElseThrow(
+		ChatRoom chatRoom = chatRoomRepository.findById(chatRequestDto.getChatRoomId()).orElseThrow(
 			() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM)
 		);
-		// ChatRoom chatRoom = chatRoomRepository.findById(chatRequestDto.getChatRoomId()).orElseThrow(
-		// 	() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM)
-		// );
 
 		List<ChatMember> members = chatRoom.getMembers();
 		members.stream().peek(
@@ -60,7 +55,7 @@ public class ChatService {
 				}
 			}
 		).forEach(member -> log.info("member: {}", member));
-        log.info("chat메시지 생성 직전");
+        log.info("chatRoom members의 unreadCount 업데이트");
 		chatRoomRepository.save(ChatRoom.builder()
 			.id(chatRoom.getId())
 			.goodsCode(chatRoom.getGoodsCode())
@@ -84,6 +79,7 @@ public class ChatService {
 	}
 
 	public Flux<ChatResposeDto> getChatMessages(String chatRoomId) {
+		log.info("getChatMessages 메서드로 채팅메시지 내역을 조회");
 		return chatMessageRepository.findChatMessageByChatRoomId(chatRoomId)
 			.map(chatMessage -> ChatResposeDto.builder()
 				.chatMessageId(chatMessage.getId())
