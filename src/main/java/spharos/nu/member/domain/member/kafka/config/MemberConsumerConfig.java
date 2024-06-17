@@ -17,7 +17,7 @@ import spharos.nu.member.domain.member.dto.event.MemberScoreEventDto;
 @Configuration
 @RequiredArgsConstructor
 public class MemberConsumerConfig {
-	@Value("${spring.kafka.bootstrap-server}")
+	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServer;
 
 	@Value("${spring.kafka.api-key}")
