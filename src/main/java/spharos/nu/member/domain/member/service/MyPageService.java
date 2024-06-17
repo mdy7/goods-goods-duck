@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.member.domain.member.dto.event.JoinEventDto;
+import spharos.nu.member.domain.member.dto.event.MemberScoreEventDto;
 import spharos.nu.member.domain.member.dto.request.ProfileImageRequestDto;
 import spharos.nu.member.domain.member.dto.request.ProfileRequestDto;
 import spharos.nu.member.domain.member.dto.response.DuckPointDetailDto;
@@ -93,7 +94,6 @@ public class MyPageService {
 			.profileImage(profileImage)
 			.nickname(nickname)
 			.favoriteCategory(favCategory)
-			.isNotify(member.isNotify())
 			.build());
 
 		return ProfileResponseDto.builder()
@@ -103,7 +103,7 @@ public class MyPageService {
 			.favCategory(favCategory)
 			.build();
 	}
-	
+
 	public String profileImageGet(String uuid) {
 
 		MemberInfo member = getMemberInfo(uuid);
@@ -137,7 +137,6 @@ public class MyPageService {
 			.nickname(member.getNickname())
 			.profileImage(null)
 			.favoriteCategory(member.getFavoriteCategory())
-			.isNotify(member.isNotify())
 			.build());
 
 		return null;
@@ -191,6 +190,15 @@ public class MyPageService {
 			.isLast(duckPointInfoPage.isLast())
 			.historyList(duckPointInfoPage.getContent())
 			.build();
+	}
+
+	public void memberScoreCreate(MemberScoreEventDto memberScoreEventDto) {
+
+		MemberScore memberScore = MemberScore.builder()
+			.uuid(memberScoreEventDto.getReceiverUuid())
+			.score(memberScoreEventDto.getScore())
+			.build();
+		scoreRepository.save(memberScore);
 	}
 
 	private MemberInfo getMemberInfo(String uuid) {
