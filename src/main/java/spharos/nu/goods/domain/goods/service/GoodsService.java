@@ -189,7 +189,6 @@ public class GoodsService {
 			.goodsCode(goods.getGoodsCode())
 			.name(goods.getName())
 			.minPrice(goods.getMinPrice())
-			.deposit(goods.getDeposit())
 			.description(goods.getDescription())
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())

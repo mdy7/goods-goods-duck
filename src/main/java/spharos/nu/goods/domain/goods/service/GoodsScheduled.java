@@ -39,7 +39,6 @@ public class GoodsScheduled {
                     .goodsCode(goods.getGoodsCode())
                     .name(goods.getName())
                     .minPrice(goods.getMinPrice())
-                    .deposit(goods.getDeposit())
                     .description(goods.getDescription())
                     .openedAt(goods.getOpenedAt())
                     .closedAt(goods.getClosedAt())
@@ -70,7 +69,7 @@ public class GoodsScheduled {
 
     @Scheduled(cron = "0 0/1 * * * *")
     @Transactional
-    public void OpenGoods() {
+    public void openGoods() {
         List<Goods> startGoods = goodsRepository.findByTradingStatusAndOpenedAtBefore((byte) 0, LocalDateTime.now());
 
         for (Goods goods : startGoods) {
@@ -83,7 +82,6 @@ public class GoodsScheduled {
                     .goodsCode(goods.getGoodsCode())
                     .name(goods.getName())
                     .minPrice(goods.getMinPrice())
-                    .deposit(goods.getDeposit())
                     .description(goods.getDescription())
                     .openedAt(goods.getOpenedAt())
                     .closedAt(goods.getClosedAt())
