@@ -22,13 +22,16 @@ import lombok.NoArgsConstructor;
 public class ChatMessage {
 
 	@Id
-	@Field("chat_id")
 	private String id;
+	@Field("is_image")
+	private Boolean isImage;
 	private String message;
 	@Field("image_url")
 	private String imageUrl;
 	@Field("sender_uuid")
 	private String senderUuid;
+	@Field("receiver_uuid")
+	private String receiverUuid;
 	@Field("is_read")
 	private boolean isRead;
 	@CreatedDate
