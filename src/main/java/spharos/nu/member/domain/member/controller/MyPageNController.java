@@ -16,7 +16,7 @@ import spharos.nu.member.global.apiresponse.ApiResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/user-n")
+@RequestMapping("/api/v1/users-n")
 public class MyPageNController {
 	private final MyPageService myPageService;
 
