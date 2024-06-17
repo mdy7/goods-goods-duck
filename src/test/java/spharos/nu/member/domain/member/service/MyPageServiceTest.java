@@ -67,7 +67,6 @@ class MyPageServiceTest {
 			.nickname("쓰껄쓰껄")
 			.profileImage("img_url")
 			.favoriteCategory("애니")
-			.isNotify(true)
 			.build();
 
 		given(memberInfoRepository.findByUuid("테스트_uuid")).willReturn(java.util.Optional.ofNullable(member));
