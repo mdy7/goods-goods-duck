@@ -18,9 +18,15 @@ public class ReviewProducerConfig {
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServer;
 
+	@Value("${spring.kafka.api-key}")
+	private String apiKey;
+
+	@Value("${spring.kafka.api-secret}")
+	private String apiSecret;
+
 	@Bean
 	public Map<String, Object> reviewProducerConfigs() {
-		return CommonJsonSerializer.getStringObjectMap(bootstrapServer);
+		return CommonJsonSerializer.getStringObjectMap(bootstrapServer, apiKey, apiSecret);
 	}
 
 	// 회원 점수 전송
