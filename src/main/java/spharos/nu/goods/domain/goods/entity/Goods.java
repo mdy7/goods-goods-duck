@@ -38,8 +38,6 @@ public class Goods extends AuditBaseEntity {
 	private String name;
 	@NotNull
 	private Long minPrice;
-	@NotNull
-	private Long deposit;
 	@NotBlank
 	private String description;
 	@NotNull

@@ -9,8 +9,8 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 
-import lombok.Getter;
 import spharos.nu.goods.domain.goods.dto.event.CloseEventDto;
+import spharos.nu.goods.domain.goods.dto.event.NotificationEventDto;
 import spharos.nu.goods.domain.goods.dto.event.OpenEventDto;
 
 @Configuration
@@ -41,6 +41,11 @@ public class GoodsProducerConfig {
 	}
 
 	@Bean
+	public ProducerFactory<String, NotificationEventDto> notificationEventDtoProducerFactory() {
+		return new DefaultKafkaProducerFactory<>(goodsProducerConfigs());
+	}
+
+	@Bean
 	public KafkaTemplate<String, OpenEventDto> openEventDtoKafkaTemplate() {
 		return new KafkaTemplate<>(openEventDtoProducerFactory());
 	}
@@ -48,5 +53,10 @@ public class GoodsProducerConfig {
 	@Bean
 	public KafkaTemplate<String, CloseEventDto> closeEventDtoKafkaTemplate() {
 		return new KafkaTemplate<>(closeEventDtoProducerFactory());
+	}
+
+	@Bean
+	public KafkaTemplate<String, NotificationEventDto> notificationEventDtoKafkaTemplate() {
+		return new KafkaTemplate<>(notificationEventDtoProducerFactory());
 	}
 }
