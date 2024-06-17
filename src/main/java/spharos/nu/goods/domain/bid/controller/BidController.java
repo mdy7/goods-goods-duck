@@ -24,7 +24,7 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 @RequiredArgsConstructor
 @RestController
 @Tag(name = "Bid", description = "입찰 API")
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/goods")
 public class BidController {
 
 	private final BidService bidService;
