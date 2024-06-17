@@ -51,19 +51,17 @@ public class MyPageService {
 			.build();
 	}
 
-	// public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Integer index) {
-	//
-	// 	Pageable pageable = PageRequest.of(index, 10);
-	// 	Page<GoodsCodeDto> winningPage = winningBidRepository.findByBidderUuidOrderByCreatedAtDesc(bidderUuid,
-	// 		pageable);
-	//
-	// 	return BidGoodsResponseDto.builder()
-	// 		.totalCount(winningPage.getTotalElements())
-	// 		.nowPage(winningPage.getNumber())
-	// 		.maxPage(winningPage.getTotalPages())
-	// 		.isLast(winningPage.isLast())
-	// 		.goodsList(winningPage.getContent())
-	// 		.build();
-	// }
+	public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Pageable pageable, byte status) {
+
+		Page<BidGoodsCodeDto> winningPage = winningBidRepository.findAllGoods(bidderUuid, pageable, status);
+
+		return BidGoodsResponseDto.builder()
+			.totalCount(winningPage.getTotalElements())
+			.nowPage(winningPage.getNumber())
+			.maxPage(winningPage.getTotalPages())
+			.isLast(winningPage.isLast())
+			.goodsList(winningPage.getContent())
+			.build();
+	}
 
 }
