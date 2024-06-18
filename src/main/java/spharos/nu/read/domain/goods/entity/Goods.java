@@ -43,7 +43,7 @@ public class Goods {
 	@Field("trading_status")
 	private byte tradingStatus;
 	@Field("is_disable")
-	private boolean isDisable;
+	private Boolean isDisable;
 	@Field("created_at")
 	private LocalDateTime createdAt;
 	@Field("updated_at")
@@ -51,9 +51,9 @@ public class Goods {
 	@Field("tag_list")
 	private List<String> tagList;
 	@Field("wish_count")
-	private boolean wishCount;
+	private Long wishCount;
 	@Field("bid_count")
-	private boolean bidCount;
+	private Long bidCount;
 	@Field("views_count")
-	private boolean viewsCount;
+	private Long viewsCount;
 }
