@@ -20,7 +20,7 @@ public class GoodsCreateEventDto {
 	@Schema(description = "상품코드")
 	private String goodsCode;
 	@Schema(description = "카테고리id")
-	private byte categoryId;
+	private Long categoryId;
 	@Schema(description = "판매자uuid")
 	private String sellerUuid;
 	@Schema(description = "상품명")
