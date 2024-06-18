@@ -10,6 +10,9 @@ import lombok.ToString;
 @ToString
 public class ReviewOneResponseDto {
 
+	@Schema(description = "후기 점수 레벨")
+	private Integer level;
+
 	@Schema(description = "작성자")
 	private String writerUuid;
 
