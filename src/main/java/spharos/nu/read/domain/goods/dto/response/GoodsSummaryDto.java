@@ -29,7 +29,4 @@ public class GoodsSummaryDto {
 
 	@Schema(description = "거래상태")
 	private byte tradingStatus;
-
-	@Schema(description = "생성일자")
-	private LocalDateTime createdAt;
 }

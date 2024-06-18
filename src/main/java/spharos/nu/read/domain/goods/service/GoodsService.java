@@ -30,7 +30,6 @@ public class GoodsService {
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
 			.tradingStatus(goods.getTradingStatus())
-			.createdAt(goods.getCreatedAt())
 			.build();
 	}
 }

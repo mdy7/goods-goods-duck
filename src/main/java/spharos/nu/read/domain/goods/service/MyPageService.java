@@ -35,7 +35,6 @@ public class MyPageService {
 				.openedAt(goods.getOpenedAt())
 				.closedAt(goods.getClosedAt())
 				.tradingStatus(goods.getTradingStatus())
-				.createdAt(goods.getCreatedAt())
 				.build())
 			.toList();
 
