@@ -13,7 +13,7 @@ import spharos.nu.etc.domain.review.entity.Review;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-	Page<ReviewListDto> findByReceiverUuidOrderByCreatedAtDesc(String receiverUuid, Pageable pageable);
+	Page<Review> findByReceiverUuidOrderByCreatedAtDesc(String receiverUuid, Pageable pageable);
 
 	Optional<Review> findByWriterUuidAndGoodsCode(String writerUuid, String goodsCode);
 }
