@@ -31,7 +31,7 @@ public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
 			.selectDistinct(new QBidGoodsCodeDto(winningBid.goodsCode))
 			.from(winningBid)
 			.join(goods).on(winningBid.goodsCode.eq(goods.goodsCode))
-			.where(winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
+			.where(goods.isDisable.eq(false), winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.orderBy(winningBid.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -41,7 +41,7 @@ public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
 			.selectDistinct(winningBid.goodsCode.count())
 			.from(winningBid)
 			.join(goods).on(winningBid.goodsCode.eq(goods.goodsCode))
-			.where(winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
+			.where(goods.isDisable.eq(false), winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
