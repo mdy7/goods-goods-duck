@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.read.domain.goods.entity.Goods;
 import spharos.nu.read.domain.goods.repository.ReadRepository;
@@ -30,6 +31,27 @@ public class GoodsService {
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
 			.tradingStatus(goods.getTradingStatus())
+			.build();
+	}
+
+	public GoodsDetailDto getGoodsDetail(String goodsCode) {
+
+		Goods goods = readRepository.findByGoodsCode(goodsCode).orElseThrow();
+
+		return GoodsDetailDto.builder()
+			.goodsCode(goods.getGoodsCode())
+			.categoryId(goods.getCategoryId())
+			.sellerUuid(goods.getSellerUuid())
+			.name(goods.getName())
+			.minPrice(goods.getMinPrice())
+			.description(goods.getDescription())
+			.openedAt(goods.getOpenedAt())
+			.closedAt(goods.getClosedAt())
+			.wishTradeType(goods.getWishTradeType())
+			.tradingStatus(goods.getTradingStatus())
+			.isDisable(goods.getIsDisable())
+			.createdAt(goods.getCreatedAt())
+			.updatedAt(goods.getUpdatedAt())
 			.build();
 	}
 }
