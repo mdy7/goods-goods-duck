@@ -10,11 +10,11 @@ import spharos.nu.goods.domain.bid.dto.event.WinningEventDto;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class KafkaProducer {
+public class BidKafkaProducer {
 
-    private final KafkaTemplate<String, WinningEventDto> kafkaTemplate;
+    private final KafkaTemplate<String, WinningEventDto> winningKafkaTemplate;
 
     public void sendWinningEvent(WinningEventDto winningEventDto) {
-        kafkaTemplate.send("winning-bid-topic", winningEventDto);
+        winningKafkaTemplate.send("winning-bid-topic", winningEventDto);
     }
 }
