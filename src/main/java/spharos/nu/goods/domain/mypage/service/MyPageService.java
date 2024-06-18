@@ -7,11 +7,9 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.bid.dto.response.BidGoodsCodeDto;
-import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
-import spharos.nu.goods.domain.goods.repository.GoodsRepository;
-import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
+import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
 
 @Service
 @RequiredArgsConstructor

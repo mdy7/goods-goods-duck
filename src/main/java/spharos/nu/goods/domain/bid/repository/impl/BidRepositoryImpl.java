@@ -31,7 +31,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 			.selectDistinct(new QBidGoodsCodeDto(bid.goodsCode))
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
-			.where(bid.bidderUuid.eq(uuid), tradingStatusEq(status))
+			.where(goods.isDisable.eq(false), bid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.orderBy(bid.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
@@ -41,7 +41,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 			.selectDistinct(bid.goodsCode.count())
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
-			.where(bid.bidderUuid.eq(uuid), tradingStatusEq(status))
+			.where(goods.isDisable.eq(false), bid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.fetchOne();
 
 		long totalCount = total != null ? total : 0;
