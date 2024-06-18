@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.read.domain.goods.service.GoodsService;
 import spharos.nu.read.global.apiresponse.ApiResponse;
@@ -18,7 +19,7 @@ import spharos.nu.read.global.apiresponse.ApiResponse;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/read-n")
 @Slf4j
-@Tag(name = "GoodsN", description = "토큰을 검증이 필요없는 읽기용 굿즈 컨트롤러")
+@Tag(name = "GoodsN", description = "토큰 검증이 필요없는 읽기용 굿즈 정보 조회 컨트롤러")
 public class GoodsNController {
 
 	private final GoodsService goodsService;
@@ -29,5 +30,13 @@ public class GoodsNController {
 	public ResponseEntity<ApiResponse<GoodsSummaryDto>> getGoodsSummary(@PathVariable("goodsCode") String goodsCode) {
 
 		return ApiResponse.success(goodsService.goodsSummaryGet(goodsCode), "상품 요약 조회 성공");
+	}
+
+	// 상품 상세 조회
+	@GetMapping("/{goodsCode}/detail")
+	@Operation(summary = "굿즈 상세", description = "굿즈코드로 조회해야하는 상품들의 상세 데이터")
+	public ResponseEntity<ApiResponse<GoodsDetailDto>> getGoodsDetail(@PathVariable("goodsCode") String goodsCode) {
+
+		return ApiResponse.success(goodsService.getGoodsDetail(goodsCode), "상품 상세 조회 성공");
 	}
 }
