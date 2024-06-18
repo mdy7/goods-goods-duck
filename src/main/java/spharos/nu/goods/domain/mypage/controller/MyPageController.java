@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.goods.domain.mypage.dto.response.BidGoodsResponseDto;
-import spharos.nu.goods.domain.mypage.dto.response.GoodsSellResponseDto;
 import spharos.nu.goods.domain.mypage.service.MyPageService;
 import spharos.nu.goods.global.apiresponse.ApiResponse;
 
@@ -26,17 +25,6 @@ import spharos.nu.goods.global.apiresponse.ApiResponse;
 public class MyPageController {
 
 	private final MyPageService myPageService;
-
-	// 등록한 상품 조회
-	@GetMapping("/sell")
-	@Operation(summary = "회원이 등록한 상품 조회", description = "상품코드, 상품썸네일, 상품명, 시작가격, 상태 데이터")
-	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(
-		@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@PageableDefault(size = 10, page = 0) Pageable pageable,
-		@RequestParam(value = "status", required = false) byte status) {
-
-		return ApiResponse.success(myPageService.sellGoodsGet(uuid, pageable, status), "등록한 상품 조회 성공");
-	}
 
 	@GetMapping("/bids")
 	@Operation(summary = "입찰한 상품 코드", description = "회원이 입찰한 상품 코드 리스트")

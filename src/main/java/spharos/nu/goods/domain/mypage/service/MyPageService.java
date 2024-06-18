@@ -1,7 +1,6 @@
 package spharos.nu.goods.domain.mypage.service;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -13,29 +12,14 @@ import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.domain.goods.dto.response.GoodsCodeDto;
-import spharos.nu.goods.domain.mypage.dto.response.GoodsSellResponseDto;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class MyPageService {
 
-	private final GoodsRepository goodsRepository;
 	private final BidRepository bidRepository;
 	private final WinningBidRepository winningBidRepository;
-
-	public GoodsSellResponseDto sellGoodsGet(String uuid, Pageable pageable, byte status) {
-
-		Page<GoodsCodeDto> goodsCodePage = goodsRepository.findAllGoods(uuid, status, pageable);
-
-		return GoodsSellResponseDto.builder()
-			.totalCount(goodsCodePage.getTotalElements())
-			.nowPage(goodsCodePage.getNumber())
-			.maxPage(goodsCodePage.getTotalPages())
-			.isLast(goodsCodePage.isLast())
-			.goodsList(goodsCodePage.getContent())
-			.build();
-	}
 
 	// 입찰한 상품 조회
 	public BidGoodsResponseDto bidGoodsGet(String bidderUuid, Pageable pageable, byte status) {
