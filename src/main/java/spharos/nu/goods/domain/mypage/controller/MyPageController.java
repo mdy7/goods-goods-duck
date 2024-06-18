@@ -48,13 +48,14 @@ public class MyPageController {
 		return ApiResponse.success(myPageService.bidGoodsGet(uuid, pageable, status), "입찰한 상품 조회 성공");
 	}
 
-	// @GetMapping("/users/winning-bid")
-	// @Operation(summary = "낙찰 받은 상품 코드", description = "낙찰 받은 상품 코드 리스트")
-	// public ResponseEntity<ApiResponse<BidGoodsResponseDto>> getWinningBidGoods(
-	// 	@RequestHeader(value = "User-Uuid", required = false) String uuid,
-	// 	@RequestParam(value = "page", defaultValue = "0") Integer index) {
-	//
-	// 	return ApiResponse.success(myPageService.winningBidGoodsGet(uuid, index), "낙찰 받은 상품 조회 성공");
-	// }
+	@GetMapping("/winning-bid")
+	@Operation(summary = "낙찰 받은 상품 코드", description = "낙찰 받은 상품 코드 리스트")
+	public ResponseEntity<ApiResponse<BidGoodsResponseDto>> getWinningBidGoods(
+		@RequestHeader(value = "User-Uuid", required = false) String uuid,
+		@PageableDefault(size = 10, page = 0) Pageable pageable,
+		@RequestParam(value = "status", required = false) byte status) {
+
+		return ApiResponse.success(myPageService.winningBidGoodsGet(uuid, pageable, status), "낙찰 받은 상품 조회 성공");
+	}
 
 }

@@ -7,8 +7,6 @@ import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 public class CommonJsonSerializer {
@@ -23,7 +21,8 @@ public class CommonJsonSerializer {
 			"GoodsCreateEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsCreateEventDto," +
 			"GoodsDeleteEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsDeleteEventDto," +
 			"GoodsDisableEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsDisableEventDto," +
-			"GoodsStatusEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto"
+			"GoodsStatusEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto," +
+			"NotificationEventDto:spharos.nu.goods.domain.goods.dto.event.NotificationEventDto"
 		);
 		/*confluent kafka 연결을 위한 설정*/
 		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,"SASL_SSL");

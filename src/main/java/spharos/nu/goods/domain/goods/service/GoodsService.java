@@ -1,18 +1,18 @@
 package spharos.nu.goods.domain.goods.service;
 
-import java.sql.Timestamp;
+
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.TaskScheduler;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.goods.domain.bid.service.BidService;
+
 import spharos.nu.goods.domain.goods.dto.event.GoodsCreateEventDto;
 import spharos.nu.goods.domain.goods.dto.event.GoodsDeleteEventDto;
 import spharos.nu.goods.domain.goods.dto.event.GoodsDisableEventDto;
@@ -43,8 +43,6 @@ public class GoodsService {
 	private final GoodsRepository goodsRepository;
 	private final TagRepository tagRepository;
 	private final ImageRepository imageRepository;
-	private final BidService bidService;
-	private final TaskScheduler taskScheduler;
 	private final GoodsKafkaProducer kafkaProducer;
 
 	public GoodsAllListDto goodsAllRead(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
@@ -114,12 +112,6 @@ public class GoodsService {
 			.build());
 
 		log.info("(상품 코드: {}) 굿즈 생성 이벤트 발행 완료",savedGoods.getGoodsCode());
-
-		// 경매 시작시간에 스케줄링 걸기
-		scheduleOpenGoods(savedGoods);
-
-		// 경매 종료시간에 스케줄링 걸기
-		scheduleCloseGoods(savedGoods);
 
 		return savedGoods.getGoodsCode();
 	}
@@ -215,44 +207,6 @@ public class GoodsService {
 			.build());
 
 		log.info("(상품 코드: {}) 굿즈 숨김 이벤트 발행 완료",updatedGoods.getGoodsCode());
-	}
-
-	// 경매 시작시간에 스케줄링
-	private void scheduleOpenGoods(Goods goods) {
-		taskScheduler.schedule(() -> OpenGoods(goods), Timestamp.valueOf(goods.getOpenedAt()));
-	}
-
-	@Transactional
-	public void OpenGoods(Goods goods) {
-		log.info("(상품 코드: {}) 경매 시작 ", goods.getGoodsCode());
-
-		/* status 경매중으로 변경 */
-		Goods updatedGoods = goodsRepository.save(Goods.builder()
-			.id(goods.getId())
-			.categoryId(goods.getCategoryId())
-			.sellerUuid(goods.getSellerUuid())
-			.goodsCode(goods.getGoodsCode())
-			.name(goods.getName())
-			.minPrice(goods.getMinPrice())
-			.description(goods.getDescription())
-			.openedAt(goods.getOpenedAt())
-			.closedAt(goods.getClosedAt())
-			.wishTradeType(goods.getWishTradeType())
-			.tradingStatus((byte)2)  // 거래중
-			.isDisable(goods.getIsDisable())
-			.build());
-
-		kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
-			.goodsCode(updatedGoods.getGoodsCode())
-			.tradingStatus(updatedGoods.getTradingStatus())
-			.build());
-
-		log.info("(상품 코드: {}) 거래상태변경 이벤트 발행 완료",updatedGoods.getGoodsCode());
-	}
-
-	// 경매 종료시간에 스케줄링
-	private void scheduleCloseGoods(Goods goods) {
-		taskScheduler.schedule(() -> bidService.addWinningBid(goods), Timestamp.valueOf(goods.getClosedAt()));
 	}
 
 	public byte getGoodsTradingStatus(String goodsCode) {
