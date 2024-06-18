@@ -19,7 +19,7 @@ public class KafkaProducer {
 	// 회원 점수 카프카
 	public void sendMemberScore(MemberReviewEventDto memberReviewEventDto) {
 
-		memberKafkaTemplate.send("member-review-topic", memberReviewEventDto);
+		memberKafkaTemplate.send("member-score-topic", memberReviewEventDto);
 	}
 
 	// 거래 상태 카프카

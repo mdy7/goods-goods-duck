@@ -8,12 +8,12 @@ import lombok.ToString;
 @Getter
 @Builder
 @ToString
-public class ReviewListDto {
+public class ReviewOneResponseDto {
 
-	@Schema(description = "거래id")
-	private Long reviewId;
+	@Schema(description = "작성자")
+	private String writerUuid;
 
-	@Schema(description = "굿즈 코드")
+	@Schema(description = "굿즈코드")
 	private String goodsCode;
 
 	@Schema(description = "후기 내용")
