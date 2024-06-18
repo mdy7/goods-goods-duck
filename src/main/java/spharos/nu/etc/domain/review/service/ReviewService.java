@@ -51,7 +51,15 @@ public class ReviewService {
 			.build();
 	}
 
-	public Void reviewCreate(String writerUuid, String receiverUuid, ReviewRequestDto reviewRequestDto) {
+	public Void reviewCreate(String writerUuid, ReviewRequestDto reviewRequestDto) {
+
+		String receiverUuid;
+
+		if (writerUuid.equals(reviewRequestDto.getBidderUuid())) {
+			receiverUuid = reviewRequestDto.getSellerUuid();
+		} else {
+			receiverUuid = reviewRequestDto.getBidderUuid();
+		}
 
 		String goodsCode = reviewRequestDto.getGoodsCode();
 		Integer score = reviewRequestDto.getScore();
