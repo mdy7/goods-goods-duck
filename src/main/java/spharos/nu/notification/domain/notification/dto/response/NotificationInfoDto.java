@@ -13,9 +13,10 @@ import java.time.LocalDateTime;
 @Builder
 public class NotificationInfoDto {
 
-    private Long id;
+    private String id;
     private String title;
     private String content;
+    private String link;
     private boolean isRead;
     private byte notificationType;
 

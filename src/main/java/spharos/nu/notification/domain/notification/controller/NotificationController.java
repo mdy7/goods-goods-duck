@@ -9,7 +9,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import spharos.nu.notification.domain.notification.dto.request.NotificationSaveDto;
 import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
+import spharos.nu.notification.domain.notification.kafka.dto.NotificationEventDto;
 import spharos.nu.notification.domain.notification.service.NotificationService;
 import spharos.nu.notification.global.apiresponse.ApiResponse;
 
@@ -32,10 +34,19 @@ public class NotificationController {
         return ApiResponse.success(notificationService.findAllNotification(uuid, pageable), "알림 조회 성공");
     }
 
+    @PostMapping
+    @Operation(summary = "알림 저장", description = "알림 저장")
+    public ResponseEntity<ApiResponse<Void>> notificationSave(
+            @RequestBody NotificationEventDto notificationEventDto
+    ) {
+        notificationService.addNotification(notificationEventDto);
+        return ApiResponse.success(null, "알림 저장 성공");
+    }
+
     @PutMapping("/{notificationId}/read")
     @Operation(summary = "알림 읽음 처리", description = "알림 읽음 처리")
     public ResponseEntity<ApiResponse<Void>> notificationRead(
-            @PathVariable("notificationId") Long notificationId
+            @PathVariable("notificationId") String notificationId
     ) {
         notificationService.readNotification(notificationId);
         return ApiResponse.success(null, "알림 읽음 처리 성공");
@@ -44,7 +55,7 @@ public class NotificationController {
     @DeleteMapping("/{notificationId}")
     @Operation(summary = "알림 삭제", description = "알림 삭제")
     public ResponseEntity<ApiResponse<Void>> notificationDelete(
-            @PathVariable("notificationId") Long notificationId
+            @PathVariable("notificationId") String notificationId
     ) {
         notificationService.deleteNotification(notificationId);
         return ApiResponse.success(null, "알림 삭제 성공");

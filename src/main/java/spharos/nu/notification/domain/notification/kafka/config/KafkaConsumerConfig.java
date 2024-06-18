@@ -19,9 +19,15 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrapServer;
 
+    @Value("${spring.kafka.api-key}")
+    private String apiKey;
+
+    @Value("${spring.kafka.api-secret}")
+    private String apiSecret;
+
     @Bean
     public Map<String,Object> notificationConsumerConfigs() {
-        return CommonJsonDeserializer.getStringObjectMap(bootstrapServer);
+        return CommonJsonDeserializer.getStringObjectMap(bootstrapServer,apiKey,apiSecret);
     }
 
     @Bean
