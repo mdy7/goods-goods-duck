@@ -15,9 +15,6 @@ public class GoodsSummaryDto {
 	@Schema(description = "굿즈코드")
 	private String goodsCode;
 
-	@Schema(description = "썸네일Url")
-	private String thumbnailUrl;
-
 	@Schema(description = "상품명")
 	private String goodsName;
 
@@ -32,7 +29,4 @@ public class GoodsSummaryDto {
 
 	@Schema(description = "거래상태")
 	private byte tradingStatus;
-
-	@Schema(description = "생성일자")
-	private LocalDateTime createdAt;
 }
