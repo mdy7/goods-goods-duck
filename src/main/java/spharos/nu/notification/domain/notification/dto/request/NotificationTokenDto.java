@@ -6,6 +6,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class NotificationTokenDto {
-
+    private String uuid;
     private String token;
 }

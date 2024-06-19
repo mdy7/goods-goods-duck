@@ -23,9 +23,8 @@ public class UserNotificationInfoController {
     @PostMapping("/token")
     @Operation(summary = "디바이스 토큰 저장", description = "디바이스 토큰 저장")
     public ResponseEntity<ApiResponse<Void>> saveToken(
-            @RequestHeader("User-Uuid") String uuid,
             @RequestBody NotificationTokenDto notificationTokenDto) {
-        userNotificationInfoService.saveToken(uuid, notificationTokenDto);
+        userNotificationInfoService.saveToken(notificationTokenDto);
         return ApiResponse.success(null, "디바이스 토큰 저장 성공");
     }
 
