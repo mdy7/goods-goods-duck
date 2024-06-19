@@ -1,7 +1,5 @@
 package spharos.nu.goods.domain.goods.dto.response;
 
-import java.time.LocalDateTime;
-
 import com.querydsl.core.annotations.QueryProjection;
 
 import io.swagger.v3.oas.annotations.media.Schema;
