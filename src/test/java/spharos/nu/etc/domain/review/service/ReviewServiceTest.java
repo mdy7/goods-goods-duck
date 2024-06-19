@@ -94,7 +94,7 @@ class ReviewServiceTest {
 			.thenReturn(Optional.of(new Review()));
 
 		CustomException thrownException = assertThrows(CustomException.class, () -> {
-			reviewService.reviewCreate(bidderUuid, "receiver-uuid", reviewRequestDto);
+			reviewService.reviewCreate(bidderUuid, reviewRequestDto);
 		});
 
 		assertEquals(ErrorCode.ALREADY_REVIEW_CREATE, thrownException.getErrorCode());
@@ -115,7 +115,7 @@ class ReviewServiceTest {
 		when(reviewRepository.findByWriterUuidAndGoodsCode(writerUuid, goodsCode))
 			.thenReturn(Optional.empty());
 
-		reviewService.reviewCreate(bidderUuid, sellerUuid, reviewRequestDto);
+		reviewService.reviewCreate(bidderUuid, reviewRequestDto);
 
 		verify(reviewRepository, times(1)).save(any(Review.class));
 	}
