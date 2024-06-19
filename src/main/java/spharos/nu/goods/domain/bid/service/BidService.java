@@ -11,11 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.goods.domain.bid.dto.event.WinningEventDto;
 import spharos.nu.goods.domain.bid.dto.request.BidAddRequestDto;
 import spharos.nu.goods.domain.bid.dto.response.BidListResponseDto;
 import spharos.nu.goods.domain.bid.dto.response.BidTopPriceResponseDto;
 import spharos.nu.goods.domain.bid.entity.Bid;
 import spharos.nu.goods.domain.bid.entity.WinningBid;
+import spharos.nu.goods.domain.bid.kafka.BidKafkaProducer;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
 import spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto;
@@ -34,7 +36,8 @@ public class BidService {
     private final BidRepository bidRepository;
     private final WinningBidRepository winningBidRepository;
     private final GoodsRepository goodsRepository;
-    private final GoodsKafkaProducer kafkaProducer;
+    private final GoodsKafkaProducer goodsKafkaProducer;
+    private final BidKafkaProducer bidKafkaProducer;
 
     /**
      * 입찰 등록
@@ -163,7 +166,7 @@ public class BidService {
                 .build()
         );
 
-        kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+        goodsKafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
                 .goodsCode(updatedGoods.getGoodsCode())
                 .tradingStatus(updatedGoods.getTradingStatus())
                 .build());
@@ -173,13 +176,21 @@ public class BidService {
         uuids.add(goods.getSellerUuid());
         uuids.add(bid.getBidderUuid());
 
-        kafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
+        goodsKafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
                 .uuid(uuids)
                 .title(goods.getName() + " 결과를 확인하세요")
                 .content("확인하세요.")
                 .link("/goods/" + goods.getGoodsCode())
                 .build());
         log.info("(상품 코드: {}) 낙찰자에게 알림 이벤트 발행", goods.getGoodsCode());
+
+        bidKafkaProducer.sendWinningEvent(WinningEventDto.builder()
+                .goodsCode(goodsCode)
+                .bidderUuid(bid.getBidderUuid())
+                .sellerUuid(goods.getSellerUuid())
+                .build());
+        log.info("(상품 코드: {}) 채팅방 이벤트 발행", goods.getGoodsCode());
+
     }
 
     /**
@@ -213,7 +224,7 @@ public class BidService {
                         .build()
         );
 
-        kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+        goodsKafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
                 .goodsCode(updatedGoods.getGoodsCode())
                 .tradingStatus(updatedGoods.getTradingStatus())
                 .build());
