@@ -3,6 +3,7 @@ package spharos.nu.goods.domain.bid.service;
 import static spharos.nu.goods.global.exception.errorcode.ErrorCode.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -17,7 +18,10 @@ import spharos.nu.goods.domain.bid.entity.Bid;
 import spharos.nu.goods.domain.bid.entity.WinningBid;
 import spharos.nu.goods.domain.bid.repository.BidRepository;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepository;
+import spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto;
+import spharos.nu.goods.domain.goods.dto.event.NotificationEventDto;
 import spharos.nu.goods.domain.goods.entity.Goods;
+import spharos.nu.goods.domain.goods.kafka.GoodsKafkaProducer;
 import spharos.nu.goods.domain.goods.repository.GoodsRepository;
 import spharos.nu.goods.global.exception.CustomException;
 
@@ -30,6 +34,7 @@ public class BidService {
     private final BidRepository bidRepository;
     private final WinningBidRepository winningBidRepository;
     private final GoodsRepository goodsRepository;
+    private final GoodsKafkaProducer kafkaProducer;
 
     /**
      * 입찰 등록
@@ -142,7 +147,7 @@ public class BidService {
                 .build()
         );
 
-        goodsRepository.save(Goods.builder()
+        Goods updatedGoods = goodsRepository.save(Goods.builder()
                 .id(goods.getId())
                 .categoryId(goods.getCategoryId())
                 .sellerUuid(goods.getSellerUuid())
@@ -157,6 +162,24 @@ public class BidService {
                 .isDisable(goods.getIsDisable())
                 .build()
         );
+
+        kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+                .goodsCode(updatedGoods.getGoodsCode())
+                .tradingStatus(updatedGoods.getTradingStatus())
+                .build());
+        log.info("(상품 코드: {}) 거래상태 3으로 변경 이벤트 발행", updatedGoods.getGoodsCode());
+
+        List<String> uuids = new ArrayList<>();
+        uuids.add(goods.getSellerUuid());
+        uuids.add(bid.getBidderUuid());
+
+        kafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
+                .uuid(uuids)
+                .title(goods.getName() + " 결과를 확인하세요")
+                .content("확인하세요.")
+                .link("/goods/" + goods.getGoodsCode())
+                .build());
+        log.info("(상품 코드: {}) 낙찰자에게 알림 이벤트 발행", goods.getGoodsCode());
     }
 
     /**
@@ -173,7 +196,7 @@ public class BidService {
             throw new CustomException(INVALID_TRADING_STATUS);
         }
 
-        goodsRepository.save(
+        Goods updatedGoods = goodsRepository.save(
                 Goods.builder()
                         .id(goods.getId())
                         .name(goods.getName())
@@ -189,6 +212,12 @@ public class BidService {
                         .isDisable(goods.getIsDisable())
                         .build()
         );
+
+        kafkaProducer.sendGoodsStatusEvent(GoodsStatusEventDto.builder()
+                .goodsCode(updatedGoods.getGoodsCode())
+                .tradingStatus(updatedGoods.getTradingStatus())
+                .build());
+        log.info("(상품 코드: {}) 거래상태 5로 변경 이벤트 발행", updatedGoods.getGoodsCode());
     }
 
 
