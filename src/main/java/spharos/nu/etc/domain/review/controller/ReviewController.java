@@ -1,7 +1,6 @@
 package spharos.nu.etc.domain.review.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -28,17 +27,10 @@ public class ReviewController {
 	// 후기 작성
 	@PostMapping("")
 	@Operation(summary = "거래완료 후 후기 작성", description = "거래완료 후 후기작성시 후기 저장")
-	public ResponseEntity<ApiResponse<Void>> createReview(@RequestHeader(value = "User-Uuid", required = false) String writerUuid,
+	public ResponseEntity<ApiResponse<Void>> createReview(
+		@RequestHeader(value = "User-Uuid", required = false) String writerUuid,
 		@RequestBody ReviewRequestDto reviewRequestDto) {
 
-		String receiverUuid;
-
-		if (writerUuid.equals(reviewRequestDto.getBidderUuid())) {
-			receiverUuid = reviewRequestDto.getSellerUuid();
-		} else {
-			receiverUuid = reviewRequestDto.getBidderUuid();
-		}
-
-		return ApiResponse.success(reviewService.reviewCreate(writerUuid, receiverUuid, reviewRequestDto), "후기 작성 완료");
+		return ApiResponse.success(reviewService.reviewCreate(writerUuid, reviewRequestDto), "후기 작성 완료");
 	}
 }

@@ -11,7 +11,7 @@ import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class KafkaProducer {
+public class ReviewKafkaProducer {
 
 	private final KafkaTemplate<String, MemberReviewEventDto> memberKafkaTemplate;
 	private final KafkaTemplate<String, TradingCompleteEventDto> statusKafkaTemplate;
