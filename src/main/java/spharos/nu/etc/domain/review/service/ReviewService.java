@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
+import spharos.nu.etc.domain.review.dto.event.NotificationEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
@@ -77,8 +78,16 @@ public class ReviewService {
 			.receiverUuid(receiverUuid)
 			.score(score)
 			.build();
-
 		kafkaProducer.sendMemberScore(memberReviewEventDto);
+
+		// 후기 알림 카프카 통신
+		NotificationEventDto notificationEventDto = NotificationEventDto.builder()
+			.title("거래 후기 도착")
+			.content("당신의 매너덕을 확인하세요.")
+			.uuid(receiverUuid)
+			.link((byte) 2)
+			.build();
+		kafkaProducer.sendReviewNotification(notificationEventDto);
 
 		// 개발 확인용 로그
 		log.info("(수신자: {}) 수신완료 ", receiverUuid);
