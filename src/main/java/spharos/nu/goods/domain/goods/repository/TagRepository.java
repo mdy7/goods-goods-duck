@@ -10,7 +10,7 @@ import spharos.nu.goods.domain.goods.entity.Tag;
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
 
-	List<Tag> findAllByGoodsCode(String code);
+	List<Tag> findAllByGoodsCode(String goodsCode);
 
-	void deleteAllByGoodsCode(String code);
+	void deleteAllByGoodsCode(String goodsCode);
 }
