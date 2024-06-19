@@ -1,5 +1,7 @@
 package spharos.nu.etc.domain.review.dto.event;
 
+import org.apache.commons.lang3.builder.HashCodeExclude;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +20,9 @@ public class NotificationEventDto {
 
 	@Schema(description = "후기 수신자")
 	private String uuid;
+
+	@Schema(description = "후기id")
+	private Long reviewId;
 
 	@Schema(description = "리다이렉션 페이지")
 	private Byte link;

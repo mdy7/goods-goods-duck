@@ -138,6 +138,7 @@ public class ReviewService {
 			.title("거래 후기 도착")
 			.content("당신의 매너덕을 확인하세요.")
 			.uuid(receiverUuid)
+			.reviewId(review.getId())
 			.link((byte)2)
 			.build();
 		reviewKafkaProducer.sendReviewNotification(notificationEventDto);
