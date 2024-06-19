@@ -52,7 +52,7 @@ public class SearchService {
 
 		// 거래 상태 필터링 조건 추가
 		if (isTradingOnly) {
-			MatchOperation tradingFilter = Aggregation.match(Criteria.where("tradingStatus").is((byte) 1)); // 거래 중인 상태만 검색
+			MatchOperation tradingFilter = Aggregation.match(Criteria.where("tradingStatus").in((byte) 0, (byte) 1)); // 거래 중인 상태(0 또는 1)만 검색
 			operations.add(tradingFilter);
 		}
 
