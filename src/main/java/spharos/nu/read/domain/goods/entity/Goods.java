@@ -22,38 +22,38 @@ public class Goods {
 
 	@Id
 	private String id;
-	@Field("goods_code")
+	// @Field("goods_code")
 	private String goodsCode;
-	@Field("category_id")
+	// @Field("category_id")
 	private Long categoryId;
-	@Field("seller_uuid")
+	// @Field("seller_uuid")
 	private String sellerUuid;
-	@Field("name")
+	// @Field("name")
 	private String name;
-	@Field("min_price")
+	// @Field("min_price")
 	private Long minPrice;
-	@Field("description")
+	// @Field("description")
 	private String description;
-	@Field("opened_at")
+	// @Field("opened_at")
 	private LocalDateTime openedAt;
-	@Field("closed_at")
+	// @Field("closed_at")
 	private LocalDateTime closedAt;
-	@Field("wish_trade_type")
+	// @Field("wish_trade_type")
 	private byte wishTradeType;
-	@Field("trading_status")
+	// @Field("trading_status")
 	private byte tradingStatus;
-	@Field("is_disable")
+	// @Field("is_disable")
 	private Boolean isDisable;
-	@Field("created_at")
+	// @Field("created_at")
 	private LocalDateTime createdAt;
-	@Field("updated_at")
+	// @Field("updated_at")
 	private LocalDateTime updatedAt;
-	@Field("tag_list")
+	// @Field("tag_list")
 	private List<String> tagList;
-	@Field("wish_count")
+	// @Field("wish_count")
 	private Long wishCount;
-	@Field("bid_count")
+	// @Field("bid_count")
 	private Long bidCount;
-	@Field("views_count")
+	// @Field("views_count")
 	private Long viewsCount;
 }
