@@ -12,4 +12,6 @@ import spharos.nu.notification.domain.notification.entity.Notification;
 @Repository
 public interface NotificationRepository extends MongoRepository<Notification, String> {
     Page<NotificationInfoDto> findByUuid(String uuid, Pageable pageable);
+
+    Long countByUuidAndIsRead(String uuid, boolean b);
 }

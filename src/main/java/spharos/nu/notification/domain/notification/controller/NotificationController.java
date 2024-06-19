@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import spharos.nu.notification.domain.notification.dto.request.NotificationReadDto;
 import spharos.nu.notification.domain.notification.dto.request.NotificationRemoveDto;
-import spharos.nu.notification.domain.notification.dto.request.NotificationSaveDto;
 import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
 import spharos.nu.notification.domain.notification.kafka.dto.NotificationEventDto;
 import spharos.nu.notification.domain.notification.service.NotificationService;
@@ -61,6 +60,14 @@ public class NotificationController {
             ) {
         notificationService.deleteNotification(notificationRemoveDto);
         return ApiResponse.success(null, "알림 삭제 성공");
+    }
+
+    @GetMapping("/unread")
+    @Operation(summary = "읽지않은 알림 개수 조회", description = "읽지않은 알림 개수 조회")
+    public ResponseEntity<ApiResponse<Long>> notificationUnreadCount(
+            @RequestHeader("User-Uuid") String uuid
+    ) {
+        return ApiResponse.success(notificationService.countUnreadNotification(uuid), "읽지않은 알림 개수 조회 성공");
     }
 
 

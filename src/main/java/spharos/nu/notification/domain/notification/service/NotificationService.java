@@ -81,9 +81,7 @@ public class NotificationService {
      */
     @Transactional
     public void deleteNotification(NotificationRemoveDto notificationRemoveDto) {
-        for (String notificationId : notificationRemoveDto.getNotificationId()) {
-            notificationRepository.deleteById(notificationId);
-        }
+        notificationRepository.deleteAllById(notificationRemoveDto.getNotificationId());
     }
 
     /**
@@ -123,5 +121,12 @@ public class NotificationService {
         }
     }
 
+    /**
+     * 읽지 않은 알림 개수 조회
+     */
+    public Long countUnreadNotification(String uuid) {
+        return notificationRepository.countByUuidAndIsRead(uuid, false);
 
+
+    }
 }
