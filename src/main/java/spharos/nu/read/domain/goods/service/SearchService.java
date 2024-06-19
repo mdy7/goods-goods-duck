@@ -59,7 +59,6 @@ public class SearchService {
 		// 데이터가 여기까지 제대로 있는지 확인
 		Aggregation debugAggregation = Aggregation.newAggregation(operations);
 		List<Goods> debugGoodsList = mongoTemplate.aggregate(debugAggregation, "goods", Goods.class).getMappedResults();
-		log.info("After basic filters and keyword search: {}", debugGoodsList);
 
 		GroupOperation groupOperation = Aggregation
 			.group("goodsCode")
@@ -86,9 +85,6 @@ public class SearchService {
 		// 검색 실행
 		AggregationResults<Goods> aggregationResults = mongoTemplate.aggregate(aggregation, "goods", Goods.class);
 		List<Goods> goodsList = aggregationResults.getMappedResults();
-
-		// 데이터가 제대로 들어왔는지 확인
-		log.info("Final goods list: {}", goodsList);
 
 		// 필터링 조건을 사용하여 총 개수 계산
 		Query countQuery = new Query();
