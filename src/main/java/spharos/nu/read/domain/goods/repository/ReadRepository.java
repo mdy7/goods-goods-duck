@@ -23,7 +23,9 @@ public interface ReadRepository extends MongoRepository<Goods, String> {
 	Page<Goods> findByCategoryIdAndTradingStatusInAndIsDisable(Long categoryId, List<Byte> tradingStatus,
 		Boolean isDisable, Pageable pageable);
 
-	List<Goods> findByCategoryIdAndOpenedAtBeforeAndClosedAtAfter(Long categoryId, LocalDateTime now1, LocalDateTime now2, Pageable pageable);
+	List<Goods> findByCategoryIdAndOpenedAtBeforeAndClosedAtAfter(Long categoryId, LocalDateTime now1,
+		LocalDateTime now2, Pageable pageable);
 
-    List<Goods> findByCategoryIdAndOpenedAtBetween(Long categoryId, LocalDateTime startOfTomorrow, LocalDateTime endOfTomorrow, Pageable pageable);
+	List<Goods> findByCategoryIdAndOpenedAtBetween(Long categoryId, LocalDateTime startOfTomorrow,
+		LocalDateTime endOfTomorrow, Pageable pageable);
 }
