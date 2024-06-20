@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class ImageDto {
 	@Schema(description = "이미지index")
-	private Integer id;
+	private Long id;
 	@Schema(description = "이미지url")
 	private String url;
 }

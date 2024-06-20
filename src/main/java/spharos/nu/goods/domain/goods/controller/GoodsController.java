@@ -31,7 +31,7 @@ public class GoodsController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@RequestBody GoodsCreateDto goodsCreateDto
 	) {
-
+        log.info("컨트롤러단에서 확인"+goodsCreateDto.getImages());
 		return ApiResponse.success(goodsService.goodsCreate(uuid, goodsCreateDto), "굿즈 등록 성공");
 	}
 
