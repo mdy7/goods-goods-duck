@@ -17,9 +17,16 @@ public class BidProducerConfig {
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServer;
 
+	@Value("${spring.kafka.api-key}")
+	private String apiKey;
+
+	@Value("${spring.kafka.api-secret}")
+	private String apiSecret;
+
+
 	@Bean
 	public Map<String,Object> bidProducerConfigs() {
-		return CommonJsonSerializer.getStringObjectMap(bootstrapServer);
+		return CommonJsonSerializer.getStringObjectMap(bootstrapServer, apiKey, apiSecret);
 	}
 
 	@Bean
