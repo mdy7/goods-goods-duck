@@ -47,10 +47,6 @@ public class UserService {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-		if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
-			throw new CustomException(ErrorCode.PASSWORD_ERROR);
-		}
-
 		Optional<WithdrawMember> withdrawMember = withdrawRepository.findByUuid(member.getUuid());
 
 		if (withdrawMember.isPresent() && member.isWithdraw()) {
@@ -66,6 +62,10 @@ public class UserService {
 				userRepository.delete(member);
 				throw new CustomException(ErrorCode.NOT_FOUND_USER);
 			}
+		}
+
+		if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
+			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
 		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
@@ -185,6 +185,8 @@ public class UserService {
 			.uuid(uuid)
 			.reason(withdrawDto.getReason())
 			.build();
+
+		withdrawRepository.save(withdrawMember);
 	}
 
 	public LoginResponseDto cancelWithdraw(LoginDto loginDto) {
