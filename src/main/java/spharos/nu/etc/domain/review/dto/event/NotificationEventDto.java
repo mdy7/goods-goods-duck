@@ -21,9 +21,6 @@ public class NotificationEventDto {
 	@Schema(description = "후기 수신자")
 	private String uuid;
 
-	@Schema(description = "후기id")
-	private Long reviewId;
-
 	@Schema(description = "리다이렉션 페이지")
-	private Byte link;
+	private String link;
 }

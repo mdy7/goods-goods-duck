@@ -138,8 +138,7 @@ public class ReviewService {
 			.title("거래 후기 도착")
 			.content("당신의 매너덕을 확인하세요.")
 			.uuid(receiverUuid)
-			.reviewId(review.getId())
-			.link((byte)2)
+			.link(linkCreate(review.getId()))
 			.build();
 		reviewKafkaProducer.sendReviewNotification(notificationEventDto);
 
@@ -161,7 +160,11 @@ public class ReviewService {
 			// 개발 확인용 로그
 			log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
 		}
-
 		return null;
+	}
+
+	private String linkCreate(Long reviewId) {
+
+		return String.format("/mypage/review/%d", reviewId);
 	}
 }
