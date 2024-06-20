@@ -84,14 +84,17 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
-
+        log.info("이미지 리스트" + goodsCreateDto.getImages());
 		//이미지 저장
 		goodsCreateDto.getImages().forEach((image) ->
-			imageRepository.save(Image.builder()
-				.url(image.getUrl())
-				.index(image.getId())
-				.goodsCode(goodsCode)
-				.build())
+			{
+				log.info("확인"+image.getId());
+				imageRepository.save(Image.builder()
+					.url(image.getUrl())
+					.index(image.getId())
+					.goodsCode(goodsCode)
+					.build());
+			}
 		);
 
 		kafkaProducer.sendGoodsCreateEvent(GoodsCreateEventDto.builder()
