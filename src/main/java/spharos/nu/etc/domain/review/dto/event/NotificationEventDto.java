@@ -1,5 +1,7 @@
 package spharos.nu.etc.domain.review.dto.event;
 
+import java.util.List;
+
 import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -19,7 +21,7 @@ public class NotificationEventDto {
 	private String content;
 
 	@Schema(description = "후기 수신자")
-	private String uuid;
+	private List<String> uuid;
 
 	@Schema(description = "리다이렉션 페이지")
 	private String link;

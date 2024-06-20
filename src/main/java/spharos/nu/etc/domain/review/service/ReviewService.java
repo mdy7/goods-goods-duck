@@ -1,5 +1,6 @@
 package spharos.nu.etc.domain.review.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -134,10 +135,13 @@ public class ReviewService {
 		reviewKafkaProducer.sendMemberScore(memberReviewEventDto);
 
 		// 후기 알림 카프카 통신
+		List<String> uuidList = new ArrayList<>();
+		uuidList.add(receiverUuid);
+
 		NotificationEventDto notificationEventDto = NotificationEventDto.builder()
 			.title("거래 후기 도착")
 			.content("당신의 매너덕을 확인하세요.")
-			.uuid(receiverUuid)
+			.uuid(uuidList)
 			.link(linkCreate(review.getId()))
 			.build();
 		reviewKafkaProducer.sendReviewNotification(notificationEventDto);
