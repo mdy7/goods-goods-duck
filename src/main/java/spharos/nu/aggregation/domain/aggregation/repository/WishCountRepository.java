@@ -12,4 +12,6 @@ public interface WishCountRepository extends JpaRepository<WishCount, Long> {
 
 	Optional<WishCount> findByGoodsCode(String goodsCode);
 
+	void deleteAllByGoodsCode(String goodsCode);
+
 }

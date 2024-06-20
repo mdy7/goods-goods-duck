@@ -13,4 +13,5 @@ public interface BidCountRepository extends JpaRepository<BidCount, Long> {
 
 	Optional<BidCount> findByGoodsCode(String goodsCode);
 
+	void deleteAllByGoodsCode(String goodsCode);
 }

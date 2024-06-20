@@ -13,4 +13,6 @@ public interface ViewsCountRepository extends JpaRepository<ViewsCount, Long> {
 
 	Optional<ViewsCount> findByGoodsCode(String goodsCode);
 
+	void deleteAllByGoodsCode(String goodsCode);
+
 }
