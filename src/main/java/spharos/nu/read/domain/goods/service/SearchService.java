@@ -138,11 +138,13 @@ public class SearchService {
 		List<String> keywords = goodsList.stream()
 			.flatMap(goods -> {
 				List<String> keywordsInGoods = new ArrayList<>();
-				if (goods.getName() != null) {
+				if (goods.getName() != null && goods.getName().toLowerCase().contains(keyword.toLowerCase())) {
 					keywordsInGoods.add(goods.getName());
 				}
 				if (goods.getTagList() != null) {
-					keywordsInGoods.addAll(goods.getTagList());
+					goods.getTagList().stream()
+						.filter(tag -> tag.toLowerCase().contains(keyword.toLowerCase()))
+						.forEach(keywordsInGoods::add);
 				}
 				return keywordsInGoods.stream();
 			})
