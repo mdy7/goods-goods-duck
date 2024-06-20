@@ -88,7 +88,6 @@ public class GoodsService {
 		//이미지 저장
 		goodsCreateDto.getImages().forEach((image) ->
 			{
-				log.info("확인"+image.getId());
 				imageRepository.save(Image.builder()
 					.url(image.getUrl())
 					.index(image.getId())
