@@ -1,6 +1,7 @@
 package spharos.nu.read.domain.goods.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
@@ -146,6 +147,8 @@ public class SearchService {
 				return keywordsInGoods.stream();
 			})
 			.distinct()
+			.sorted(Comparator.comparingInt(String::length))
+			.limit(10)
 			.toList();
 
 		// SearchWordDto 리스트로 변환
