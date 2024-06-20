@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.etc.domain.report.dto.request.GoodsReportRequestDto;
+import spharos.nu.etc.domain.report.dto.request.ReportRequestDto;
 import spharos.nu.etc.domain.report.service.ReportService;
 import spharos.nu.etc.global.apiresponse.ApiResponse;
 
@@ -25,13 +25,26 @@ public class ReportController {
 
 	private final ReportService reportService;
 
+	// 굿즈 신고
 	@PostMapping("/{goodsCode}")
 	@Operation(summary = "굿즈 신고", description = "굿즈 신고를 할 수 있는 api")
 	public ResponseEntity<ApiResponse<Void>> reportGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String reporterUuid,
 		@PathVariable("goodsCode") String goodsCode,
-		@RequestBody GoodsReportRequestDto goodsReportRequestDto) {
+		@RequestBody ReportRequestDto reportRequestDto) {
 
-		return ApiResponse.success(reportService.goodsReport(reporterUuid, goodsCode, goodsReportRequestDto), "굿즈 신고하기 성공");
+		return ApiResponse.success(reportService.goodsReport(reporterUuid, goodsCode, reportRequestDto),
+			"굿즈 신고하기 성공");
+	}
+
+	// 유저 신고
+	@PostMapping("/{reportedUuid}")
+	@Operation(summary = "유저 신고", description = "유저 신고를 할 수 있는 api")
+	public ResponseEntity<ApiResponse<Void>> reportUser(
+		@RequestHeader(value = "User-Uuid", required = false) String repoterUuid,
+		@PathVariable("reportedUuid") String reportedUuid, @RequestBody ReportRequestDto ReportRequestDto) {
+
+		return ApiResponse.success(reportService.userReport(repoterUuid, reportedUuid, ReportRequestDto),
+			"유저 신고하기 성공");
 	}
 }

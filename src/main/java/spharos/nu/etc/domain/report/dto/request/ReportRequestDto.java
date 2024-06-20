@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class GoodsReportRequestDto {
+public class ReportRequestDto {
 
 	@Schema(description = "신고 이유")
 	private String complainReason;
