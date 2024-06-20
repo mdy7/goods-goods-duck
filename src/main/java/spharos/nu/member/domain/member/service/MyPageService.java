@@ -22,6 +22,7 @@ import spharos.nu.member.domain.member.dto.response.DuckPointInfoDto;
 import spharos.nu.member.domain.member.dto.response.MannerDuckDto;
 import spharos.nu.member.domain.member.dto.response.ProfileResponseDto;
 import spharos.nu.member.domain.member.entity.DuckPoint;
+import spharos.nu.member.domain.member.entity.DuckPointHistory;
 import spharos.nu.member.domain.member.entity.MemberInfo;
 import spharos.nu.member.domain.member.entity.MemberScore;
 import spharos.nu.member.domain.member.repository.DuckPointRepository;
@@ -129,20 +130,20 @@ public class MyPageService {
 		return imgUrl;
 	}
 
-	public Void profileImageDelete(String uuid) {
-
-		MemberInfo member = getMemberInfo(uuid);
-
-		memberInfoRepository.save(MemberInfo.builder()
-			.id(member.getId())
-			.uuid(member.getUuid())
-			.nickname(member.getNickname())
-			.profileImage(null)
-			.favoriteCategory(member.getFavoriteCategory())
-			.build());
-
-		return null;
-	}
+	// public Void profileImageDelete(String uuid) {
+	//
+	// 	MemberInfo member = getMemberInfo(uuid);
+	//
+	// 	memberInfoRepository.save(MemberInfo.builder()
+	// 		.id(member.getId())
+	// 		.uuid(member.getUuid())
+	// 		.nickname(member.getNickname())
+	// 		.profileImage(null)
+	// 		.favoriteCategory(member.getFavoriteCategory())
+	// 		.build());
+	//
+	// 	return null;
+	// }
 
 	public MannerDuckDto mannerDuckGet(String uuid) {
 
@@ -192,13 +193,23 @@ public class MyPageService {
 	public DuckPointDetailDto duckPointDetailGet(String uuid, Integer index) {
 
 		Pageable pageable = PageRequest.of(index, 10, Sort.by("createdAt").descending());
-		Page<DuckPointInfoDto> duckPointInfoPage = pointHistoryRepository.findByUuid(uuid, pageable);
+		Page<DuckPointHistory> duckPointInfoPage = pointHistoryRepository.findByUuid(uuid, pageable);
+
+		List<DuckPointInfoDto> historyList = duckPointInfoPage.getContent().stream()
+			.map(history -> DuckPointInfoDto.builder()
+				.changeAmount(history.getChangeAmount())
+				.leftPoint(history.getLeftPoint())
+				.changeStatus(history.getChangeStatus())
+				.historyDetail(history.getHistoryDetail())
+				.createdAt(history.getCreatedAt())
+				.build())
+			.toList();
 
 		return DuckPointDetailDto.builder()
 			.nowPage(duckPointInfoPage.getNumber())
 			.maxPage(duckPointInfoPage.getTotalPages())
 			.isLast(duckPointInfoPage.isLast())
-			.historyList(duckPointInfoPage.getContent())
+			.historyList(historyList)
 			.build();
 	}
 

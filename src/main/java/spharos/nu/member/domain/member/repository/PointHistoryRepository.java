@@ -14,5 +14,5 @@ import spharos.nu.member.domain.member.entity.DuckPointHistory;
 public interface PointHistoryRepository extends JpaRepository<DuckPointHistory, Long> {
 	Optional<DuckPointHistory> findByUuid(String uuid);
 
-	Page<DuckPointInfoDto> findByUuid(String uuid, Pageable pageable);
+	Page<DuckPointHistory> findByUuid(String uuid, Pageable pageable);
 }
