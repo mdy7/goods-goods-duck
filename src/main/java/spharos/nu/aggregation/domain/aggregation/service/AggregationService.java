@@ -58,13 +58,13 @@ public class AggregationService {
 				.build()
 		);
 
-	    bidCountRepository.save(
+		bidCountRepository.save(
 			BidCount.builder()
 				.goodsCode(goodsCreateEventDto.getGoodsCode())
 				.count(0L)
 				.build()
 		);
-		log.info("(goodsCode: {}) 좋아요수,조회수,입찰수 각각 객체 생성",goodsCreateEventDto.getGoodsCode());
+		log.info("(goodsCode: {}) 좋아요수,조회수,입찰수 각각 객체 생성", goodsCreateEventDto.getGoodsCode());
 
 	}
 
@@ -77,7 +77,7 @@ public class AggregationService {
 		viewsCountRepository.deleteAllByGoodsCode(goodsDeleteEventDto.getGoodsCode());
 		bidCountRepository.deleteAllByGoodsCode(goodsDeleteEventDto.getGoodsCode());
 
-		log.info("(goodsCode: {}) 좋아요수,조회수,입찰수 각각 객체 삭제",goodsDeleteEventDto.getGoodsCode());
+		log.info("(goodsCode: {}) 좋아요수,조회수,입찰수 각각 객체 삭제", goodsDeleteEventDto.getGoodsCode());
 
 	}
 
