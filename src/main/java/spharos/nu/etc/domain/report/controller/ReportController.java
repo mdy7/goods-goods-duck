@@ -26,7 +26,7 @@ public class ReportController {
 	private final ReportService reportService;
 
 	// 굿즈 신고
-	@PostMapping("/{goodsCode}")
+	@PostMapping("/goods/{goodsCode}")
 	@Operation(summary = "굿즈 신고", description = "굿즈 신고를 할 수 있는 api")
 	public ResponseEntity<ApiResponse<Void>> reportGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String reporterUuid,
@@ -38,7 +38,7 @@ public class ReportController {
 	}
 
 	// 유저 신고
-	@PostMapping("/{reportedUuid}")
+	@PostMapping("users/{reportedUuid}")
 	@Operation(summary = "유저 신고", description = "유저 신고를 할 수 있는 api")
 	public ResponseEntity<ApiResponse<Void>> reportUser(
 		@RequestHeader(value = "User-Uuid", required = false) String repoterUuid,
