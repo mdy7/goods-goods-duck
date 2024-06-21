@@ -1,5 +1,6 @@
 package spharos.nu.etc.domain.review.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.etc.domain.review.dto.event.MemberReviewEventDto;
+import spharos.nu.etc.domain.review.dto.event.NotificationEventDto;
 import spharos.nu.etc.domain.review.dto.event.TradingCompleteEventDto;
 import spharos.nu.etc.domain.review.dto.request.ReviewRequestDto;
 import spharos.nu.etc.domain.review.dto.response.ReviewListDto;
@@ -30,6 +32,7 @@ public class ReviewService {
 
 	/**
 	 * 후기 1개 조회
+	 *
 	 * @param reviewId
 	 */
 	public ReviewOneResponseDto oneReviewGet(Long reviewId) {
@@ -61,6 +64,7 @@ public class ReviewService {
 
 	/**
 	 * 받은 후기 전체 조회
+	 *
 	 * @param receiverUuid
 	 * @param pageable
 	 */
@@ -88,9 +92,9 @@ public class ReviewService {
 
 	/**
 	 * 후기 작성
+	 *
 	 * @param writerUuid
-	 * @param reviewRequestDto
-	 * 작성 완료 후 member, goods, notification 서비스와 카프카 통신
+	 * @param reviewRequestDto 작성 완료 후 member, goods, notification 서비스와 카프카 통신
 	 */
 	public Void reviewCreate(String writerUuid, ReviewRequestDto reviewRequestDto) {
 
@@ -130,6 +134,18 @@ public class ReviewService {
 
 		reviewKafkaProducer.sendMemberScore(memberReviewEventDto);
 
+		// 후기 알림 카프카 통신
+		List<String> uuidList = new ArrayList<>();
+		uuidList.add(receiverUuid);
+
+		NotificationEventDto notificationEventDto = NotificationEventDto.builder()
+			.title("거래 후기 도착")
+			.content("당신의 매너덕을 확인하세요.")
+			.uuid(uuidList)
+			.link(linkCreate(review.getId()))
+			.build();
+		reviewKafkaProducer.sendReviewNotification(notificationEventDto);
+
 		// 개발 확인용 로그
 		log.info("(수신자: {}) 수신완료 ", receiverUuid);
 		log.info("(점수: {}) 점수확인 ", score);
@@ -148,7 +164,11 @@ public class ReviewService {
 			// 개발 확인용 로그
 			log.info("(상품 코드: {}) 경매 완료 ", goodsCode);
 		}
-
 		return null;
+	}
+
+	private String linkCreate(Long reviewId) {
+
+		return String.format("/mypage/review/%d", reviewId);
 	}
 }
