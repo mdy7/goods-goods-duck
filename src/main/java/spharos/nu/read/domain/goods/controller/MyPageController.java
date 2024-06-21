@@ -29,7 +29,7 @@ public class MyPageController {
 	public ResponseEntity<ApiResponse<GoodsSellResponseDto>> getSellGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PageableDefault(size = 10, page = 0) Pageable pageable,
-		@RequestParam(value = "status", required = false) byte status) {
+		@RequestParam(value = "status", required = false) Byte status) {
 
 		return ApiResponse.success(myPageService.sellGoodsGet(uuid, pageable, status), "등록한 상품 조회 성공");
 	}
