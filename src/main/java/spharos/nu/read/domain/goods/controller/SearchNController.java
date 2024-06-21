@@ -1,5 +1,7 @@
 package spharos.nu.read.domain.goods.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +14,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.read.domain.goods.dto.response.SearchResultResponseDto;
+import spharos.nu.read.domain.goods.dto.response.SearchWordDto;
 import spharos.nu.read.domain.goods.service.SearchService;
 import spharos.nu.read.global.apiresponse.ApiResponse;
 
@@ -34,5 +36,12 @@ public class SearchNController {
 		@PageableDefault(size = 10, page = 0) Pageable pageable) {
 
 		return ApiResponse.success(searchService.searchResultGet(keyword, sort, isTradingOnly, pageable), "검색 성공");
+	}
+
+	@GetMapping("/search-list")
+	@Operation(summary = "검색어 리스트", description = "키워드를 칠때마다 보여줄 검색어 리스트")
+	public ResponseEntity<ApiResponse<List<SearchWordDto>>> getSearchTextList(@RequestParam("keyword") String keyword) {
+
+		return ApiResponse.success(searchService.searchWordListGet(keyword), "검색어 리스트 조회 성공");
 	}
 }
