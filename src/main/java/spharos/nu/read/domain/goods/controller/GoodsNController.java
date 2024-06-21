@@ -49,7 +49,7 @@ public class GoodsNController {
 	}
 
 	// 전체 굿즈 리스트 조회
-	@GetMapping("/{goodsCode}/all-list")
+	@GetMapping("/all-list")
 	@Operation(summary = "전체 굿즈 조회", description = "sort 에 들어갈 유효한 값은 createdAt, closedAt, wishCount, viewsCount, bidCount + ,ASC 또는 ,DESC  입니다. ex) 최신순 -> 'createdAt,DESC'")
 	public ResponseEntity<ApiResponse<AllGoodsDto>> getAllGoods(
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
@@ -60,7 +60,7 @@ public class GoodsNController {
 	}
 
 	// 현재 경매중인 굿즈 리스트 조회
-	@GetMapping("/{goodsCode}/now-trading")
+	@GetMapping("/now-trading")
 	@Operation(summary = "경매중 굿즈 조회", description = "현재 경매중인 굿즈를 조회합니다")
 	public ResponseEntity<ApiResponse<List<GoodsSummaryDto>>> getNowTradingGoods(
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
@@ -70,7 +70,7 @@ public class GoodsNController {
 	}
 
 	// 커밍순 굿즈 리스트 조회
-	@GetMapping("/{goodsCode}/coming-soon")
+	@GetMapping("/coming-soon")
 	@Operation(summary = "커밍순 굿즈 조회", description = "커밍순 예정 굿즈를 조회합니다")
 	public ResponseEntity<ApiResponse<List<GoodsSummaryDto>>> getComingSoonGoods(
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
