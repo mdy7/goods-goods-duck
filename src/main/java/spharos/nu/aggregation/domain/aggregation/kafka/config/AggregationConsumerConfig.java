@@ -16,7 +16,7 @@ import spharos.nu.aggregation.domain.aggregation.dto.event.GoodsDeleteEventDto;
 
 @Configuration
 @RequiredArgsConstructor
-public class ReadConsumerConfig {
+public class AggregationConsumerConfig {
 	@Value("${spring.kafka.bootstrap-servers}")
 	private String bootstrapServer;
 

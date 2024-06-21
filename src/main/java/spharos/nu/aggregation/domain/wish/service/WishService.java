@@ -76,13 +76,4 @@ public class WishService {
         return wishRepository.findByGoodsCodeAndUuid(goodsCode, uuid).isPresent();
     }
 
-    /**
-     * 단일 상품에 대한 관심 여부 확인
-     */
-    public boolean getIsWish(String uuid, String goodsCode) {
-
-        Optional<Wish> optionalWish = wishRepository.findByUuidAndGoodsCode(uuid, goodsCode);
-
-        return optionalWish.isPresent();
-    }
 }
