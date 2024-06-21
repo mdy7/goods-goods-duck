@@ -20,17 +20,16 @@ public class MyPageService {
 
 	private final ReadRepository readRepository;
 
-	public GoodsSellResponseDto sellGoodsGet(String uuid, Pageable pageable, byte status) {
+	public GoodsSellResponseDto sellGoodsGet(String uuid, Pageable pageable, Byte status) {
 
 		Boolean isDisable = false;
 
 		Page<Goods> goodsPage;
 
-		if ((Byte)status == null) {
+		if (status == null) {
 			goodsPage = readRepository.findGoodsBySellerUuidAndIsDisableOrderByCreatedAtDesc(uuid, pageable, isDisable);
 		} else {
-			goodsPage = readRepository.findGoodsBySellerUuidAndTradingStatusAndIsDisableOrderByCreatedAtDesc(uuid,
-				pageable, status, isDisable);
+			goodsPage = readRepository.findGoodsBySellerUuidAndTradingStatusAndIsDisableOrderByCreatedAtDesc(uuid, pageable, status, isDisable);
 		}
 
 		List<GoodsSummaryDto> goodsSummaryList = goodsPage.getContent().stream()
