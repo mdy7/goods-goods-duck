@@ -1,4 +1,4 @@
-package spharos.nu.member.domain.Payment.dto;
+package spharos.nu.member.domain.payment.dto;
 
 import lombok.Getter;
 import lombok.Setter;

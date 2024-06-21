@@ -1,4 +1,4 @@
-package spharos.nu.member.domain.Payment.controller;
+package spharos.nu.member.domain.payment.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -6,9 +6,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import spharos.nu.member.domain.Payment.dto.KakaoPayReadyRequestDto;
-import spharos.nu.member.domain.Payment.dto.KakaoPayReadyResponseDto;
-import spharos.nu.member.domain.Payment.service.KakaoPayService;
+import spharos.nu.member.domain.payment.dto.KakaoPayReadyRequestDto;
+import spharos.nu.member.domain.payment.dto.KakaoPayReadyResponseDto;
+import spharos.nu.member.domain.payment.service.KakaoPayService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 
 @RestController
