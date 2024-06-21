@@ -2,6 +2,7 @@ package spharos.nu.auth.domain.auth.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +19,7 @@ import spharos.nu.auth.domain.auth.dto.request.JoinDto;
 import spharos.nu.auth.domain.auth.dto.request.LoginDto;
 import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
 import spharos.nu.auth.domain.auth.dto.request.UpdatePwdDto;
+import spharos.nu.auth.domain.auth.dto.request.VerificationDto;
 import spharos.nu.auth.domain.auth.dto.request.WithdrawDto;
 import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.entity.Member;
@@ -47,10 +49,6 @@ public class UserService {
 		Member member = userRepository.findByUserId(loginDto.getUserId())
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
-		if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
-			throw new CustomException(ErrorCode.PASSWORD_ERROR);
-		}
-
 		Optional<WithdrawMember> withdrawMember = withdrawRepository.findByUuid(member.getUuid());
 
 		if (withdrawMember.isPresent() && member.isWithdraw()) {
@@ -66,6 +64,10 @@ public class UserService {
 				userRepository.delete(member);
 				throw new CustomException(ErrorCode.NOT_FOUND_USER);
 			}
+		}
+
+		if (!passwordEncoder.matches(loginDto.getPassword(), member.getPassword())) {
+			throw new CustomException(ErrorCode.PASSWORD_ERROR);
 		}
 
 		JwtToken jwtToken = jwtProvider.createToken(member.getUuid());
@@ -113,21 +115,48 @@ public class UserService {
 	public void join(JoinDto joinDto) {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
-		Member member = Member.builder()
-			.uuid(uuid)
-			.userId(joinDto.getUserId())
-			.password(encodedPassword)
-			.phoneNumber(joinDto.getPhoneNumber())
-			.build();
-		userRepository.save(member);
 
-		JoinEventDto kafka = JoinEventDto.builder()
-			.uuid(uuid)
-			.nickname(joinDto.getNickname())
-			.profileImage(joinDto.getProfileImage())
-			.favoriteCategory(joinDto.getFavoriteCategory())
-			.build();
-		kafkaTemplate.send("join-topic", kafka);
+		Optional<Member> isMember = userRepository.findByUserId(joinDto.getUserId());
+		if (isMember.isEmpty()) {
+			Member member = Member.builder()
+					.uuid(uuid)
+					.userId(joinDto.getUserId())
+					.password(encodedPassword)
+					.phoneNumber(joinDto.getPhoneNumber())
+					.build();
+			userRepository.save(member);
+
+			JoinEventDto kafka = JoinEventDto.builder()
+					.uuid(uuid)
+					.nickname(joinDto.getNickname())
+					.profileImage(joinDto.getProfileImage())
+					.favoriteCategory(joinDto.getFavoriteCategory())
+					.build();
+			kafkaTemplate.send("join-topic", kafka);
+		}
+
+		if (Objects.equals("kakao", joinDto.getPassword())) {
+			SocialMember socialMember = SocialMember.builder()
+				.uuid(uuid)
+				.memberCode(joinDto.getUserId())
+				.socialMemberType((byte)1)
+				.build();
+			socialRepository.save(socialMember);
+		}
+	}
+
+	public void socialMapping(VerificationDto verificationDto) {
+		Optional<Member> isMember = userRepository.findByPhoneNumber(verificationDto.getPhoneNumber());
+		if (isMember.isPresent()) {
+			if (Objects.equals(verificationDto.getProvider(), "kakao")) {
+				SocialMember socialMember = SocialMember.builder()
+					.uuid(isMember.get().getUuid())
+					.memberCode(verificationDto.getMemberCode())
+					.socialMemberType((byte)1)
+					.build();
+				socialRepository.save(socialMember);
+			}
+		}
 	}
 
 	public void isDuplicatedId(String userId) {
@@ -181,6 +210,8 @@ public class UserService {
 			.uuid(uuid)
 			.reason(withdrawDto.getReason())
 			.build();
+
+		withdrawRepository.save(withdrawMember);
 	}
 
 	public LoginResponseDto cancelWithdraw(LoginDto loginDto) {
