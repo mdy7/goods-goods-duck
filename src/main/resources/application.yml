@@ -115,8 +115,8 @@ spring:
           filters:
 
         # etc auth routing
-        - id: aggregation-service
-          uri: lb://AGGREGATION-SERVICE
+        - id: etc-service
+          uri: lb://ETC-SERVICE
           predicates:
             - Path=/api/v1/etc/**
           filters:
