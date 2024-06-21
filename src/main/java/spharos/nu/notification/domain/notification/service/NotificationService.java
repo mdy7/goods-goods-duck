@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spharos.nu.notification.domain.notification.dto.request.FcmSendDto;
+import spharos.nu.notification.domain.notification.dto.request.NotificationReadDto;
+import spharos.nu.notification.domain.notification.dto.request.NotificationRemoveDto;
 import spharos.nu.notification.domain.notification.dto.response.NotificationInfoDto;
 import spharos.nu.notification.domain.notification.dto.response.NotificationListDto;
 import spharos.nu.notification.domain.notification.entity.Notification;
@@ -78,11 +80,8 @@ public class NotificationService {
      * 알림 삭제
      */
     @Transactional
-    public void deleteNotification(String notificationId) {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(()
-                -> new CustomException(NOT_FOUND_NOTIFICATION));
-
-        notificationRepository.delete(notification);
+    public void deleteNotification(NotificationRemoveDto notificationRemoveDto) {
+        notificationRepository.deleteAllById(notificationRemoveDto.getNotificationId());
     }
 
     /**
@@ -104,22 +103,30 @@ public class NotificationService {
      * 알림 읽음 처리
      */
     @Transactional
-    public void readNotification(String notificationId) {
-        Notification notification = notificationRepository.findById(notificationId).orElseThrow(()
-                -> new CustomException(NOT_FOUND_NOTIFICATION));
+    public void readNotification(NotificationReadDto notificationReadDto) {
+        for (String notificationId : notificationReadDto.getNotificationId()) {
+            Notification notification = notificationRepository.findById(notificationId).orElseThrow(()
+                    -> new CustomException(NOT_FOUND_NOTIFICATION));
 
-        Notification updateNotification = Notification.builder()
-                .id(notification.getId())
-                .title(notification.getTitle())
-                .content(notification.getContent())
-                .link(notification.getLink())
-                .uuid(notification.getUuid())
-                .isRead(true)
-                .notificationType(notification.getNotificationType())
-                .build();
-
-        notificationRepository.save(updateNotification);
+            notificationRepository.save(
+                    Notification.builder()
+                            .id(notification.getId())
+                            .title(notification.getTitle())
+                            .content(notification.getContent())
+                            .link(notification.getLink())
+                            .uuid(notification.getUuid())
+                            .isRead(true)
+                            .build()
+            );
+        }
     }
 
+    /**
+     * 읽지 않은 알림 개수 조회
+     */
+    public Long countUnreadNotification(String uuid) {
+        return notificationRepository.countByUuidAndIsRead(uuid, false);
 
+
+    }
 }

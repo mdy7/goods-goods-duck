@@ -23,8 +23,8 @@ public class UserNotificationInfoService {
     private final UserNotificationInfoRepository userNotificationInfoRepository;
 
     @Transactional
-    public void saveToken(String uuid, NotificationTokenDto notificationTokenDto) {
-        Optional<UserNotificationInfo> optionalUserNotificationInfo = userNotificationInfoRepository.findByUuid(uuid);
+    public void saveToken(NotificationTokenDto notificationTokenDto) {
+        Optional<UserNotificationInfo> optionalUserNotificationInfo = userNotificationInfoRepository.findByUuid(notificationTokenDto.getUuid());
 
         if (optionalUserNotificationInfo.isPresent()) {
             // 유저 정보가 있으면 토큰 업데이트
@@ -40,7 +40,7 @@ public class UserNotificationInfoService {
         } else {
             // 유저 정보가 없으면 신규 저장
             UserNotificationInfo newUserNotificationInfo = UserNotificationInfo.builder()
-                    .uuid(uuid)
+                    .uuid(notificationTokenDto.getUuid())
                     .deviceToken(notificationTokenDto.getToken())
                     .isNotify(true)
                     .build();
