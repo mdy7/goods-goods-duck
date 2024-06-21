@@ -22,6 +22,6 @@ public class AllMemberResponseDto {
 	@Schema(description = "마지막 페이지 여부")
 	private Boolean isLast;
 
-	@Schema(description = "굿즈 코드 목록")
+	@Schema(description = "전체 회원 목록")
 	private List<ProfileResponseDto> memberList;
 }

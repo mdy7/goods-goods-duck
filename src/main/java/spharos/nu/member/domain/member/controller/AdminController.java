@@ -1,10 +1,12 @@
 package spharos.nu.member.domain.member.controller;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,10 +28,11 @@ public class AdminController {
 
 	// 전체 회원 조회
 	@GetMapping("/all-member")
-	@Operation(summary = "회원 전체 조회", description = "전체 회원의 프로필 데이터")
+	@Operation(summary = "회원 전체 조회", description = "전체 회원의 프로필 데이터, 블랙 회원 필터링")
 	public ResponseEntity<ApiResponse<AllMemberResponseDto>> getAllMember(
-		@PageableDefault(size = 10, page = 0) Pageable pageable) {
+		@RequestParam(name = "isBlack", defaultValue = "false") boolean isBlack,
+		@PageableDefault(size = 10, page = 0, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
 
-		return ApiResponse.success(adminService.allMemberGet(pageable), "전체 회원 조회 성공");
+		return ApiResponse.success(adminService.allMemberGet(pageable, isBlack), "전체 회원 조회 성공");
 	}
 }
