@@ -100,8 +100,8 @@ spring:
           filters:
 
         # aggregation auth routing
-        - id: etc-service
-          uri: lb://ETC-SERVICE
+        - id: aggregation-service
+          uri: lb://AGGREGATION-SERVICE
           predicates:
             - Path=/api/v1/aggregation/**
           filters:
