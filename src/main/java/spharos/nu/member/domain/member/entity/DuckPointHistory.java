@@ -27,7 +27,7 @@ public class DuckPointHistory extends CreatedAtBaseEntity {
 	@Column(name = "duck_point_history_id")
 	private Long id;
 
-	@Column(unique = true, nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false)
 	private String uuid;
 
 	@Column(name = "left_point", nullable = false)
