@@ -113,21 +113,25 @@ public class UserService {
 	public void join(JoinDto joinDto) {
 		String uuid = String.valueOf(UUID.randomUUID());
 		String encodedPassword = passwordEncoder.encode(joinDto.getPassword());
-		Member member = Member.builder()
-			.uuid(uuid)
-			.userId(joinDto.getUserId())
-			.password(encodedPassword)
-			.phoneNumber(joinDto.getPhoneNumber())
-			.build();
-		userRepository.save(member);
 
-		JoinEventDto kafka = JoinEventDto.builder()
-			.uuid(uuid)
-			.nickname(joinDto.getNickname())
-			.profileImage(joinDto.getProfileImage())
-			.favoriteCategory(joinDto.getFavoriteCategory())
-			.build();
-		kafkaTemplate.send("join-topic", kafka);
+		Optional<Member> isMember = userRepository.findByUserId(joinDto.getUserId());
+		if (isMember.isEmpty()) {
+			Member member = Member.builder()
+					.uuid(uuid)
+					.userId(joinDto.getUserId())
+					.password(encodedPassword)
+					.phoneNumber(joinDto.getPhoneNumber())
+					.build();
+			userRepository.save(member);
+
+			JoinEventDto kafka = JoinEventDto.builder()
+					.uuid(uuid)
+					.nickname(joinDto.getNickname())
+					.profileImage(joinDto.getProfileImage())
+					.favoriteCategory(joinDto.getFavoriteCategory())
+					.build();
+			kafkaTemplate.send("join-topic", kafka);
+		}
 	}
 
 	public void isDuplicatedId(String userId) {
