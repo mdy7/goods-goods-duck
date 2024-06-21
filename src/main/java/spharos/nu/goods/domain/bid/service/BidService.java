@@ -81,7 +81,7 @@ public class BidService {
     public List<BidListResponseDto> findBidList(String goodsCode, String uuid) {
         validateSeller(goodsCode, uuid);
 
-        List<Bid> bids = bidRepository.findByGoodsCode(goodsCode);
+        List<Bid> bids = bidRepository.findByGoodsCodeOrderByPriceDesc(goodsCode);
 
         return bids.stream()
                 .map(bidding -> BidListResponseDto.builder()

@@ -12,9 +12,8 @@ import spharos.nu.goods.domain.bid.entity.Bid;
 @Repository
 public interface BidRepository extends JpaRepository<Bid, Long>, BidRepositoryCustom {
 
-	List<Bid> findByGoodsCode(String goodsCode);
 
-
+	List<Bid> findByGoodsCodeOrderByPriceDesc(String goodsCode);
 
 	@Query("SELECT DISTINCT b.bidderUuid FROM Bid b WHERE b.goodsCode = :goodsCode")
 	List<String> findDistinctBiddersByGoodsCode(String goodsCode);
