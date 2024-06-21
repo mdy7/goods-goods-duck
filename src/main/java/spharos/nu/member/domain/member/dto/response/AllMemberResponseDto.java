@@ -10,7 +10,7 @@ import lombok.Getter;
 @Builder
 public class AllMemberResponseDto {
 
-	@Schema(description = "총상품 개수")
+	@Schema(description = "총 회원 수")
 	private Long totalCount;
 
 	@Schema(description = "현재 페이지")
