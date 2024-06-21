@@ -23,6 +23,7 @@ import spharos.nu.auth.domain.auth.dto.request.ResetPwdDto;
 import spharos.nu.auth.domain.auth.dto.request.JoinDto;
 import spharos.nu.auth.domain.auth.dto.request.LoginDto;
 import spharos.nu.auth.domain.auth.dto.request.SocialLoginDto;
+import spharos.nu.auth.domain.auth.dto.request.VerificationDto;
 import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
@@ -48,6 +49,13 @@ public class UserNController {
 	public ResponseEntity<ApiResponse<LoginResponseDto>> socialLogin(@RequestBody SocialLoginDto socialLoginDto) {
 
 		return ApiResponse.success(userService.socialLogin(socialLoginDto), "로그인에 성공했습니다.");
+	}
+
+	@PostMapping("/social-mapping")
+	@Operation(summary = "소셜 매핑", description = "이미 가입한 유저가 소셜 회원가입 시도 시 계정 매핑")
+	public ResponseEntity<ApiResponse<Void>> socialMapping(@RequestBody VerificationDto verificationDto) {
+		userService.socialMapping(verificationDto);
+		return ApiResponse.success(null, "계정 연결에 성공했습니다.");
 	}
 
 	@PostMapping()
