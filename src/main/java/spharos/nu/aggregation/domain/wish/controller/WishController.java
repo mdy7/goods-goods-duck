@@ -27,27 +27,22 @@ public class WishController {
     private final WishService wishService;
 
     @PostMapping("/{goodsCode}")
+	@Operation(summary = "관심(좋아요) 추가", description = "상품 좋아요(관심 상품 추가)")
     public ResponseEntity<ApiResponse<Void>> wishAdd(@RequestHeader("User-Uuid") String uuid, @PathVariable String goodsCode) {
         wishService.addWish(goodsCode, uuid);
         return ApiResponse.success(null, "관심상품 추가 성공");
     }
 
     @DeleteMapping("/{goodsCode}")
+	@Operation(summary = "관심(좋아요) 삭제", description = "상품 좋아요 삭제(관심 상품 해제)")
     public ResponseEntity<ApiResponse<Void>> wishDelete(@RequestHeader("User-Uuid") String uuid, @PathVariable String goodsCode) {
         wishService.deleteWish(goodsCode, uuid);
         return ApiResponse.success(null, "관심상품 삭제 성공");
     }
 
     @GetMapping("/{goodsCode}")
+	@Operation(summary = "단일상품 좋아요 여부 조회", description = "상품코드로 좋아요 여부를 조회합니다")
     public ResponseEntity<ApiResponse<Boolean>> isWished(@RequestHeader("User-Uuid") String uuid, @PathVariable String goodsCode) {
         return ApiResponse.success(wishService.isWished(goodsCode, uuid), "관심상품 여부 확인 성공");
     }
-
-	@GetMapping("/{goodsCode}/is-wish")
-	@Operation(summary = "관심(좋아요) 여부 조회", description = "상품코드로 좋아요 여부를 조회합니다")
-	public ResponseEntity<ApiResponse<Boolean>> getIsWish(@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@PathVariable(value = "goodsCode") String goodsCode) {
-
-		return ApiResponse.success(wishService.getIsWish(uuid, goodsCode), "좋아요 여부 조회 성공");
-	}
 }
