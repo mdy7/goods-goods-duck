@@ -24,10 +24,16 @@ public class MyPageService {
 
 		Boolean isDisable = false;
 
-		Page<Goods> goodsSummaryPage = readRepository.findGoodsBySellerUuidAndTradingStatusAndIsDisableOrderByCreatedAtDesc(
-			uuid, pageable, status, isDisable);
+		Page<Goods> goodsPage;
 
-		List<GoodsSummaryDto> goodsSummaryList = goodsSummaryPage.getContent().stream()
+		if ((Byte)status == null) {
+			goodsPage = readRepository.findGoodsBySellerUuidAndIsDisableOrderByCreatedAtDesc(uuid, pageable, isDisable);
+		} else {
+			goodsPage = readRepository.findGoodsBySellerUuidAndTradingStatusAndIsDisableOrderByCreatedAtDesc(uuid,
+				pageable, status, isDisable);
+		}
+
+		List<GoodsSummaryDto> goodsSummaryList = goodsPage.getContent().stream()
 			.map(goods -> GoodsSummaryDto.builder()
 				.goodsCode(goods.getGoodsCode())
 				.goodsName(goods.getName())
@@ -39,10 +45,10 @@ public class MyPageService {
 			.toList();
 
 		return GoodsSellResponseDto.builder()
-			.totalCount(goodsSummaryPage.getTotalElements())
-			.nowPage(goodsSummaryPage.getNumber())
-			.maxPage(goodsSummaryPage.getTotalPages())
-			.isLast(goodsSummaryPage.isLast())
+			.totalCount(goodsPage.getTotalElements())
+			.nowPage(goodsPage.getNumber())
+			.maxPage(goodsPage.getTotalPages())
+			.isLast(goodsPage.isLast())
 			.goodsList(goodsSummaryList)
 			.build();
 	}

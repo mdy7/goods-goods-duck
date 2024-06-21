@@ -20,6 +20,9 @@ public interface ReadRepository extends MongoRepository<Goods, String> {
 	Page<Goods> findGoodsBySellerUuidAndTradingStatusAndIsDisableOrderByCreatedAtDesc(String sellerUuid,
 		Pageable pageable, byte status, Boolean isDisable);
 
+	Page<Goods> findGoodsBySellerUuidAndIsDisableOrderByCreatedAtDesc(String sellerUuid, Pageable pageable,
+		Boolean isDisablse);
+
 	Page<Goods> findByCategoryIdAndTradingStatusInAndIsDisable(Long categoryId, List<Byte> tradingStatus,
 		Boolean isDisable, Pageable pageable);
 
