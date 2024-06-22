@@ -1,8 +1,11 @@
 package spharos.nu.goods.domain.goods.service;
 
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -118,14 +121,21 @@ public class GoodsService {
 		return savedGoods.getGoodsCode();
 	}
 
+	/**
+	 * 상품코드 생성로직
+	 * '카테고리 pk + 0 + 등록날짜(yymmdd) + uuid(5자리)'로 가정함
+	 */
 	private String createCode(GoodsCreateDto goodsCreateDto) {
-		/* 상품코드 생성로직
-		임시로 '카테고리 pk + (굿즈테이블 마지막 pk + 1)'로 가정함
-		*/
-		Optional<Goods> optionalGoods = goodsRepository.findFirstByOrderByIdDesc();
-		Long lastGoodsId = optionalGoods.map(Goods::getId).orElse(1L) + 1;
 
-		return goodsCreateDto.getCategoryId() + String.valueOf(lastGoodsId);
+		String categoryStr = String.valueOf(goodsCreateDto.getCategoryId()) + "0";
+
+		LocalDate date = LocalDate.now();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyMMdd");
+		String dateStr = date.format(formatter);
+
+		String uuidStr = UUID.randomUUID().toString().replace("-", "").substring(0, 5);
+
+		return categoryStr + dateStr + uuidStr;
 	}
 
 	public GoodsDetailDto getGoodsDetail(String goodsCode) {
