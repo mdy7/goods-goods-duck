@@ -14,7 +14,7 @@ public class ProfileResponseDto {
 	private String userUuid;
 
 	@Schema(description = "프로필 사진")
-	private String profileImg;
+	private String profileImage;
 
 	@Schema(description = "닉네임")
 	private String nickname;
