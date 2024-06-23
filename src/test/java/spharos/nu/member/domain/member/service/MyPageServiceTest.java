@@ -112,7 +112,7 @@ class MyPageServiceTest {
 		// 캡처된 인자 검증
 		MemberInfo capturedMemberInfo = argumentCaptor.getValue();
 		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(newImgUrl);
-		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(nProfile.getProfileImg());
+		Assertions.assertThat(capturedMemberInfo.getProfileImage()).isEqualTo(nProfile.getProfileImage());
 		Assertions.assertThat(capturedMemberInfo.getNickname()).isEqualTo(newNickname);
 		Assertions.assertThat(capturedMemberInfo.getNickname()).isEqualTo(nProfile.getNickname());
 		Assertions.assertThat(capturedMemberInfo.getFavoriteCategory()).isEqualTo(newCat);
