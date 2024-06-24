@@ -14,9 +14,9 @@ import spharos.nu.member.domain.payment.dto.ApproveResponseDto;
 import spharos.nu.member.domain.payment.dto.KakaoPayReadyRequestDto;
 import spharos.nu.member.domain.payment.dto.KakaoPayReadyResponseDto;
 
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,15 +39,18 @@ public class KakaoPayService {
      */
     public KakaoPayReadyResponseDto payReady(KakaoPayReadyRequestDto kakaoPayReadyRequestDto) {
 
+        String orderNumber = generateOrderNumber();
+        log.info("orderNumber: " + orderNumber);
+
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");                                    // 가맹점 코드(테스트용)
-        parameters.put("partner_order_id", "1234567890");                       // 주문번호
+        parameters.put("partner_order_id", orderNumber);                        // 주문번호
         parameters.put("partner_user_id", kakaoPayReadyRequestDto.getUuid());   // 회원 아이디
         parameters.put("item_name", kakaoPayReadyRequestDto.getItemName());     // 상품명
         parameters.put("quantity", "1");                                        // 상품 수량
         parameters.put("total_amount", String.valueOf(kakaoPayReadyRequestDto.getTotalAmount()));   // 상품 총액
         parameters.put("tax_free_amount", "0");                                 // 상품 비과세 금액
-        parameters.put("approval_url", "https://goodsgoodsduck.shop/api/v1/users-n/pay/completed?uuid=" + kakaoPayReadyRequestDto.getUuid()); // 결제 성공 시 URL
+        parameters.put("approval_url", "https://goodsgoodsduck.shop/api/v1/users-n/pay/completed?uuid=" + kakaoPayReadyRequestDto.getUuid() + "&order_id=" + orderNumber); // 결제 성공 시 URL
         parameters.put("cancel_url", "https://goodsgoodsduck.shop");            // 결제 취소 시 URL
         parameters.put("fail_url", "https://goodsgoodsduck.shop");              // 결제 실패 시 URL
 
@@ -59,7 +62,8 @@ public class KakaoPayService {
         ResponseEntity<KakaoPayReadyResponseDto> responseEntity = template.postForEntity(url, requestEntity, KakaoPayReadyResponseDto.class);
         log.info("결제준비 응답객체: " + responseEntity.getBody());
 
-        redisTemplate.opsForValue().set(kakaoPayReadyRequestDto.getUuid(), responseEntity.getBody().getTid());
+        redisTemplate.opsForValue().set(orderNumber, responseEntity.getBody().getTid(), 15, TimeUnit.MINUTES);
+
 
         return responseEntity.getBody();
     }
@@ -76,14 +80,14 @@ public class KakaoPayService {
      * 카카오페이 결제 승인
      */
     @Transactional
-    public ApproveResponseDto payApprove(String pgToken, String uuid) {
-        String tid = redisTemplate.opsForValue().get(uuid);
-        log.info("tid: {}", tid);
+    public ApproveResponseDto payApprove(String pgToken, String uuid, String orderNumber) {
+        String tid = redisTemplate.opsForValue().get(orderNumber);
+        log.info("tid: " + tid);
 
         Map<String, String> parameters = new HashMap<>();
         parameters.put("cid", "TC0ONETIME");              // 가맹점 코드(테스트용)
         parameters.put("tid", tid);                       // 결제 고유번호
-        parameters.put("partner_order_id", "1234567890"); // 주문번호
+        parameters.put("partner_order_id", orderNumber); // 주문번호
         parameters.put("partner_user_id", uuid);    // 회원 아이디
         parameters.put("pg_token", pgToken);              // 결제승인 요청을 인증하는 토큰
 
@@ -94,8 +98,34 @@ public class KakaoPayService {
         ApproveResponseDto approveResponse = template.postForObject(url, requestEntity, ApproveResponseDto.class);
         log.info("결제승인 응답객체: " + approveResponse);
 
-        duckPointService.updatePoint(approveResponse);
-
         return approveResponse;
     }
+
+    /**
+     * 카카오페이 결제 취소
+     */
+    public void payCancel(String tid, String cancelAmount) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("cid", "TC0ONETIME");
+        parameters.put("tid", tid);
+        parameters.put("cancel_amount", cancelAmount);
+        parameters.put("cancel_tax_free_amount", "0");
+
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(parameters, this.getHeaders());
+
+        RestTemplate template = new RestTemplate();
+        String url = "https://open-api.kakaopay.com/online/v1/payment/cancel ";
+        template.postForObject(url, requestEntity, String.class);
+    }
+
+    /**
+     * 주문번호 생성
+     */
+    public static String generateOrderNumber() {
+        String dateTimePart = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
+        int randomPart = (int) (Math.random() * 1000);
+        return dateTimePart + "-" + randomPart;
+    }
+
+
 }
