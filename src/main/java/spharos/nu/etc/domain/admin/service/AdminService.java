@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import spharos.nu.etc.domain.admin.dto.request.NoticeRequestDto;
 import spharos.nu.etc.domain.admin.dto.response.NoticeResponseDto;
 import spharos.nu.etc.domain.admin.entity.Notice;
 import spharos.nu.etc.domain.admin.repository.NoticeRepository;
@@ -38,5 +39,15 @@ public class AdminService {
 			.isLast(noticePage.isLast())
 			.noticeList(noticeList)
 			.build();
+	}
+
+	public Long noticeCreate(NoticeRequestDto noticeRequestDto) {
+
+		Notice notice = noticeRepository.save(Notice.builder()
+			.title(noticeRequestDto.getTitle())
+			.content(noticeRequestDto.getContent())
+			.build());
+
+		return notice.getId();
 	}
 }
