@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.etc.domain.admin.dto.request.NoticeRequestDto;
+import spharos.nu.etc.domain.admin.dto.response.NoticeInfo;
 import spharos.nu.etc.domain.admin.dto.response.NoticeResponseDto;
 import spharos.nu.etc.domain.admin.entity.Notice;
 import spharos.nu.etc.domain.admin.repository.NoticeRepository;
@@ -24,11 +25,13 @@ public class AdminService {
 
 		Page<Notice> noticePage = noticeRepository.findAll(pageable);
 
-		List<Notice> noticeList = noticePage.stream()
-			.map(notice -> Notice.builder()
+		List<NoticeInfo> noticeList = noticePage.stream()
+			.map(notice -> NoticeInfo.builder()
 				.id(notice.getId())
 				.title(notice.getTitle())
 				.content(notice.getContent())
+				.createdAt(notice.getCreatedAt())
+				.updatedAt(notice.getUpdatedAt())
 				.build())
 			.toList();
 

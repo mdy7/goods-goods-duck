@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import spharos.nu.etc.domain.admin.entity.Notice;
 
 @Getter
 @Builder
@@ -26,5 +25,5 @@ public class NoticeResponseDto {
 	private Boolean isLast;
 
 	@Schema(description = "유저 신고 리스트")
-	private List<Notice> noticeList;
+	private List<NoticeInfo> noticeList;
 }
