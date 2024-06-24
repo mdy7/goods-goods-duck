@@ -21,6 +21,9 @@ public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
 
+	/**
+	 * 공지사항 전체 조회
+	 */
 	public NoticeResponseDto noticesGet(Pageable pageable) {
 
 		Page<Notice> noticePage = noticeRepository.findAll(pageable);
@@ -44,6 +47,9 @@ public class NoticeService {
 			.build();
 	}
 
+	/**
+	 * 공지사항 상세 조회
+	 */
 	public NoticeInfo noticeGet(Long noticeId) {
 
 		Notice notice = noticeRepository.findById(noticeId).orElseThrow();
@@ -57,6 +63,9 @@ public class NoticeService {
 			.build();
 	}
 
+	/**
+	 * 공지사항 등록
+	 */
 	public Long noticeCreate(NoticeRequestDto noticeRequestDto) {
 
 		Notice notice = noticeRepository.save(Notice.builder()

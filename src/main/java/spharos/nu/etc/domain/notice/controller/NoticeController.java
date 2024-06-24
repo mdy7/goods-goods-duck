@@ -23,6 +23,7 @@ public class NoticeController {
 
 	private final NoticeService noticeService;
 
+	// 공지사항 등록
 	@PostMapping("")
 	@Operation(summary = "공지사항 등록", description = "어드민에서 등록할 수 있는 공지사항")
 	public ResponseEntity<ApiResponse<Long>> createNotice(@RequestBody NoticeRequestDto noticeRequestDto) {

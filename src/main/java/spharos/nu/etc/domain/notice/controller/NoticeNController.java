@@ -27,6 +27,7 @@ public class NoticeNController {
 
 	private final NoticeService noticeService;
 
+	// 공지사항 전체 조회
 	@GetMapping("")
 	@Operation(summary = "공지사항 조회", description = "모든 공지사항 조회")
 	public ResponseEntity<ApiResponse<NoticeResponseDto>> getNotices(
@@ -36,6 +37,7 @@ public class NoticeNController {
 		return ApiResponse.success(noticeService.noticesGet(pageable), "모든 공지사항 조회 성공");
 	}
 
+	// 공지사항 상세 조회
 	@GetMapping("/{noticeId}")
 	@Operation(summary = "공지 상세 조회", description = "해당 공지사항 자세히 보기")
 	public ResponseEntity<ApiResponse<NoticeInfo>> getNotice(@PathVariable("noticeId") Long noticeId) {
