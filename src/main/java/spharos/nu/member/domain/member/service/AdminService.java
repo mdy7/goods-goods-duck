@@ -62,7 +62,7 @@ public class AdminService {
 	private ProfileResponseDto ToProfileResponseDto(MemberInfo member) {
 		return ProfileResponseDto.builder()
 			.userUuid(member.getUuid())
-			.profileImg(member.getProfileImage())
+			.profileImage(member.getProfileImage())
 			.nickname(member.getNickname())
 			.favCategory(member.getFavoriteCategory())
 			.build();

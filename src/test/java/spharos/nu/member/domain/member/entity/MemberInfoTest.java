@@ -18,7 +18,6 @@ class MemberInfoTest {
 			.nickname("테스트어렵다")
 			.profileImage("imgurl")
 			.favoriteCategory("아이돌")
-			.isNotify(true)
 			.build();
 
 		/*
@@ -28,6 +27,5 @@ class MemberInfoTest {
 		Assertions.assertThat(member.getNickname()).isEqualTo("테스트어렵다");
 		Assertions.assertThat(member.getProfileImage()).isEqualTo("imgurl");
 		Assertions.assertThat(member.getFavoriteCategory()).isEqualTo("아이돌");
-		Assertions.assertThat(member.isNotify()).isEqualTo(true);
 	}
 }
