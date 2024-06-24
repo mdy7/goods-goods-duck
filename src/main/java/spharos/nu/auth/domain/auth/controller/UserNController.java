@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,8 +28,6 @@ import spharos.nu.auth.domain.auth.dto.request.VerificationDto;
 import spharos.nu.auth.domain.auth.dto.response.LoginResponseDto;
 import spharos.nu.auth.domain.auth.service.UserService;
 import spharos.nu.auth.global.apiresponse.ApiResponse;
-import spharos.nu.auth.utils.jwt.JwtProvider;
-import spharos.nu.auth.utils.jwt.JwtToken;
 
 @RestController
 @RequiredArgsConstructor
@@ -86,7 +85,7 @@ public class UserNController {
 		}
 	}
 
-	@PutMapping("/pwd")
+	@PatchMapping("/pwd")
 	@Operation(summary = "비밀번호 초기화", description = "이전 비밀번호와 같다면 409 error")
 	public ResponseEntity<ApiResponse<Void>> changePwd(@RequestBody ResetPwdDto resetPwdDto) {
 		userService.resetPwd(resetPwdDto);

@@ -195,6 +195,10 @@ public class UserService {
 		Member member = userRepository.findByUuid(uuid)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_USER));
 
+		if (passwordEncoder.matches(updatePwdDto.getNewPassword(), member.getPassword())) {
+			throw new CustomException(ErrorCode.ALREADY_EXIST_PASSWORD);
+		}
+
 		String encodedNewPassword = passwordEncoder.encode(updatePwdDto.getNewPassword());
 		updatePwdDto.updatePassword(member, encodedNewPassword);
 		userRepository.save(member);
