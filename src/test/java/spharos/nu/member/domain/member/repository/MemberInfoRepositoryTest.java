@@ -25,7 +25,6 @@ class MemberInfoRepositoryTest {
 			.nickname("쓰껄쓰껄")
 			.profileImage("img_url")
 			.favoriteCategory("애니")
-			.isNotify(true)
 			.build();
 		memberInfoRepository.save(savedmember);
 
@@ -48,7 +47,6 @@ class MemberInfoRepositoryTest {
 			.nickname("기존닉네임")
 			.profileImage("기존이미지URL")
 			.favoriteCategory("아이돌")
-			.isNotify(true)
 			.build();
 		member = memberInfoRepository.save(member);
 		Long originalId = member.getId();
@@ -63,7 +61,6 @@ class MemberInfoRepositoryTest {
 			.nickname(newNickname)
 			.profileImage(newImgUrl)
 			.favoriteCategory(newCat)
-			.isNotify(member.isNotify())
 			.build());
 
 		MemberInfo updatedMember = memberInfoRepository.findByUuid("test-uuid").get();
@@ -85,7 +82,6 @@ class MemberInfoRepositoryTest {
 			.nickname("테스트닉네임")
 			.profileImage("기존이미지URL")
 			.favoriteCategory("취미")
-			.isNotify(true)
 			.build();
 		member = memberInfoRepository.save(member);
 		Long originalId = member.getId();
@@ -98,7 +94,6 @@ class MemberInfoRepositoryTest {
 			.nickname(member.getNickname())
 			.profileImage(newImgUrl)
 			.favoriteCategory(member.getFavoriteCategory())
-			.isNotify(member.isNotify())
 			.build());
 
 		MemberInfo updatedMember = memberInfoRepository.findByUuid("test-uuid").get();

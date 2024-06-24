@@ -42,7 +42,7 @@ class PointHistoryRepositoryTest {
 		pageable = PageRequest.of(index, 10, Sort.by("createdAt").descending());
 
 		// when
-		Page<DuckPointInfoDto> result = pointHistoryRepository.findByUuid(uuid, pageable);
+		Page<DuckPointHistory> result = pointHistoryRepository.findByUuid(uuid, pageable);
 
 		// then
 		Assertions.assertThat(result).isNotNull();
