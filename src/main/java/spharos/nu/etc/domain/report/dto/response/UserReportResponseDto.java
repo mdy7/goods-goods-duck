@@ -1,21 +1,19 @@
-package spharos.nu.etc.domain.review.dto.response;
+package spharos.nu.etc.domain.report.dto.response;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
+import spharos.nu.etc.domain.report.entity.UserReport;
 
 @Getter
 @Builder
 @ToString
-public class ReviewResponseDto {
+public class UserReportResponseDto {
 
-	@Schema(description = "총 후기 개수")
+	@Schema(description = "총 신고 개수")
 	private Long totalCount;
 
 	@Schema(description = "현재 페이지")
@@ -24,11 +22,9 @@ public class ReviewResponseDto {
 	@Schema(description = "최대 페이지")
 	private Integer maxPage;
 
-	@JsonProperty("isLast")
-	@Getter(AccessLevel.NONE)
 	@Schema(description = "마지막 페이지 여부")
-	private boolean isLast;
+	private Boolean isLast;
 
-	@Schema(description = "후기 리스트")
-	private List<ReviewListDto> reviewList;
+	@Schema(description = "유저 신고 리스트")
+	private List<UserReport> userReportList;
 }

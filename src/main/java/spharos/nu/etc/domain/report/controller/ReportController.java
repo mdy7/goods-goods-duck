@@ -1,6 +1,10 @@
 package spharos.nu.etc.domain.report.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +17,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.etc.domain.report.dto.request.ReportRequestDto;
+import spharos.nu.etc.domain.report.dto.response.GoodsReportResponseDto;
+import spharos.nu.etc.domain.report.dto.response.UserReportResponseDto;
 import spharos.nu.etc.domain.report.service.ReportService;
 import spharos.nu.etc.global.apiresponse.ApiResponse;
 
@@ -46,5 +52,23 @@ public class ReportController {
 
 		return ApiResponse.success(reportService.userReport(repoterUuid, reportedUuid, ReportRequestDto),
 			"유저 신고하기 성공");
+	}
+
+	// 굿즈 신고 조회
+	@GetMapping("/goods")
+	@Operation(summary = "모든 신고 조회", description = "굿즈 신고 조회")
+	public ResponseEntity<ApiResponse<GoodsReportResponseDto>> getGoodsReport(
+		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+		return ApiResponse.success(reportService.goodsReportGet(pageable), "모든 굿즈 조회 성공");
+	}
+
+	// 회원 신고 조회
+	@GetMapping("/users")
+	@Operation(summary = "모든 신고 조회", description = "회원 신고 조회")
+	public ResponseEntity<ApiResponse<UserReportResponseDto>> getUserReport(
+		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+
+		return ApiResponse.success(reportService.userReportGet(pageable), "모든 회원 신고 조회 성공");
 	}
 }
