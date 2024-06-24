@@ -56,7 +56,7 @@ public class ReportController {
 
 	// 굿즈 신고 조회
 	@GetMapping("/goods")
-	@Operation(summary = "모든 신고 조회", description = "굿즈 신고 조회")
+	@Operation(summary = "모든 굿즈 신고 조회", description = "굿즈 신고 조회")
 	public ResponseEntity<ApiResponse<GoodsReportResponseDto>> getGoodsReport(
 		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
@@ -65,7 +65,7 @@ public class ReportController {
 
 	// 회원 신고 조회
 	@GetMapping("/users")
-	@Operation(summary = "모든 신고 조회", description = "회원 신고 조회")
+	@Operation(summary = "모든 회원 신고 조회", description = "회원 신고 조회")
 	public ResponseEntity<ApiResponse<UserReportResponseDto>> getUserReport(
 		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
