@@ -84,7 +84,7 @@ public class MyPageService {
 			.build();
 	}
 
-	public ProfileResponseDto profileUpdate(String uuid, ProfileRequestDto profileRequestDto) {
+	public Void profileUpdate(String uuid, ProfileRequestDto profileRequestDto) {
 
 		MemberInfo member = getMemberInfo(uuid);
 		String profileImage = profileRequestDto.getProfileImage();
@@ -99,12 +99,7 @@ public class MyPageService {
 			.favoriteCategory(favCategory)
 			.build());
 
-		return ProfileResponseDto.builder()
-			.userUuid(uuid)
-			.profileImage(profileImage)
-			.nickname(nickname)
-			.favCategory(favCategory)
-			.build();
+		return null;
 	}
 
 	public String profileImageGet(String uuid) {
