@@ -1,4 +1,4 @@
-package spharos.nu.etc.domain.admin.service;
+package spharos.nu.etc.domain.notice.service;
 
 import java.util.List;
 
@@ -8,20 +8,20 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.etc.domain.admin.dto.request.NoticeRequestDto;
-import spharos.nu.etc.domain.admin.dto.response.NoticeInfo;
-import spharos.nu.etc.domain.admin.dto.response.NoticeResponseDto;
-import spharos.nu.etc.domain.admin.entity.Notice;
-import spharos.nu.etc.domain.admin.repository.NoticeRepository;
+import spharos.nu.etc.domain.notice.dto.request.NoticeRequestDto;
+import spharos.nu.etc.domain.notice.dto.response.NoticeInfo;
+import spharos.nu.etc.domain.notice.dto.response.NoticeResponseDto;
+import spharos.nu.etc.domain.notice.entity.Notice;
+import spharos.nu.etc.domain.notice.repository.NoticeRepository;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class AdminService {
+public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
 
-	public NoticeResponseDto noticeGet(Pageable pageable) {
+	public NoticeResponseDto noticesGet(Pageable pageable) {
 
 		Page<Notice> noticePage = noticeRepository.findAll(pageable);
 
@@ -41,6 +41,19 @@ public class AdminService {
 			.maxPage(noticePage.getTotalPages())
 			.isLast(noticePage.isLast())
 			.noticeList(noticeList)
+			.build();
+	}
+
+	public NoticeInfo noticeGet(Long noticeId) {
+
+		Notice notice = noticeRepository.findById(noticeId).orElseThrow();
+
+		return NoticeInfo.builder()
+			.id(noticeId)
+			.title(notice.getTitle())
+			.content(notice.getContent())
+			.createdAt(notice.getCreatedAt())
+			.updatedAt(notice.getUpdatedAt())
 			.build();
 	}
 

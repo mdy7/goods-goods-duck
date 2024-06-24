@@ -1,4 +1,4 @@
-package spharos.nu.etc.domain.admin.dto.response;
+package spharos.nu.etc.domain.notice.dto.response;
 
 import java.util.List;
 

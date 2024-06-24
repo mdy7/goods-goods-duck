@@ -1,6 +1,4 @@
-package spharos.nu.etc.domain.admin.entity;
-
-import java.time.LocalDateTime;
+package spharos.nu.etc.domain.notice.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

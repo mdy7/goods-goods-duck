@@ -1,4 +1,4 @@
-package spharos.nu.etc.domain.admin.dto.request;
+package spharos.nu.etc.domain.notice.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
