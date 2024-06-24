@@ -2,6 +2,7 @@ package spharos.nu.auth.domain.auth.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,7 @@ public class UserController {
 		return ApiResponse.success(null, "회원 탈퇴 성공");
 	}
 
-	@PutMapping("/pwd")
+	@PatchMapping("/pwd")
 	@Operation(summary = "비밀번호 변경", description = "해당 회원의 비밀번호를 변경")
 	public ResponseEntity<ApiResponse<Void>> updatePassword(@RequestHeader(value = "User-Uuid", required = false) String uuid, @RequestBody UpdatePwdDto updatePwdDto) {
 		userService.updatePwd(updatePwdDto, uuid);
