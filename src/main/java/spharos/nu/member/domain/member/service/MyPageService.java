@@ -78,7 +78,7 @@ public class MyPageService {
 
 		return ProfileResponseDto.builder()
 			.userUuid(member.getUuid())
-			.profileImg(member.getProfileImage())
+			.profileImage(member.getProfileImage())
 			.nickname(member.getNickname())
 			.favCategory(member.getFavoriteCategory())
 			.build();
@@ -101,7 +101,7 @@ public class MyPageService {
 
 		return ProfileResponseDto.builder()
 			.userUuid(uuid)
-			.profileImg(profileImage)
+			.profileImage(profileImage)
 			.nickname(nickname)
 			.favCategory(favCategory)
 			.build();
