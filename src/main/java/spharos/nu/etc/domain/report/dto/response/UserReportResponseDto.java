@@ -26,5 +26,5 @@ public class UserReportResponseDto {
 	private Boolean isLast;
 
 	@Schema(description = "유저 신고 리스트")
-	private List<UserReport> userReportList;
+	private List<ReportInfo> userReportList;
 }
