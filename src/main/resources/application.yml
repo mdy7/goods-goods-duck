@@ -8,15 +8,6 @@ spring:
   web:
     resources:
       add-mappings: false
-  data:
-    mongodb:
-      uri: mongodb://nu:nugabest^^*@3.35.70.208:27017,3.35.70.208:27018,3.35.70.208:27019/chat?replicaSet=myReplicaSet&retryWrites=true&w=majority
-#      uri: mongodb://nu:nugabest%5E%5E*@3.35.70.208:27017/chat?&replicaSet=myReplicaSet
-      auto-index-creation: true
-
-logging:
-  level:
-    org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
 
 eureka:
   client:
