@@ -49,6 +49,7 @@ public class ChatController {
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PathVariable(value = "chatRoomId") String chatRoomId
 	) {
+		log.info("채팅 내역 조회 controller 호출 및 uuid 확인 {}",uuid);
 		return chatService.getChatMessages(chatRoomId).subscribeOn(Schedulers.boundedElastic());
 	}
 

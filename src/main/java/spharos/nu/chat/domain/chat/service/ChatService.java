@@ -81,7 +81,9 @@ public class ChatService {
 
 	public Flux<ChatResposeDto> getChatMessages(String chatRoomId) {
 		log.info("getChatMessages 메서드로 채팅메시지 내역을 조회");
-		return chatMessageRepository.findChatMessageByChatRoomId(chatRoomId)
+		log.info("chatRoomId : {}", chatRoomId);
+
+		Flux<ChatResposeDto> test = chatMessageRepository.findChatMessageByChatRoomId(chatRoomId)
 			.map(chatMessage -> ChatResposeDto.builder()
 				.chatMessageId(chatMessage.getId())
 				.chatRoomId(chatMessage.getChatRoomId())
@@ -92,6 +94,10 @@ public class ChatService {
 				.imageUrl(chatMessage.getImageUrl())
 				.createdAt(chatMessage.getCreatedAt())
 				.build());
+
+		log.info(" 반환값 "+test);
+
+		return test;
 	}
 
 	public ChatResposeDto getLastMessage(String chatRoomId) {
