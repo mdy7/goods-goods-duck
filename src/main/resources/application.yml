@@ -16,6 +16,7 @@ spring:
           '[/**]':
             allowedOrigins:
               - "http://localhost:3000"
+              - "https://goodsgoodsduck.shop"
             allow-credentials: true
             allowedHeaders:
               - x-requested-with
