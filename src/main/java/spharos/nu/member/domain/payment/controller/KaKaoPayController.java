@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import spharos.nu.member.domain.payment.dto.ApproveResponseDto;
 import spharos.nu.member.domain.payment.dto.KakaoPayReadyRequestDto;
 import spharos.nu.member.domain.payment.dto.KakaoPayReadyResponseDto;
+import spharos.nu.member.domain.payment.service.DuckPointService;
 import spharos.nu.member.domain.payment.service.KakaoPayService;
 import spharos.nu.member.global.apiresponse.ApiResponse;
 
@@ -19,6 +21,7 @@ import spharos.nu.member.global.apiresponse.ApiResponse;
 public class KaKaoPayController {
 
     private final KakaoPayService kakaoPayService;
+    private final DuckPointService duckPointService;
 
     @PostMapping("/pay/ready")
     @Operation(summary = "카카오페이 결제 준비", description = "카카오페이 결제 준비")
@@ -29,11 +32,23 @@ public class KaKaoPayController {
     }
 
     @GetMapping("/pay/completed")
+    @Operation(summary = "카카오페이 결제 완료", description = "카카오페이 결제 완료, Redirect Url")
     public ResponseEntity<ApiResponse<Void>> payCompleted(
             @RequestParam("pg_token") String pgToken,
-            @RequestParam("uuid") String uuid
+            @RequestParam("uuid") String uuid,
+            @RequestParam("order_id") String order_id
     ) {
-        kakaoPayService.payApprove(pgToken, uuid);
+        ApproveResponseDto approveResponseDto = kakaoPayService.payApprove(pgToken, uuid, order_id);
+        try {
+            duckPointService.updatePoint(approveResponseDto);
+        } catch (Exception e) {
+            log.error("포인트 충전 에러: {}", e.getMessage());
+            // 포인트 충전 실패 시 결제 취소
+            kakaoPayService.payCancel(approveResponseDto.getTid(), String.valueOf(approveResponseDto.getAmount().getTotal()));
+            return ApiResponse.fail(null, "포인트 충전에 실패하였습니다.");
+        }
         return ApiResponse.success(null, "결제가 완료되었습니다.");
     }
+
+
 }
