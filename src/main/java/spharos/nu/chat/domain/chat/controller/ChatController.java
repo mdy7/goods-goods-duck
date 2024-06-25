@@ -53,7 +53,7 @@ public class ChatController {
 	}
 
 	@Operation(summary = "마지막 메시지 조회", description = "마지막 메시지를 조회합니다.")
-	@GetMapping("/chat/{chatRoomId}/last")
+	@GetMapping("/{chatRoomId}/last")
 	public ResponseEntity<ApiResponse<ChatResposeDto>> getLastMessage(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PathVariable(value = "chatRoomId") String chatRoomId
@@ -62,7 +62,7 @@ public class ChatController {
 	}
 
 	@Operation(summary = "새로운 메시지 조회", description = "실시간으로 도착하는 새로운 메시지를 조회합니다")
-	@GetMapping("/chat/{chatRoomId}/new")
+	@GetMapping(value="/{chatRoomId}/new", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 	public Flux<ChatResposeDto> getNewMessage(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
 		@PathVariable(value = "chatRoomId") String chatRoomId

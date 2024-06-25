@@ -1,5 +1,6 @@
 package spharos.nu.chat.domain.chat.service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -109,14 +110,16 @@ public class ChatService {
 	}
 
 	public Flux<ChatResposeDto> getNewMessage(String chatRoomId) {
+		log.info("새로운 메시지 하나를 조회합니다");
 		ChangeStreamOptions options = ChangeStreamOptions.builder()
 			.filter(Aggregation.newAggregation(
 				Aggregation.match(Criteria.where("operationType").is(OperationType.INSERT.getValue())),
-				Aggregation.match(Criteria.where("fullDocument.roomId").is(chatRoomId))
+				Aggregation.match(Criteria.where("fullDocument.chatRoomId").is(chatRoomId))
 			))
 			.build();
+		log.info("옵션 생성 완료");
 
-		return reactiveMongoTemplate.changeStream("chat", options, Document.class)
+		Flux<ChatResposeDto> newDto = reactiveMongoTemplate.changeStream("chat_message", options, Document.class)
 			.map(ChangeStreamEvent::getBody)
 			.map(document -> ChatResposeDto.builder()
 				.chatMessageId(document.getObjectId("_id").toString())
@@ -128,6 +131,10 @@ public class ChatService {
 				.imageUrl(document.getString("imageUrl"))
 				.createdAt(LocalDateTime.ofInstant(document.getDate("createdAt").toInstant(), ZoneId.systemDefault()))
 				.build());
+
+		log.info("newDto"+newDto);
+
+		return newDto;
 	}
 
     /* 메시지 읽음 상태 조회 추후 구현
