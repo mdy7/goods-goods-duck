@@ -8,17 +8,15 @@ spring:
   web:
     resources:
       add-mappings: false
-#  kafka:
-#    bootstrap-servers: ${KAFKA_SERVER_URL}
-#    producer:
-#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-#      value-serializer: org.apache.kafka.common.serialization.StringSerializer
-#    consumer:
-#      group-id: test-group
-#      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-#      auto-offset-reset: earliest
+  data:
+    mongodb:
+      uri: mongodb://nu:nugabest^^*@3.35.70.208:27017,3.35.70.208:27018,3.35.70.208:27019/chat?replicaSet=myReplicaSet&retryWrites=true&w=majority
+#      uri: mongodb://nu:nugabest%5E%5E*@3.35.70.208:27017/chat?&replicaSet=myReplicaSet
+      auto-index-creation: true
 
+logging:
+  level:
+    org.springframework.data.mongodb.core.ReactiveMongoTemplate: DEBUG
 
 eureka:
   client:

@@ -23,7 +23,7 @@ import spharos.nu.chat.global.apiresponse.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/cha")
+@RequestMapping("/api/v1/chat")
 @Tag(name = "ChatRoom", description = "채팅방 컨트롤러")
 public class ChatRoomController {
 

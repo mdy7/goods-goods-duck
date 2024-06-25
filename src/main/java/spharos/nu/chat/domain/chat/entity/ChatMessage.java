@@ -23,21 +23,14 @@ public class ChatMessage {
 
 	@Id
 	private String id;
-	@Field("is_image")
 	private Boolean isImage;
 	private String message;
-	@Field("image_url")
 	private String imageUrl;
-	@Field("sender_uuid")
 	private String senderUuid;
-	@Field("receiver_uuid")
 	private String receiverUuid;
-	@Field("is_read")
 	private boolean isRead;
 	@CreatedDate
-	@Field("created_at")
 	private LocalDateTime createdAt;
-	@Field("chat_room_id")
 	private String chatRoomId;
 
 }
