@@ -4,8 +4,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
-import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.read.domain.goods.entity.Goods;
 import spharos.nu.read.domain.goods.repository.ReadRepository;
 

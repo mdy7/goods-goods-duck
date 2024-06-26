@@ -36,6 +36,7 @@ public class MyPageService {
 			.map(goods -> GoodsSummaryDto.builder()
 				.goodsCode(goods.getGoodsCode())
 				.goodsName(goods.getName())
+				.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
 				.minPrice(goods.getMinPrice())
 				.openedAt(goods.getOpenedAt())
 				.closedAt(goods.getClosedAt())

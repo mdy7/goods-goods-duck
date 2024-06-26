@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import spharos.nu.read.domain.goods.dto.response.AllGoodsDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
-import spharos.nu.read.domain.goods.entity.Goods;
 import spharos.nu.read.domain.goods.service.GoodsService;
 import spharos.nu.read.global.apiresponse.ApiResponse;
 
@@ -56,7 +55,7 @@ public class GoodsNController {
 		@RequestParam(value = "isTradingOnly", defaultValue = "false") boolean isTradingOnly,
 		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
 	) {
-		return ApiResponse.success(goodsService.getAllGoods(categoryId,isTradingOnly,pageable), "전체 굿즈 리스트 조회 성공");
+		return ApiResponse.success(goodsService.getAllGoods(categoryId, isTradingOnly, pageable), "전체 굿즈 리스트 조회 성공");
 	}
 
 	// 현재 경매중인 굿즈 리스트 조회
@@ -66,7 +65,7 @@ public class GoodsNController {
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
 		@PageableDefault(size = 10, page = 0, sort = "closedAt", direction = Sort.Direction.ASC) Pageable pageable
 	) {
-		return ApiResponse.success(goodsService.getNowTradingGoods(categoryId,pageable), "경매중 굿즈 리스트 조회 성공");
+		return ApiResponse.success(goodsService.getNowTradingGoods(categoryId, pageable), "경매중 굿즈 리스트 조회 성공");
 	}
 
 	// 커밍순 굿즈 리스트 조회
@@ -76,6 +75,6 @@ public class GoodsNController {
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
 		@PageableDefault(size = 10, page = 0, sort = "openedAt", direction = Sort.Direction.ASC) Pageable pageable
 	) {
-		return ApiResponse.success(goodsService.getComingSoonGoods(categoryId,pageable), "경매중 굿즈 리스트 조회 성공");
+		return ApiResponse.success(goodsService.getComingSoonGoods(categoryId, pageable), "경매중 굿즈 리스트 조회 성공");
 	}
 }
