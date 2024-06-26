@@ -172,14 +172,15 @@ public class BidService {
                 .build());
         log.info("(상품 코드: {}) 거래상태 3으로 변경 이벤트 발행", updatedGoods.getGoodsCode());
 
+        // 입찰자 모두에게 알림
         List<String> uuids = new ArrayList<>();
-        uuids.add(goods.getSellerUuid());
-        uuids.add(bid.getBidderUuid());
+        List<String> bidders = bidRepository.findDistinctBiddersByGoodsCode(goods.getGoodsCode());
+        uuids.addAll(bidders);
 
         goodsKafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
                 .uuid(uuids)
-                .title(goods.getName() + " 결과를 확인하세요")
-                .content("확인하세요.")
+                .title("입찰 결과 안내")
+                .content(goods.getName() + " 상품의 최종 입찰 결과가 나왔습니다. 확인해주세요!")
                 .link("/goods/" + goods.getGoodsCode())
                 .build());
         log.info("(상품 코드: {}) 낙찰자에게 알림 이벤트 발행", goods.getGoodsCode());
@@ -229,6 +230,20 @@ public class BidService {
                 .tradingStatus(updatedGoods.getTradingStatus())
                 .build());
         log.info("(상품 코드: {}) 거래상태 5로 변경 이벤트 발행", updatedGoods.getGoodsCode());
+
+
+
+        // 입찰자 모두에게 알림
+        List<String> uuids = new ArrayList<>();
+        List<String> bidders = bidRepository.findDistinctBiddersByGoodsCode(goods.getGoodsCode());
+        uuids.addAll(bidders);
+        goodsKafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
+                .uuid(uuids)
+                .title("입찰 결과 안내")
+                .content(goods.getName() + " 상품의 최종 입찰이 취소되었습니다.")
+                .link("/goods/" + goods.getGoodsCode())
+                .build());
+        log.info("(상품 코드: {}) 낙찰자에게 알림 이벤트 발행", goods.getGoodsCode());
     }
 
 
