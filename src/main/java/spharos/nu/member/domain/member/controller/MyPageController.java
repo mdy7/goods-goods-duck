@@ -72,14 +72,14 @@ public class MyPageController {
 	// 덕포인트 조회
 	@GetMapping("/duck-point")
 	@Operation(summary = "회원의 덕포인트 조회", description = "마이페이지의 현재 덕포인트 데이터")
-	public ResponseEntity<ApiResponse<Long>> getDuckPoing(
+	public ResponseEntity<ApiResponse<Long>> getDuckPoint(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid) {
 
 		return ApiResponse.success(myPageService.duckPointGet(uuid), "덕포인트 조회 성공");
 	}
 
 	// 덕포인트 상세 조회
-	@GetMapping("/manner-duck/detail")
+	@GetMapping("/duck-point/detail")
 	@Operation(summary = "회원의 덕포인트 내역 조회", description = "덕포인트 내역과 관련한 변동금액, 잔여포인트, 입출금여부, 내역상세, 생성날짜 데이터")
 	public ResponseEntity<ApiResponse<DuckPointDetailDto>> getDuckPointDetail(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
