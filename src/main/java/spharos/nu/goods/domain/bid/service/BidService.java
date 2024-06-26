@@ -172,9 +172,10 @@ public class BidService {
                 .build());
         log.info("(상품 코드: {}) 거래상태 3으로 변경 이벤트 발행", updatedGoods.getGoodsCode());
 
+        // 입찰자 모두에게 알림
         List<String> uuids = new ArrayList<>();
-        uuids.add(goods.getSellerUuid());
-        uuids.add(bid.getBidderUuid());
+        List<String> bidders = bidRepository.findDistinctBiddersByGoodsCode(goods.getGoodsCode());
+        uuids.addAll(bidders);
 
         goodsKafkaProducer.sendNotificationEvent(NotificationEventDto.builder()
                 .uuid(uuids)
