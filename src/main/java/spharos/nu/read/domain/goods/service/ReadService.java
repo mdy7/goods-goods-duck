@@ -41,6 +41,7 @@ public class ReadService {
 				.createdAt(goodsCreateEventDto.getCreatedAt())
 				.updatedAt(goodsCreateEventDto.getUpdatedAt())
 				.tagList(goodsCreateEventDto.getTagList())
+				.imageList(goodsCreateEventDto.getImageList())
 				.wishCount(0L)
 				.bidCount(0L)
 				.viewsCount(0L)
@@ -76,6 +77,7 @@ public class ReadService {
 				.createdAt(goods.getCreatedAt())
 				.updatedAt(goods.getUpdatedAt())
 				.tagList(goods.getTagList())
+				.imageList(goods.getImageList())
 				.wishCount(goods.getWishCount())
 				.bidCount(goods.getBidCount())
 				.viewsCount(goods.getViewsCount())
@@ -104,6 +106,7 @@ public class ReadService {
 				.createdAt(goods.getCreatedAt())
 				.updatedAt(goods.getUpdatedAt())
 				.tagList(goods.getTagList())
+				.imageList(goods.getImageList())
 				.wishCount(goods.getWishCount())
 				.bidCount(goods.getBidCount())
 				.viewsCount(goods.getViewsCount())
@@ -132,6 +135,7 @@ public class ReadService {
 				.createdAt(goods.getCreatedAt())
 				.updatedAt(goods.getUpdatedAt())
 				.tagList(goods.getTagList())
+				.imageList(goods.getImageList())
 				.wishCount(countEventDto.getCount())  //좋아요수 업데이트
 				.bidCount(goods.getBidCount())
 				.viewsCount(goods.getViewsCount())
@@ -160,6 +164,7 @@ public class ReadService {
 				.createdAt(goods.getCreatedAt())
 				.updatedAt(goods.getUpdatedAt())
 				.tagList(goods.getTagList())
+				.imageList(goods.getImageList())
 				.wishCount(goods.getWishCount())
 				.bidCount(goods.getBidCount())
 				.viewsCount(countEventDto.getCount()) //조회수 업데이트
@@ -188,6 +193,7 @@ public class ReadService {
 				.createdAt(goods.getCreatedAt())
 				.updatedAt(goods.getUpdatedAt())
 				.tagList(goods.getTagList())
+				.imageList(goods.getImageList())
 				.wishCount(goods.getWishCount())
 				.bidCount(countEventDto.getCount()) // 입찰 수 업데이트
 				.viewsCount(goods.getViewsCount())

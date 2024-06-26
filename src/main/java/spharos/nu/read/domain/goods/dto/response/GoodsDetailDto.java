@@ -21,6 +21,10 @@ public class GoodsDetailDto {
 	private String sellerUuid;
 	@Schema(description = "상품명")
 	private String name;
+	@Schema(description = "이미지 리스트")
+	private List<ImageDto> imageList;
+	@Schema(description = "태그 리스트")
+	private List<String> tagList;
 	@Schema(description = "최소가격")
 	private Long minPrice;
 	@Schema(description = "상품설명")

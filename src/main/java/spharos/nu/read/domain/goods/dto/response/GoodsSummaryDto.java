@@ -15,6 +15,9 @@ public class GoodsSummaryDto {
 	@Schema(description = "굿즈코드")
 	private String goodsCode;
 
+	@Schema(description = "썸네일")
+	private ImageDto thumbnail;
+
 	@Schema(description = "상품명")
 	private String goodsName;
 
