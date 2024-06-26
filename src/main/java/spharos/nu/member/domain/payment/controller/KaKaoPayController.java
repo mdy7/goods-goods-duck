@@ -50,7 +50,7 @@ public class KaKaoPayController {
             log.error("포인트 충전 에러: {}", e.getMessage());
             // 포인트 충전 실패 시 결제 취소
             kakaoPayService.payCancel(approveResponseDto.getTid(), String.valueOf(approveResponseDto.getAmount().getTotal()));
-            response.sendRedirect("https://goodsgoodsduck.shop/mypage");
+            response.sendRedirect("https://goodsgoodsduck.shop/duck-point/charge");
             return ApiResponse.fail(null, "포인트 충전에 실패하였습니다.");
 
         }
