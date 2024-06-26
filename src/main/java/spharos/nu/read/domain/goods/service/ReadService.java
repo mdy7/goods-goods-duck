@@ -41,6 +41,7 @@ public class ReadService {
 				.createdAt(goodsCreateEventDto.getCreatedAt())
 				.updatedAt(goodsCreateEventDto.getUpdatedAt())
 				.tagList(goodsCreateEventDto.getTagList())
+				.imageList(goodsCreateEventDto.getImageList())
 				.wishCount(0L)
 				.bidCount(0L)
 				.viewsCount(0L)
