@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import spharos.nu.goods.domain.goods.dto.request.ImageDto;
 
 @Getter
 @Builder
@@ -45,5 +46,7 @@ public class GoodsCreateEventDto {
 	private LocalDateTime updatedAt;
 	@Schema(description = "태그 리스트")
 	private List<String> tagList;
+	@Schema(description = "이미지 리스트")
+	private List<ImageDto> imageList;
 
 }

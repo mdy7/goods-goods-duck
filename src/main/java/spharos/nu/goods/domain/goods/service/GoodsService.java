@@ -1,21 +1,17 @@
 package spharos.nu.goods.domain.goods.service;
 
-
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import spharos.nu.goods.domain.goods.dto.event.GoodsCreateEventDto;
 import spharos.nu.goods.domain.goods.dto.event.GoodsDeleteEventDto;
 import spharos.nu.goods.domain.goods.dto.event.GoodsDisableEventDto;
@@ -87,7 +83,7 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
-        log.info("이미지 리스트" + goodsCreateDto.getImages());
+
 		//이미지 저장
 		goodsCreateDto.getImages().forEach((image) ->
 			{
@@ -114,9 +110,11 @@ public class GoodsService {
 			.sellerUuid(savedGoods.getSellerUuid())
 			.goodsCode(savedGoods.getGoodsCode())
 			.tagList(goodsCreateDto.getTags().stream().map(TagDto::getName).toList())
+			.imageList(goodsCreateDto.getImages().stream().map(image -> ImageDto.builder().id(image.getId()).url(
+				image.getUrl()).build()).toList())
 			.build());
 
-		log.info("(상품 코드: {}) 굿즈 생성 이벤트 발행 완료",savedGoods.getGoodsCode());
+		log.info("(상품 코드: {}) 굿즈 생성 이벤트 발행 완료", savedGoods.getGoodsCode());
 
 		return savedGoods.getGoodsCode();
 	}
@@ -189,7 +187,7 @@ public class GoodsService {
 			.goodsCode(goodsCode)
 			.build());
 
-		log.info("(상품 코드: {}) 굿즈 삭제 이벤트 발행 완료",goodsCode);
+		log.info("(상품 코드: {}) 굿즈 삭제 이벤트 발행 완료", goodsCode);
 	}
 
 	@Transactional
@@ -218,7 +216,7 @@ public class GoodsService {
 			.isDisable(updatedGoods.getIsDisable())
 			.build());
 
-		log.info("(상품 코드: {}) 굿즈 숨김 이벤트 발행 완료",updatedGoods.getGoodsCode());
+		log.info("(상품 코드: {}) 굿즈 숨김 이벤트 발행 완료", updatedGoods.getGoodsCode());
 	}
 
 	public byte getGoodsTradingStatus(String goodsCode) {
@@ -257,6 +255,6 @@ public class GoodsService {
 			.tradingStatus(updatedGoods.getTradingStatus())
 			.build());
 
-		log.info("(상품 코드: {}) 거래상태변경 이벤트 발행 완료",updatedGoods.getGoodsCode());
+		log.info("(상품 코드: {}) 거래상태변경 이벤트 발행 완료", updatedGoods.getGoodsCode());
 	}
 }
