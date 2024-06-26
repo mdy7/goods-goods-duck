@@ -83,7 +83,7 @@ public class GoodsService {
 				.goodsCode(goodsCode)
 				.build())
 		);
-		log.info("이미지 리스트" + goodsCreateDto.getImages());
+
 		//이미지 저장
 		goodsCreateDto.getImages().forEach((image) ->
 			{
