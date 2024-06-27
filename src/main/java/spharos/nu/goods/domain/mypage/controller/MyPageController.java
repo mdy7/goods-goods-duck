@@ -1,6 +1,7 @@
 package spharos.nu.goods.domain.mypage.controller;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +31,8 @@ public class MyPageController {
 	@Operation(summary = "입찰한 상품 코드", description = "회원이 입찰한 상품 코드 리스트")
 	public ResponseEntity<ApiResponse<BidGoodsResponseDto>> getBidGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@PageableDefault(size = 10, page = 0) Pageable pageable,
-		@RequestParam(value = "status", required = false) byte status) {
+		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@RequestParam(value = "status", defaultValue = "9") byte status) {
 
 		return ApiResponse.success(myPageService.bidGoodsGet(uuid, pageable, status), "입찰한 상품 조회 성공");
 	}
@@ -40,8 +41,8 @@ public class MyPageController {
 	@Operation(summary = "낙찰 받은 상품 코드", description = "낙찰 받은 상품 코드 리스트")
 	public ResponseEntity<ApiResponse<BidGoodsResponseDto>> getWinningBidGoods(
 		@RequestHeader(value = "User-Uuid", required = false) String uuid,
-		@PageableDefault(size = 10, page = 0) Pageable pageable,
-		@RequestParam(value = "status", required = false) byte status) {
+		@PageableDefault(size = 10, page = 0, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+		@RequestParam(value = "status", defaultValue = "9") byte status) {
 
 		return ApiResponse.success(myPageService.winningBidGoodsGet(uuid, pageable, status), "낙찰 받은 상품 조회 성공");
 	}

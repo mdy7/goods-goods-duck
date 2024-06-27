@@ -28,17 +28,18 @@ public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
 		QGoods goods = QGoods.goods;
 
 		List<BidGoodsCodeDto> goodsList = queryFactory
-			.selectDistinct(new QBidGoodsCodeDto(winningBid.goodsCode))
+			.select(new QBidGoodsCodeDto(winningBid.goodsCode))
+			.distinct()
 			.from(winningBid)
 			.join(goods).on(winningBid.goodsCode.eq(goods.goodsCode))
 			.where(goods.isDisable.eq(false), winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
-			.orderBy(winningBid.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
 		Long total = queryFactory
-			.selectDistinct(winningBid.goodsCode.count())
+			.select(winningBid.goodsCode.count())
+			.distinct()
 			.from(winningBid)
 			.join(goods).on(winningBid.goodsCode.eq(goods.goodsCode))
 			.where(goods.isDisable.eq(false), winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
@@ -53,7 +54,7 @@ public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
 
 		QGoods goods = QGoods.goods;
 
-		if (status == null) {
+		if (status == 9) {
 			return null; // status가 null인 경우 조건을 추가하지 않음
 		}
 
