@@ -31,5 +31,5 @@ public class AllGoodsDto {
 	private boolean isLast;
 
 	@Schema(description = "굿즈 목록")
-	private List<GoodsSummaryDto> goodsList;
+	private List<GoodsInfo> goodsList;
 }
