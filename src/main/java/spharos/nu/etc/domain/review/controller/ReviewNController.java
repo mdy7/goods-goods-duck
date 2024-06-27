@@ -20,13 +20,13 @@ import spharos.nu.etc.global.apiresponse.ApiResponse;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/api/v1/etc-n/reviews")
+@RequestMapping("/api/v1/etc-n")
 @Tag(name = "ReviewN", description = "etc-service에서 토큰 검증 필요없는 리뷰 관련 API document")
 public class ReviewNController {
 
 	private final ReviewService reviewService;
 
-	@GetMapping("/{receiverUuid}")
+	@GetMapping("/reviews/{receiverUuid}")
 	@Operation(summary = "받은 거래 후기 조회", description = "")
 	public ResponseEntity<ApiResponse<ReviewResponseDto>> getReviews(
 		@PathVariable("receiverUuid") String receiverUuid,
@@ -35,7 +35,7 @@ public class ReviewNController {
 		return ApiResponse.success(reviewService.reviewsGet(receiverUuid, pageable), "받은 거래 후기 조회 성공");
 	}
 
-	@GetMapping("/{reviewId}")
+	@GetMapping("/review/{reviewId}")
 	@Operation(summary = "거래 후기 1개 조회", description = "후기 1개 조회용")
 	public ResponseEntity<ApiResponse<ReviewOneResponseDto>> getOneReview(@PathVariable("reviewId") Long reviewId) {
 
