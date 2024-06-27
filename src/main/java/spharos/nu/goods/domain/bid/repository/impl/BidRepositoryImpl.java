@@ -1,5 +1,7 @@
 package spharos.nu.goods.domain.bid.repository.impl;
 
+import static com.querydsl.jpa.JPAExpressions.*;
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import spharos.nu.goods.domain.bid.dto.response.QBidGoodsCodeDto;
 import spharos.nu.goods.domain.bid.entity.QBid;
 import spharos.nu.goods.domain.bid.repository.BidRepositoryCustom;
 import spharos.nu.goods.domain.goods.entity.QGoods;
+import spharos.nu.goods.domain.goods.entity.QImage;
 
 @RequiredArgsConstructor
 public class BidRepositoryImpl implements BidRepositoryCustom {
@@ -26,12 +29,21 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 
 		QBid bid = QBid.bid;
 		QGoods goods = QGoods.goods;
+		QImage image = QImage.image;
 
 		List<BidGoodsCodeDto> goodsList = queryFactory
-			.select(new QBidGoodsCodeDto(bid.goodsCode))
+			.select(new QBidGoodsCodeDto(
+				bid.goodsCode,
+				goods.name,
+				select(bid.price.max())
+					.from(bid)
+					.where(bid.goodsCode.eq(goods.goodsCode), bid.bidderUuid.eq(uuid)),
+				image.url
+			))
 			.distinct()
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
+			.join(image).on(bid.goodsCode.eq(image.goodsCode).and(image.index.eq(0)))
 			.where(goods.isDisable.eq(false), bid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
