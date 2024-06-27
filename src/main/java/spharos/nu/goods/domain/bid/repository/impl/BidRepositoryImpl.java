@@ -28,17 +28,18 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 		QGoods goods = QGoods.goods;
 
 		List<BidGoodsCodeDto> goodsList = queryFactory
-			.selectDistinct(new QBidGoodsCodeDto(bid.goodsCode))
+			.select(new QBidGoodsCodeDto(bid.goodsCode))
+			.distinct()
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
 			.where(goods.isDisable.eq(false), bid.bidderUuid.eq(uuid), tradingStatusEq(status))
-			.orderBy(bid.createdAt.desc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
 
 		Long total = queryFactory
-			.selectDistinct(bid.goodsCode.count())
+			.select(bid.goodsCode.count())
+			.distinct()
 			.from(bid)
 			.join(goods).on(bid.goodsCode.eq(goods.goodsCode))
 			.where(goods.isDisable.eq(false), bid.bidderUuid.eq(uuid), tradingStatusEq(status))
@@ -53,7 +54,7 @@ public class BidRepositoryImpl implements BidRepositoryCustom {
 
 		QGoods goods = QGoods.goods;
 
-		if (status == null) {
+		if (status == 9) {
 			return null; // status가 null인 경우 조건을 추가하지 않음
 		}
 

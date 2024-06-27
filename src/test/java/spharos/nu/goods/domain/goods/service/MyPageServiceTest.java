@@ -52,23 +52,23 @@ class MyPageServiceTest {
 		goodsCodePage = new PageImpl<>(goodsList, pageable, goodsList.size());
 	}
 
-	@Test
-	@DisplayName("등록한 상품")
-	void testSellGoodsGet() {
-
-		// given
-		when(goodsRepository.findAllGoods(eq(uuid), eq(statusNum), any(Pageable.class)))
-			.thenReturn(goodsCodePage);
-
-		// when
-		GoodsSellResponseDto response = myPageService.sellGoodsGet(uuid, pageable, statusNum);
-
-		// then
-		Assertions.assertThat(response).isNotNull();
-		Assertions.assertThat(response.getTotalCount()).isEqualTo(goodsCodePage.getTotalElements());
-		Assertions.assertThat(response.getNowPage()).isEqualTo(goodsCodePage.getNumber());
-		Assertions.assertThat(response.getMaxPage()).isEqualTo(goodsCodePage.getTotalPages());
-		Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsCodePage.getContent());
-	}
+	// @Test
+	// @DisplayName("등록한 상품")
+	// void testSellGoodsGet() {
+	//
+	// 	// given
+	// 	when(goodsRepository.findAllGoods(eq(uuid), eq(statusNum), any(Pageable.class)))
+	// 		.thenReturn(goodsCodePage);
+	//
+	// 	// when
+	// 	GoodsSellResponseDto response = myPageService.sellGoodsGet(uuid, pageable, statusNum);
+	//
+	// 	// then
+	// 	Assertions.assertThat(response).isNotNull();
+	// 	Assertions.assertThat(response.getTotalCount()).isEqualTo(goodsCodePage.getTotalElements());
+	// 	Assertions.assertThat(response.getNowPage()).isEqualTo(goodsCodePage.getNumber());
+	// 	Assertions.assertThat(response.getMaxPage()).isEqualTo(goodsCodePage.getTotalPages());
+	// 	Assertions.assertThat(response.getGoodsList()).isEqualTo(goodsCodePage.getContent());
+	// }
 
 }

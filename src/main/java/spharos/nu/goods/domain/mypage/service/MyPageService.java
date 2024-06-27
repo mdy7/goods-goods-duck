@@ -20,7 +20,7 @@ public class MyPageService {
 	private final WinningBidRepository winningBidRepository;
 
 	// 입찰한 상품 조회
-	public BidGoodsResponseDto bidGoodsGet(String bidderUuid, Pageable pageable, byte status) {
+	public BidGoodsResponseDto bidGoodsGet(String bidderUuid, Pageable pageable, Byte status) {
 
 		Page<BidGoodsCodeDto> biddingPage = bidRepository.findAllGoods(bidderUuid, pageable, status);
 
@@ -33,7 +33,7 @@ public class MyPageService {
 			.build();
 	}
 
-	public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Pageable pageable, byte status) {
+	public BidGoodsResponseDto winningBidGoodsGet(String bidderUuid, Pageable pageable, Byte status) {
 
 		Page<BidGoodsCodeDto> winningPage = winningBidRepository.findAllGoods(bidderUuid, pageable, status);
 
