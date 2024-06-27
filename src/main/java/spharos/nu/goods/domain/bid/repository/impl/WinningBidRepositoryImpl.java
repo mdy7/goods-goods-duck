@@ -1,5 +1,7 @@
 package spharos.nu.goods.domain.bid.repository.impl;
 
+import static com.querydsl.jpa.JPAExpressions.*;
+
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import spharos.nu.goods.domain.bid.dto.response.QBidGoodsCodeDto;
 import spharos.nu.goods.domain.bid.entity.QWinningBid;
 import spharos.nu.goods.domain.bid.repository.WinningBidRepositoryCustom;
 import spharos.nu.goods.domain.goods.entity.QGoods;
+import spharos.nu.goods.domain.goods.entity.QImage;
 
 @RequiredArgsConstructor
 public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
@@ -26,12 +29,19 @@ public class WinningBidRepositoryImpl implements WinningBidRepositoryCustom {
 
 		QWinningBid winningBid = QWinningBid.winningBid;
 		QGoods goods = QGoods.goods;
+		QImage image = QImage.image;
 
 		List<BidGoodsCodeDto> goodsList = queryFactory
-			.select(new QBidGoodsCodeDto(winningBid.goodsCode))
+			.select(new QBidGoodsCodeDto(
+				winningBid.goodsCode,
+				goods.name,
+				winningBid.winningPrice,
+				image.url
+			))
 			.distinct()
 			.from(winningBid)
 			.join(goods).on(winningBid.goodsCode.eq(goods.goodsCode))
+			.join(image).on(winningBid.goodsCode.eq(image.goodsCode).and(image.index.eq(0)))
 			.where(goods.isDisable.eq(false), winningBid.bidderUuid.eq(uuid), tradingStatusEq(status))
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())

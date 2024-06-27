@@ -37,20 +37,20 @@ class MyPageServiceTest {
 	private Pageable pageable;
 	private Page<GoodsCodeDto> goodsCodePage;
 
-	@BeforeEach
-	void setUp() {
-		uuid = "test-uuid";
-		index = 0;
-		statusNum = 1;
-		pageable = PageRequest.of(index, 10);
-
-		List<GoodsCodeDto> goodsList = Arrays.asList(
-			new GoodsCodeDto("code1"),
-			new GoodsCodeDto("code2")
-		);
-
-		goodsCodePage = new PageImpl<>(goodsList, pageable, goodsList.size());
-	}
+	// @BeforeEach
+	// void setUp() {
+	// 	uuid = "test-uuid";
+	// 	index = 0;
+	// 	statusNum = 1;
+	// 	pageable = PageRequest.of(index, 10);
+	//
+	// 	List<GoodsCodeDto> goodsList = Arrays.asList(
+	// 		new GoodsCodeDto("code1"),
+	// 		new GoodsCodeDto("code2")
+	// 	);
+	//
+	// 	goodsCodePage = new PageImpl<>(goodsList, pageable, goodsList.size());
+	// }
 
 	// @Test
 	// @DisplayName("등록한 상품")
