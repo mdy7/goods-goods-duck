@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.read.domain.goods.dto.response.AllGoodsDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
+import spharos.nu.read.domain.goods.dto.response.GoodsInfo;
 import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
 import spharos.nu.read.domain.goods.service.GoodsService;
 import spharos.nu.read.global.apiresponse.ApiResponse;
@@ -71,7 +72,7 @@ public class GoodsNController {
 	// 커밍순 굿즈 리스트 조회
 	@GetMapping("/coming-soon")
 	@Operation(summary = "커밍순 굿즈 조회", description = "커밍순 예정 굿즈를 조회합니다")
-	public ResponseEntity<ApiResponse<List<GoodsSummaryDto>>> getComingSoonGoods(
+	public ResponseEntity<ApiResponse<List<GoodsInfo>>> getComingSoonGoods(
 		@RequestParam(value = "categoryId", defaultValue = "0") Long categoryId,
 		@PageableDefault(size = 10, page = 0, sort = "openedAt", direction = Sort.Direction.ASC) Pageable pageable
 	) {

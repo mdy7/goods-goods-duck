@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +15,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import spharos.nu.read.domain.goods.dto.response.AllGoodsDto;
 import spharos.nu.read.domain.goods.dto.response.GoodsDetailDto;
+import spharos.nu.read.domain.goods.dto.response.GoodsInfo;
 import spharos.nu.read.domain.goods.dto.response.GoodsSummaryDto;
+import spharos.nu.read.domain.goods.dto.response.TagDto;
 import spharos.nu.read.domain.goods.entity.Goods;
 import spharos.nu.read.domain.goods.repository.ReadRepository;
 
@@ -27,6 +30,7 @@ public class GoodsService {
 
 	/**
 	 * 상품 요약 조회
+	 *
 	 * @param goodsCode
 	 */
 	public GoodsSummaryDto goodsSummaryGet(String goodsCode) {
@@ -36,7 +40,8 @@ public class GoodsService {
 		return GoodsSummaryDto.builder()
 			.goodsCode(goods.getGoodsCode())
 			.goodsName(goods.getName())
-			.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
+			.thumbnail(
+				goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
 			.minPrice(goods.getMinPrice())
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
@@ -69,7 +74,7 @@ public class GoodsService {
 
 	public AllGoodsDto getAllGoods(Long categoryPk, boolean isTradingOnly, Pageable pageable) {
 
-		/* isTradingOnly boolean 값에 따라 tradingStatus 상태 리스트 정의*/
+		// isTradingOnly boolean 값에 따라 tradingStatus 상태 리스트 정의
 		List<Byte> tradingStatus;
 		if (isTradingOnly) {
 			tradingStatus = Arrays.asList((byte)0, (byte)1);
@@ -77,20 +82,29 @@ public class GoodsService {
 			tradingStatus = Arrays.asList((byte)0, (byte)1, (byte)2, (byte)3, (byte)4, (byte)5);
 		}
 
-		Page<Goods> goodsPage = readRepository.findByCategoryIdAndTradingStatusInAndIsDisable(categoryPk, tradingStatus,
-			false, pageable);
+		Page<Goods> goodsPage = readRepository.findByCategoryIdAndTradingStatusInAndIsDisable(categoryPk, tradingStatus, false, pageable);
 
-		List<GoodsSummaryDto> goodsSummaryList = goodsPage.getContent().stream()
-			.map(goods -> GoodsSummaryDto.builder()
-				.goodsCode(goods.getGoodsCode())
-				.goodsName(goods.getName())
-				.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
-				.minPrice(goods.getMinPrice())
-				.openedAt(goods.getOpenedAt())
-				.closedAt(goods.getClosedAt())
-				.tradingStatus(goods.getTradingStatus())
-				.build())
-			.toList();
+		List<GoodsInfo> goodsSummaryList = goodsPage.getContent().stream()
+			.map(goods -> {
+				AtomicInteger id = new AtomicInteger();
+				List<TagDto> tags = goods.getTagList().stream()
+					.map(tag -> TagDto.builder()
+						.id(id.getAndIncrement())
+						.name(tag)
+						.build())
+					.toList();
+
+				return GoodsInfo.builder()
+					.goodsCode(goods.getGoodsCode())
+					.goodsName(goods.getName())
+					.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
+					.minPrice(goods.getMinPrice())
+					.openedAt(goods.getOpenedAt())
+					.closedAt(goods.getClosedAt())
+					.tradingStatus(goods.getTradingStatus())
+					.tagList(tags)
+					.build();
+			}).toList();
 
 		return AllGoodsDto.builder()
 			.maxPage(goodsPage.getTotalPages())
@@ -110,7 +124,8 @@ public class GoodsService {
 		return goodsList.stream().map(goods -> GoodsSummaryDto.builder()
 			.goodsCode(goods.getGoodsCode())
 			.goodsName(goods.getName())
-			.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
+			.thumbnail(
+				goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
 			.minPrice(goods.getMinPrice())
 			.openedAt(goods.getOpenedAt())
 			.closedAt(goods.getClosedAt())
@@ -118,22 +133,32 @@ public class GoodsService {
 			.build()).toList();
 	}
 
-	public List<GoodsSummaryDto> getComingSoonGoods(Long categoryId, Pageable pageable) {
+	public List<GoodsInfo> getComingSoonGoods(Long categoryId, Pageable pageable) {
 		LocalDate today = LocalDate.now();
 		LocalDateTime startOfTomorrow = today.plusDays(1).atStartOfDay();
 		LocalDateTime endOfTomorrow = today.plusDays(1).atTime(LocalTime.MAX);
 
-		List<Goods> goodsList = readRepository.findByCategoryIdAndOpenedAtBetween(categoryId, startOfTomorrow,
-			endOfTomorrow, pageable);
+		List<Goods> goodsList = readRepository.findByCategoryIdAndOpenedAtBetween(categoryId, startOfTomorrow, endOfTomorrow, pageable);
 
-		return goodsList.stream().map(goods -> GoodsSummaryDto.builder()
-			.goodsCode(goods.getGoodsCode())
-			.goodsName(goods.getName())
-			.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
-			.minPrice(goods.getMinPrice())
-			.openedAt(goods.getOpenedAt())
-			.closedAt(goods.getClosedAt())
-			.tradingStatus(goods.getTradingStatus())
-			.build()).toList();
+		return goodsList.stream().map(goods -> {
+			AtomicInteger id = new AtomicInteger();
+			List<TagDto> tags = goods.getTagList().stream()
+				.map(tag -> TagDto.builder()
+					.id(id.getAndIncrement())
+					.name(tag)
+					.build())
+				.toList();
+
+			return GoodsInfo.builder()
+				.goodsCode(goods.getGoodsCode())
+				.goodsName(goods.getName())
+				.thumbnail(goods.getImageList() != null && !goods.getImageList().isEmpty() ? goods.getImageList().get(0) : null)
+				.minPrice(goods.getMinPrice())
+				.openedAt(goods.getOpenedAt())
+				.closedAt(goods.getClosedAt())
+				.tradingStatus(goods.getTradingStatus())
+				.tagList(tags)
+				.build();
+		}).toList();
 	}
 }
