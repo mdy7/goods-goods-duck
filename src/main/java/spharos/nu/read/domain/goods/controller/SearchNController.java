@@ -31,11 +31,12 @@ public class SearchNController {
 	@GetMapping("/search")
 	@Operation(summary = "검색 결과", description = "키워드 검색 결과를 페이지네이션, 정렬, 필터링 가능")
 	public ResponseEntity<ApiResponse<SearchResultResponseDto>> getSearchResult(@RequestParam("keyword") String keyword,
+		@RequestParam(value = "categoryId") Long categoryId,
 		@RequestParam(value = "sort", defaultValue = "createdAt") String sort,
 		@RequestParam(value = "isTradingOnly", defaultValue = "false") boolean isTradingOnly,
 		@PageableDefault(size = 10, page = 0) Pageable pageable) {
 
-		return ApiResponse.success(searchService.searchResultGet(keyword, sort, isTradingOnly, pageable), "검색 성공");
+		return ApiResponse.success(searchService.searchResultGet(keyword, categoryId, sort, isTradingOnly, pageable), "검색 성공");
 	}
 
 	@GetMapping("/search-list")
