@@ -31,17 +31,20 @@ public class SearchNController {
 	@GetMapping("/search")
 	@Operation(summary = "검색 결과", description = "키워드 검색 결과를 페이지네이션, 정렬, 필터링 가능")
 	public ResponseEntity<ApiResponse<SearchResultResponseDto>> getSearchResult(@RequestParam("keyword") String keyword,
+		@RequestParam(value = "categoryId") Long categoryId,
 		@RequestParam(value = "sort", defaultValue = "createdAt") String sort,
 		@RequestParam(value = "isTradingOnly", defaultValue = "false") boolean isTradingOnly,
 		@PageableDefault(size = 10, page = 0) Pageable pageable) {
 
-		return ApiResponse.success(searchService.searchResultGet(keyword, sort, isTradingOnly, pageable), "검색 성공");
+		return ApiResponse.success(searchService.searchResultGet(keyword, categoryId, sort, isTradingOnly, pageable),
+			"검색 성공");
 	}
 
 	@GetMapping("/search-list")
 	@Operation(summary = "검색어 리스트", description = "키워드를 칠때마다 보여줄 검색어 리스트")
-	public ResponseEntity<ApiResponse<List<SearchWordDto>>> getSearchTextList(@RequestParam("keyword") String keyword) {
+	public ResponseEntity<ApiResponse<List<SearchWordDto>>> getSearchTextList(@RequestParam("keyword") String keyword,
+		@RequestParam("categoryId") Long categoryId) {
 
-		return ApiResponse.success(searchService.searchWordListGet(keyword), "검색어 리스트 조회 성공");
+		return ApiResponse.success(searchService.searchWordListGet(keyword, categoryId), "검색어 리스트 조회 성공");
 	}
 }
