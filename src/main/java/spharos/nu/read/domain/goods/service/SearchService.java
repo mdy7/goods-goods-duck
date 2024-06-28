@@ -127,14 +127,21 @@ public class SearchService {
 	/**
 	 * 검색어 리스트
 	 */
-	public List<SearchWordDto> searchWordListGet(String keyword) {
+	public List<SearchWordDto> searchWordListGet(String keyword, Long categoryId) {
 
 		// 키워드 검색 조건 추가
 		Criteria keywordCriteria = new Criteria().orOperator(
 			Criteria.where("name").regex(keyword, "i"), // 상품명에서 키워드 검색 (대소문자 구분 없음)
 			Criteria.where("tagList").regex(keyword, "i") // 태그에서 키워드 검색 (대소문자 구분 없음)
 		);
-		Query query = new Query(keywordCriteria);
+
+		// categoryId 조건 추가
+		Criteria categoryCriteria = Criteria.where("categoryId").is(categoryId);
+
+		// 최종 검색 조건 조합
+		Criteria finalCriteria = new Criteria().andOperator(keywordCriteria, categoryCriteria);
+
+		Query query = new Query(finalCriteria);
 
 		// 검색 실행
 		List<Goods> goodsList = mongoTemplate.find(query, Goods.class);
