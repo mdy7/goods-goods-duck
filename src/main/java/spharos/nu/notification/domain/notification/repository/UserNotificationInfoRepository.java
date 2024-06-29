@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface UserNotificationInfoRepository extends MongoRepository<UserNotificationInfo, String> {
     Optional<UserNotificationInfo> findByUuid(String uuid);
+
+    Optional<UserNotificationInfo> findByDeviceToken(String token);
 }
