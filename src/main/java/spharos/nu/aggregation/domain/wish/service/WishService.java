@@ -85,6 +85,12 @@ public class WishService {
 
         wishCount.decreaseWishCount();
 
+        /* new 좋아요수를 리드서버로 전송 */
+        kafkaProducer.sendWishCountEvent(CountEventDto.builder()
+            .goodsCode(wishCount.getGoodsCode())
+            .count(wishCount.getCount())
+            .build());
+
         wishRepository.delete(wish);
     }
 
