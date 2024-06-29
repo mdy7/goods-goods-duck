@@ -32,6 +32,7 @@ public class UserNotificationInfoService {
         UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(notificationTokenDto.getUuid()).orElseGet(
                 () -> UserNotificationInfo.builder()
                         .uuid(notificationTokenDto.getUuid())
+                        .isNotify(true)
                         .deviceToken(new ArrayList<>())
                         .build()
         );
