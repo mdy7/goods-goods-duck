@@ -53,13 +53,21 @@ public class GoodsService {
 
 		Goods goods = readRepository.findByGoodsCode(goodsCode).orElseThrow();
 
+		AtomicInteger id = new AtomicInteger(1);
+		List<TagDto> tagDtoList = goods.getTagList().stream()
+			.map(tag -> TagDto.builder()
+				.id(id.getAndIncrement())
+				.name(tag)
+				.build())
+			.toList();
+
 		return GoodsDetailDto.builder()
 			.goodsCode(goods.getGoodsCode())
 			.categoryId(goods.getCategoryId())
 			.sellerUuid(goods.getSellerUuid())
 			.name(goods.getName())
 			.imageList(goods.getImageList())
-			.tagList(goods.getTagList())
+			.tagList(tagDtoList)
 			.minPrice(goods.getMinPrice())
 			.description(goods.getDescription())
 			.openedAt(goods.getOpenedAt())
