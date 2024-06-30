@@ -1,9 +1,9 @@
 package spharos.nu.chat.domain.chat.service;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.bson.Document;
 import org.springframework.data.mongodb.core.ChangeStreamEvent;
@@ -43,20 +43,38 @@ public class ChatService {
 
 	@Transactional
 	public Mono<ChatMessage> createMessage(String senderUuid, ChatRequestDto chatRequestDto) {
-		log.info("채팅방 아이디" + chatRequestDto.getChatRoomId());
+		log.info(chatRequestDto.getChatRoomId() + " 번 채팅방에 메시지 생성");
 		ChatRoom chatRoom = chatRoomRepository.findById(chatRequestDto.getChatRoomId()).orElseThrow(
 			() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM)
 		);
 
 		List<ChatMember> members = chatRoom.getMembers();
-		members.stream().peek(
+		/* 읽음 여부를 결정 짓는 조건문 */
+		Boolean isRead = members.stream().anyMatch(
 			member -> {
-				if (!member.getUserUuid().equals(senderUuid)) {
-					member.setUnreadCount(member.getUnreadCount() + 1);
+				/* request 가 입장-퇴장을 알려주는 메시지일 때 */
+				if (!chatRequestDto.getInOut().isEmpty()) {
+					if (chatRequestDto.getInOut().equals("in") && member.getUserUuid().equals(senderUuid)) { //채팅방 입장
+						member.setUnreadCount(0); // 안읽은 메시지 초기화
+						member.setConnect(true);  // connect 상태 true
+						return false;
+					} else if (chatRequestDto.getInOut().equals("out") && member.getUserUuid().equals(senderUuid)) { //채팅방 퇴장
+						member.setUnreadCount(0);  // 안읽은 메시지 초기화(필수x 확실하게 하는 장치)
+						member.setConnect(false);  // connect 상태 off
+						return false;
+					}
+				/* request 가 일반적인 메시지일 때 */
+				} else if (!member.getUserUuid().equals(senderUuid)) {
+					if (!member.getConnect()) {
+						member.setUnreadCount(member.getUnreadCount() + 1); //대화 상대의 안읽은 메시지 수를 +1
+						return false;
+					} else {
+						return true;
+					}
 				}
-			}
-		).forEach(member -> log.info("member: {}", member));
-        log.info("chatRoom members의 unreadCount 업데이트");
+				return false;
+			});
+
 		chatRoomRepository.save(ChatRoom.builder()
 			.id(chatRoom.getId())
 			.goodsCode(chatRoom.getGoodsCode())
@@ -64,17 +82,17 @@ public class ChatService {
 			.members(members)
 			.updatedAt(LocalDateTime.now())
 			.build());
-
+		log.info("chatRoom members 정보를 업데이트 후 새 메시지 생성");
 		return chatMessageRepository.save(
 			ChatMessage.builder()
 				.senderUuid(senderUuid)
 				.receiverUuid(chatRequestDto.getReceiverUuid())
-				.isRead(false)
+				.isRead(isRead)
 				.chatRoomId(chatRequestDto.getChatRoomId())
 				.createdAt(LocalDateTime.now())
-				.isImage(chatRequestDto.getIsImage())
-				.imageUrl(chatRequestDto.getIsImage() ? chatRequestDto.getImageUrl() : null)
-				.message(chatRequestDto.getIsImage() ? null : chatRequestDto.getMessage())
+				.isImage(chatRequestDto.getInOut().isEmpty() ? chatRequestDto.getIsImage() : null)
+				.imageUrl(chatRequestDto.getInOut().isEmpty() ? chatRequestDto.getIsImage() ? chatRequestDto.getImageUrl() : null : null)
+				.message(chatRequestDto.getInOut().isEmpty() ? chatRequestDto.getIsImage() ? null : chatRequestDto.getMessage() : null)
 				.build()
 		);
 	}

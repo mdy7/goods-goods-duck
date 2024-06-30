@@ -32,10 +32,12 @@ public class ChatRoomService {
 		members.add(ChatMember.builder()
 			.userUuid(winningEventDto.getSellerUuid())
 			.unreadCount(0)
+			.connect(false)
 			.build());
 		members.add(ChatMember.builder()
 			.userUuid(winningEventDto.getBidderUuid())
 			.unreadCount(0)
+			.connect(false)
 			.build());
 
 		chatRoomRepository.save(ChatRoom.builder()
