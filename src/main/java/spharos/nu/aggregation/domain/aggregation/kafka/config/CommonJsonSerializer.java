@@ -20,6 +20,10 @@ public class CommonJsonSerializer {
 		props.put(JsonSerializer.TYPE_MAPPINGS,
 			"CountEventDto:spharos.nu.aggregation.domain.aggregation.dto.event.CountEventDto"
 		);
+
+		/* acks 설정 */
+		props.put(ProducerConfig.ACKS_CONFIG, "0");
+
 		/*confluent kafka 연결을 위한 설정*/
 		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,"SASL_SSL");
 		props.put(SaslConfigs.SASL_MECHANISM,"PLAIN");
