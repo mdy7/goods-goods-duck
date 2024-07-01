@@ -119,7 +119,7 @@ public class ChatService {
 	}
 
 	public ChatResposeDto getLastMessage(String chatRoomId) {
-		ChatMessage chatMessage = chatMessageRestRepository.findFirstByChatRoomIdOrderByCreatedAtDesc(chatRoomId)
+		ChatMessage chatMessage = chatMessageRestRepository.findFirstByChatRoomIdAndInOutIsEmptyOrderByCreatedAtDesc(chatRoomId)
 			.orElseThrow(() -> new CustomException(ErrorCode.NOT_FOUND_CHAT_ROOM));
 		return ChatResposeDto.builder()
 			.chatMessageId(chatMessage.getId())
@@ -138,7 +138,8 @@ public class ChatService {
 		ChangeStreamOptions options = ChangeStreamOptions.builder()
 			.filter(Aggregation.newAggregation(
 				Aggregation.match(Criteria.where("operationType").is(OperationType.INSERT.getValue())),
-				Aggregation.match(Criteria.where("fullDocument.chatRoomId").is(chatRoomId))
+				Aggregation.match(Criteria.where("fullDocument.chatRoomId").is(chatRoomId)),
+				Aggregation.match(Criteria.where("fullDocument.inOut").is(""))
 			))
 			.build();
 		log.info("옵션 생성 완료");

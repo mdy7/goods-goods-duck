@@ -30,5 +30,6 @@ public class ChatMessage {
 	@CreatedDate
 	private LocalDateTime createdAt;
 	private String chatRoomId;
+	private Boolean inOut;
 
 }
