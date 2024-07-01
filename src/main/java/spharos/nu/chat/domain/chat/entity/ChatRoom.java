@@ -41,6 +41,7 @@ public class ChatRoom {
 
 		private String userUuid;
 		private int unreadCount;
+		private Boolean connect;
 
 	}
 }
