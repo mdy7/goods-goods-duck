@@ -13,7 +13,7 @@ import spharos.nu.chat.domain.chat.entity.ChatMessage;
 public interface ChatMessageRepository extends ReactiveMongoRepository<ChatMessage, String> {
 
 	@Tailable
-	@Query("{'chatRoomId': ?0, 'inOut': ''}")
-	// @Query("{'chatRoomId': ?0}")
+	// @Query("{'chatRoomId': ?0, 'inOut': ''}")
+	@Query("{'chatRoomId': ?0}")
 	Flux<ChatMessage> findChatMessageByChatRoomId(String chatRoomId);
 }

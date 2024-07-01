@@ -10,5 +10,6 @@ import spharos.nu.chat.domain.chat.entity.ChatMessage;
 @Repository
 public interface ChatMessageRestRepository extends MongoRepository<ChatMessage, String> {
 
-	Optional<ChatMessage> findFirstByChatRoomIdAndInOutIsEmptyOrderByCreatedAtDesc(String roomId);
+	// Optional<ChatMessage> findFirstByChatRoomIdAndInOutIsEmptyOrderByCreatedAtDesc(String roomId);
+	Optional<ChatMessage> findFirstByChatRoomIdOrderByCreatedAtDesc(String roomId);
 }
