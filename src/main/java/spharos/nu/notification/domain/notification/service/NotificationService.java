@@ -21,8 +21,8 @@ import spharos.nu.notification.global.exception.CustomException;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_NOTIFICATION;
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_USER_NOTIFICATION_INFO;
@@ -65,12 +65,8 @@ public class NotificationService {
             UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(uuid).orElseThrow(()
                     -> new CustomException(NOT_FOUND_USER_NOTIFICATION_INFO));
 
-            List<String> tokens = userNotificationInfo.getDeviceToken().stream()
-                    .map(UserNotificationInfo.DeviceToken::getToken)
-                    .collect(Collectors.toList());
-
             FcmSendDto fcmSendDto = FcmSendDto.builder()
-                    .tokens(tokens)
+                    .tokens(Collections.singletonList(userNotificationInfo.getDeviceToken()))
                     .title(notificationEventDto.getTitle())
                     .content(notificationEventDto.getContent())
                     .link(notificationEventDto.getLink())

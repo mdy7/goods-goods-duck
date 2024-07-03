@@ -5,8 +5,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 @Document(collection = "user_notification_info")
 @Getter
 @Builder
@@ -16,17 +14,10 @@ public class UserNotificationInfo {
 
     @Id
     private String id;
-    private List<DeviceToken> deviceToken;
+    private String deviceToken;
     private boolean isNotify;
     private String uuid;
 
 
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DeviceToken {
-        private String token;
-    }
+
 }

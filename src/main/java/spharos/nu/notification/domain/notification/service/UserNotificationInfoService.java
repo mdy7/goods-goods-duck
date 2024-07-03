@@ -6,17 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import spharos.nu.notification.domain.notification.dto.request.NotificationTokenDto;
-import spharos.nu.notification.domain.notification.entity.UserNotificationInfo.DeviceToken;
 import spharos.nu.notification.domain.notification.entity.UserNotificationInfo;
 import spharos.nu.notification.domain.notification.repository.UserNotificationInfoRepository;
 import spharos.nu.notification.global.exception.CustomException;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static spharos.nu.notification.global.exception.errorcode.ErrorCode.NOT_FOUND_USER_NOTIFICATION_INFO;
-
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,28 +24,30 @@ public class UserNotificationInfoService {
 
     @Transactional
     public void saveToken(NotificationTokenDto notificationTokenDto) {
+        Optional<UserNotificationInfo> optionalUserNotificationInfo = userNotificationInfoRepository.findByUuid(notificationTokenDto.getUuid());
 
-        UserNotificationInfo userNotificationInfo = userNotificationInfoRepository.findByUuid(notificationTokenDto.getUuid()).orElseGet(
-                () -> UserNotificationInfo.builder()
-                        .uuid(notificationTokenDto.getUuid())
-                        .isNotify(true)
-                        .deviceToken(new ArrayList<>())
-                        .build()
-        );
+        if (optionalUserNotificationInfo.isPresent()) {
+            // 유저 정보가 있으면 토큰 업데이트
+            UserNotificationInfo userNotificationInfo = optionalUserNotificationInfo.get();
+            UserNotificationInfo updateUserNotificationInfo = UserNotificationInfo.builder()
+                    .id(userNotificationInfo.getId())
+                    .uuid(userNotificationInfo.getUuid())
+                    .deviceToken(notificationTokenDto.getToken())
+                    .isNotify(userNotificationInfo.isNotify())
+                    .build();
 
-        // 중복 토큰 확인
-        List<DeviceToken> deviceTokens = userNotificationInfo.getDeviceToken();
-        boolean tokenExists = deviceTokens.stream()
-                .anyMatch(token -> token.getToken().equals(notificationTokenDto.getToken()));
-
-        if (!tokenExists) {
-            deviceTokens.add(DeviceToken.builder()
-                    .token(notificationTokenDto.getToken())
-                    .build());
-            userNotificationInfoRepository.save(userNotificationInfo);
+            userNotificationInfoRepository.save(updateUserNotificationInfo);
+        } else {
+            // 유저 정보가 없으면 신규 저장
+            UserNotificationInfo newUserNotificationInfo = UserNotificationInfo.builder()
+                    .uuid(notificationTokenDto.getUuid())
+                    .deviceToken(notificationTokenDto.getToken())
+                    .isNotify(true)
+                    .build();
+            userNotificationInfoRepository.save(newUserNotificationInfo);
         }
-}
 
+    }
 
     @Transactional
     public void changeNotify(String uuid, boolean isNotify) {
@@ -64,6 +62,7 @@ public class UserNotificationInfoService {
                 .build();
 
         userNotificationInfoRepository.save(updateUserNotificationInfo);
-    }
 
+
+    }
 }
