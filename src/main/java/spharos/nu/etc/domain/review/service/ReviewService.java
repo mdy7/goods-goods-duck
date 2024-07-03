@@ -142,7 +142,7 @@ public class ReviewService {
 			.title("거래 후기 도착")
 			.content("당신의 매너덕을 확인하세요.")
 			.uuid(uuidList)
-			.link(linkCreate(review.getId()))
+			.link(linkCreate(review.getReceiverUuid()))
 			.build();
 		reviewKafkaProducer.sendReviewNotification(notificationEventDto);
 
@@ -167,8 +167,8 @@ public class ReviewService {
 		return null;
 	}
 
-	private String linkCreate(Long reviewId) {
+	private String linkCreate(String receiverUuid) {
 
-		return String.format("/mypage/review/%d", reviewId);
+		return "/mypage/reviews/" + receiverUuid;
 	}
 }
