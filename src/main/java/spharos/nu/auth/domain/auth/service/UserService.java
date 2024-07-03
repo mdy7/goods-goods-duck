@@ -108,7 +108,7 @@ public class UserService {
 		return LoginResponseDto.builder()
 			.uuid(member.getUuid())
 			.accessToken(jwtToken.getAccessToken())
-			.accessToken(jwtToken.getRefreshToken())
+			.refreshToken(jwtToken.getRefreshToken())
 			.build();
 	}
 
