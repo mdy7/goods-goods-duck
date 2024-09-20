@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: read-service
+  profiles:
+    active: default
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL}
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}/eureka/
