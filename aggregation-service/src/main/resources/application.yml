@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: aggregation-service
+  profiles:
+    active: default
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  web:
+    resources:
+      add-mappings: false
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}/eureka/
+
+#springdoc:
+#  api-docs:
+#    path: /api/v1/aggregation-n/swagger/api-docs
+#  swagger-ui:
+#    path: /swagger-ui/index.html
