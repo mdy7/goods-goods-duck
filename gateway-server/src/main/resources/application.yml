@@ -1,0 +1,198 @@
+server:
+  port: 8000
+  forward-headers-strategy: framework
+
+spring:
+  main:
+    web-application-type: reactive
+  application:
+    name: gateway-server
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      global-cors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:3000"
+              - "https://goodsgoodsduck.shop"
+            allow-credentials: true
+            allowedHeaders:
+              - x-requested-with
+              - Authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - PATCH
+              - DELETE
+              - OPTIONS
+      routes:
+        # goods auth routing
+        - id: goods-service
+          uri: lb://GOODS-SERVICE
+          predicates:
+            - Path=/api/v1/goods/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # goods no auth routing
+        - id: goods-service
+          uri: lb://GOODS-SERVICE
+          predicates:
+            - Path=/api/v1/goods-n/**
+          filters:
+
+
+        # read auth routing
+        - id: read-service
+          uri: lb://READ-SERVICE
+          predicates:
+            - Path=/api/v1/read/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # read no auth routing
+        - id: read-service
+          uri: lb://READ-SERVICE
+          predicates:
+            - Path=/api/v1/read-n/**
+          filters:
+
+        # member auth routing
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/api/v1/users/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # member no auth routing
+        - id: member-service
+          uri: lb://MEMBER-SERVICE
+          predicates:
+            - Path=/api/v1/users-n/**
+          filters:
+
+        # auth no auth routing
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/v1/auth-n/**
+          filters:
+
+        # auth auth routing
+        - id: auth-service
+          uri: lb://AUTH-SERVICE
+          predicates:
+            - Path=/api/v1/auth/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # aggregation no auth routing
+        - id: aggregation-service
+          uri: lb://AGGREGATION-SERVICE
+          predicates:
+            - Path=/api/v1/aggregation-n/**
+          filters:
+
+        # aggregation auth routing
+        - id: aggregation-service
+          uri: lb://AGGREGATION-SERVICE
+          predicates:
+            - Path=/api/v1/aggregation/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # etc no auth routing
+        - id: etc-service
+          uri: lb://ETC-SERVICE
+          predicates:
+            - Path=/api/v1/etc-n/**
+          filters:
+
+        # etc auth routing
+        - id: etc-service
+          uri: lb://ETC-SERVICE
+          predicates:
+            - Path=/api/v1/etc/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # notification auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # notification no auth routing
+        - id: notification-service
+          uri: lb://NOTIFICATION-SERVICE
+          predicates:
+            - Path=/api/v1/notification-n/**
+          filters:
+
+        # chat auth routing
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/v1/chat/**
+          filters:
+            - JwtAuthenticationFilter
+
+        # chat no auth routing
+        - id: chat-service
+          uri: lb://CHAT-SERVICE
+          predicates:
+            - Path=/api/v1/chat-n/**
+          filters:
+
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: ${EUREKA_SERVER_URL}/eureka/
+
+
+jwt:
+  key: ${JWT_SECRET_KEY}
+
+springdoc:
+  api-docs:
+    path: /api/v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /api/swagger-ui.html
+    urls[0]:
+      name: 인증 서비스
+      url: http://3.35.70.208:8000/api/v1/auth-n/swagger/api-docs
+    urls[1]:
+      name: 회원 서비스
+      url: http://3.35.70.208:8000/api/v1/users-n/swagger/api-docs
+    urls[2]:
+      name: 굿즈 서비스
+      url: http://3.35.70.208:8000/api/v1/goods-n/swagger/api-docs
+    urls[3]:
+      name: 집계 서비스
+      url: http://3.35.70.208:8000/api/v1/aggregation-n/swagger/api-docs
+    urls[4]:
+      name: 기타 등등 서비스
+      url: http://3.35.70.208:8000/api/v1/etc-n/swagger/api-docs
+    urls[5]:
+      name: 알림 서비스
+      url: http://3.35.70.208:8000/api/v1/notification-n/swagger/api-docs
+    urls[6]:
+      name: 리드 서비스
+      url: http://3.35.70.208:8000/api/v1/read-n/swagger/api-docs
+    urls[7]:
+      name: 채팅 서비스
+      url: http://3.35.70.208:8000/api/v1/chat-n/swagger/api-docs
