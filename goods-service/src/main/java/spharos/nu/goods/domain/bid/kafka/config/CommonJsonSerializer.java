@@ -20,10 +20,10 @@ public class CommonJsonSerializer {
 		props.put(JsonSerializer.TYPE_MAPPINGS,
 			"WinningEventDto:spharos.nu.goods.domain.bid.dto.event.WinningEventDto"
 		);
-		/*confluent kafka 연결을 위한 설정*/
-		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,"SASL_SSL");
-		props.put(SaslConfigs.SASL_MECHANISM,"PLAIN");
-		props.put(SaslConfigs.SASL_JAAS_CONFIG,String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";", apiKey, apiSecret));
+//		/*confluent kafka 연결을 위한 설정*/
+//		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,"SASL_SSL");
+//		props.put(SaslConfigs.SASL_MECHANISM,"PLAIN");
+//		props.put(SaslConfigs.SASL_JAAS_CONFIG,String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";", apiKey, apiSecret));
 
 		return props;
 	}

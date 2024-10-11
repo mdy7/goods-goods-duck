@@ -24,10 +24,10 @@ public class CommonJsonSerializer {
 			"GoodsStatusEventDto:spharos.nu.goods.domain.goods.dto.event.GoodsStatusEventDto," +
 			"NotificationEventDto:spharos.nu.goods.domain.goods.dto.event.NotificationEventDto"
 		);
-		/*confluent kafka 연결을 위한 설정*/
-		props.put(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG,"SASL_SSL");
-		props.put(SaslConfigs.SASL_MECHANISM,"PLAIN");
-		props.put(SaslConfigs.SASL_JAAS_CONFIG,String.format("org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";", apiKey, apiSecret));
+
+
+//		props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG,"AD");
+
 
 		return props;
 	}
