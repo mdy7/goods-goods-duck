@@ -1,7 +1,6 @@
-package spharos.nu.member.domain.member.dto.event;
+package spharos.nu.auth.domain.auth.kafka.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,9 +8,9 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class JoinEventDto {
+@NoArgsConstructor
+public class JoinResponseDto {
 	@Schema(description = "유저 uuid")
 	private String uuid;
 	@Schema(description = "유저 닉네임")
@@ -21,3 +20,4 @@ public class JoinEventDto {
 	@Schema(description = "선호 카테고리")
 	private String favoriteCategory;
 }
+
