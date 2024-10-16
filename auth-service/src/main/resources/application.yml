@@ -1,25 +1,67 @@
+server:
+  port: 9004
+
 spring:
   application:
     name: auth-service
   profiles:
     active: default
   config:
-    import: optional:configserver:${CONFIG_SERVER_URL}
+    import: "optional:configserver:http://localhost:8888"
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     show-sql: true
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+  #        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/goodsdb
+    platform: postgres
+    username: moon
+    password: 1234
+
+  kafka:
+    bootstrap-servers: http://localhost:9092
+    api-key: aaa
+    api-secret: aaa
+
   web:
     resources:
       add-mappings: false
+
+  redis:
+    host: localhost:8080
+    port: 2222
+    password: 2222
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${EUREKA_SERVER_URL}/eureka/
+      defaultZone: http://localhost:8761/eureka/
+
+kakao_pay_secret_key:
+  DEV1EB357E05A81A2F3AA2B383BF95C81CADA0EF
+
+jwt:
+  key: goodsgoodsduck/mHVjYA9tPmcmj/bVD41BtwOh9vWpysa9r61SQpnvlIg
+  token:
+    access-expire-time: 604800000
+    refresh-expire-time: 604800000
+
+
+coolSms:
+  key: 2222
+  secret: 222
+  number: '222'
+
+springdoc:
+  api-docs:
+    path: /api/v1/auth-n/swagger/api-docs
+  swagger-ui:
+    path: /swagger-ui/index.html

@@ -22,6 +22,7 @@ public enum ErrorCode {
 
 	// 403: Forbidden
 	PASSWORD_ERROR(403, "비밀번호가 일치하지 않습니다."),
+	LOGIN_FAILED(403, "로그인에 실패하였습니다."),
 
 	// 404: 잘못된 리소스 접근
 	NOT_FOUND_GATEWAY(404, "존재하지 않는 경로입니다."),
